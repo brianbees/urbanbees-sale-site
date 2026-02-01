@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, supabaseAdmin } from '@/lib/supabase';
 import { useSearchParams } from 'next/navigation';
 import type { DatabaseProduct, DatabaseVariant } from '@/types/database';
 import { compressImage } from '@/lib/image-utils';
@@ -167,7 +167,7 @@ function EditProductForm() {
       const finalImages = [...existingImages, ...newImageUrls];
 
       // Update product
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabaseAdmin
         .from('products')
         .update({
           name,
@@ -182,7 +182,7 @@ function EditProductForm() {
 
       // Update variants
       for (const variant of variants) {
-        const { error: variantError } = await supabase
+        const { error: variantError } = await supabaseAdmin
           .from('variants')
           .update({
             sku: variant.sku,
