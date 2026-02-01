@@ -37,7 +37,10 @@ Create `.env.local` in this directory:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 ```
+
+**Note:** The service role key is required for create/update/delete operations after enabling Row Level Security (RLS) on the database.
 
 ### Development
 

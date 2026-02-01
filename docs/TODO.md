@@ -9,6 +9,10 @@
 - ✅ Edit/preview buttons open in same tab
 - ✅ Redirect to preview page after editing product
 - ✅ Standardized placeholder images across all pages
+- ✅ Supabase Row Level Security (RLS) enabled on all tables
+- ✅ Database security configured (public read-only, admin full access)
+- ✅ Code deduplication (image compression utility)
+- ✅ Homepage caching (5-minute revalidation)
 
 ### Admin Panel (v2.4.0)
 - Image compression: Auto-compress to max 1920px @ 85% JPEG quality
