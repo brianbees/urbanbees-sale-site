@@ -1,5 +1,16 @@
 # TODO - Future Features
 
+## 🚨 IMMEDIATE ACTION REQUIRED
+
+**See [DEPLOYMENT_REMINDER.md](DEPLOYMENT_REMINDER.md) for critical next steps!**
+
+**After ~14 hours (Vercel limit resets):**
+1. Update Vercel env variable name: `SUPABASE_SERVICE_ROLE_KEY` → `NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY`
+2. Redeploy admin panel
+3. Test production deployment
+
+---
+
 ## Recent Updates (Feb 1, 2026)
 
 ### Completed
