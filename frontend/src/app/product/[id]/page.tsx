@@ -97,6 +97,9 @@ export async function generateStaticParams() {
 // Allow dynamic rendering for database products not in static list
 export const dynamicParams = true;
 
+// Revalidate every 60 seconds to show updated product data
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
