@@ -175,12 +175,21 @@ function EditProductForm() {
     setMessage('Saving changes...');
 
     try {
+      // Create slug from product name for filenames
+      const slug = name.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'product';
+
       // Upload new images to Supabase Storage
       const newImageUrls: string[] = [];
       
-      for (const file of newImages) {
+      // Start numbering from existing image count + 1
+      const startIndex = existingImages.length;
+      
+      for (let i = 0; i < newImages.length; i++) {
+        const file = newImages[i];
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const fileName = `${slug}-${startIndex + i + 1}.${fileExt}`;
         const filePath = `${fileName}`;
 
         const { error: uploadError } = await supabase.storage
