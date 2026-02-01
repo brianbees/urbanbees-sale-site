@@ -1,10 +1,78 @@
 // src\app\page.tsx
 // 
 
-import products from '@/data/products';
+import { supabase } from '@/lib/supabase';
 import ProductCard from '@/components/ProductCard';
+import type { DatabaseProduct, DatabaseVariant } from '@/types/database';
+import type { Product } from '@/data/products';
 
-export default function Home() {
+async function getProducts() {
+  try {
+    // Fetch products and their variants
+    const { data: dbProducts, error: productsError } = await supabase
+      .from('products')
+      .select('*')
+      .order('name');
+
+    if (productsError) throw productsError;
+
+    const { data: dbVariants, error: variantsError } = await supabase
+      .from('variants')
+      .select('*');
+
+    if (variantsError) throw variantsError;
+
+    // Transform database products to frontend format
+    const products: Product[] = (dbProducts || []).map((dbProduct: DatabaseProduct) => {
+      const productVariants = (dbVariants || [])
+        .filter((v: DatabaseVariant) => v.product_id === dbProduct.id)
+        .map((v: DatabaseVariant) => ({
+          id: v.id,
+          sku: v.sku,
+          optionValues: v.option_values || {},
+          price: v.price,
+          msrp: null,
+          stockQty: v.stock_qty,
+        }));
+
+      return {
+        id: dbProduct.id,
+        name: dbProduct.name,
+        slug: dbProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        category: dbProduct.category as any,
+        description: dbProduct.description,
+        features: [],
+        currency: 'GBP' as const,
+        options: [],
+        variants: productVariants.length > 0 ? productVariants : [{
+          id: 'default',
+          optionValues: {},
+          price: null,
+          msrp: null,
+          stockQty: null,
+        }],
+        images: (dbProduct.images || []).map((src: string) => ({
+          src,
+          alt: dbProduct.name,
+        })).concat(
+          // Add placeholder if no images
+          (dbProduct.images || []).length === 0
+            ? [{ src: '/images/placeholder.jpg', alt: 'No image' }]
+            : []
+        ),
+      };
+    });
+
+    return products;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const products = await getProducts();
+
   return (
     <main className="min-h-screen bg-stone-100">
       <div className="container mx-auto px-4 py-12">

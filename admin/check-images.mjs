@@ -7,14 +7,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const { data, error } = await supabase
   .from('products')
-  .select('id, name, images')
-  .eq('id', '586867ea-51f0-4bd1-94eb-2ae2182ba34b')
-  .single();
+  .select('id, name');
 
 if (error) {
   console.error('Error:', error);
 } else {
-  console.log('Product:', data.name);
-  console.log('Images array:', JSON.stringify(data.images, null, 2));
-  console.log('Number of images:', data.images?.length || 0);
+  console.log('Total products in database:', data.length);
 }
