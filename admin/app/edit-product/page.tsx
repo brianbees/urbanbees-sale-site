@@ -237,21 +237,12 @@ function EditProductForm() {
         if (variantError) throw variantError;
       }
 
-      setMessage('✅ Product updated successfully!');
+      setMessage('✅ Product updated successfully! Redirecting to preview...');
       
-      // Reset form to initial state
+      // Redirect to product preview page
       setTimeout(() => {
-        setProduct(null);
-        setSelectedProductId('');
-        setName('');
-        setCategory('');
-        setDescription('');
-        setExistingImages([]);
-        setNewImages([]);
-        setImagesToDelete([]);
-        setVariants([]);
-        setMessage('');
-      }, 1500);
+        window.location.href = `https://frontend-six-kappa-30.vercel.app/product/${product.id}`;
+      }, 1000);
     } catch (error) {
       console.error('Error saving product:', error);
       setMessage(`❌ Failed to save: ${error}`);
