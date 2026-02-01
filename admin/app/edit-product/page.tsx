@@ -189,7 +189,8 @@ function EditProductForm() {
       for (let i = 0; i < newImages.length; i++) {
         const file = newImages[i];
         const fileExt = file.name.split('.').pop();
-        const fileName = `${slug}-${startIndex + i + 1}.${fileExt}`;
+        const timestamp = Date.now();
+        const fileName = `${slug}-${startIndex + i + 1}-${timestamp}.${fileExt}`;
         const filePath = `${fileName}`;
 
         const { error: uploadError } = await supabase.storage

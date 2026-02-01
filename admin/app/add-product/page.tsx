@@ -104,7 +104,8 @@ export default function AddProductPage() {
     for (let i = 0; i < images.length; i++) {
       const file = images[i];
       const fileExt = file.name.split('.').pop();
-      const fileName = `${slug}-${i + 1}.${fileExt}`;
+      const timestamp = Date.now();
+      const fileName = `${slug}-${i + 1}-${timestamp}.${fileExt}`;
       const filePath = `products/${fileName}`;
       const { error } = await supabase.storage
         .from('product-images')
