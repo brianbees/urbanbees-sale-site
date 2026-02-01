@@ -1,5 +1,21 @@
 # TODO - Future Features
 
+## Recent Updates (Feb 1, 2026)
+
+### Completed
+- ✅ Product page revalidation (60s cache) - new images show within 1 minute
+- ✅ Edit buttons on product detail pages
+- ✅ Image filenames use product-name-number-timestamp format
+- ✅ Edit/preview buttons open in same tab
+- ✅ Redirect to preview page after editing product
+- ✅ Standardized placeholder images across all pages
+
+### Admin Panel (v2.4.0)
+- Image compression: Auto-compress to max 1920px @ 85% JPEG quality
+- Image upload: Gallery-only (no forced camera)
+- Edit workflow: Edit → Save → Preview page
+- Image naming: `product-slug-1-timestamp.jpg`, `product-slug-2-timestamp.jpg`
+
 ## PayPal Checkout Enhancement
 
 **Request:** Remove the requirement for customers to manually type their order details into the PayPal note.
