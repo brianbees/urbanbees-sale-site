@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const { data, error } = await supabase
   .from('products')
   .select('id, name, images')
-  .eq('id', 'c113d4eb-a2d8-42ae-808d-4c3198bb28d1')
+  .eq('id', '586867ea-51f0-4bd1-94eb-2ae2182ba34b')
   .single();
 
 if (error) {

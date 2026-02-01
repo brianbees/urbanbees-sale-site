@@ -12,7 +12,7 @@ interface ProductDisplayProps {
 export default function ProductDisplay({ product }: ProductDisplayProps) {
   const router = useRouter();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const allImages = product.images && product.images.length > 0 ? product.images : [{ src: '/placeholder.svg', alt: 'No image' }];
+  const allImages = product.images && product.images.length > 0 ? product.images : [{ src: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="%239ca3af"%3ENo Image%3C/text%3E%3C/svg%3E', alt: 'No image' }];
   const selectedImage = allImages[selectedImageIndex] || allImages[0];
   const price = product.variants?.[0]?.price;
   const description = product.description ?? "No description available.";
