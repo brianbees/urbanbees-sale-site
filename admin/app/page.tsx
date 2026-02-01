@@ -8,7 +8,7 @@ export default function HomePage() {
           Urban Bees Product Admin
         </h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Link 
             href="/add-product" 
             className="block p-8 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow border-2 border-transparent hover:border-blue-500"
