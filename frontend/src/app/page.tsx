@@ -6,6 +6,9 @@ import ProductCard from '@/components/ProductCard';
 import type { DatabaseProduct, DatabaseVariant } from '@/types/database';
 import type { Product } from '@/data/products';
 
+// Revalidate every 5 minutes for better performance
+export const revalidate = 300;
+
 async function getProducts() {
   try {
     // Fetch products and their variants
