@@ -30,17 +30,6 @@ export default function HomePage() {
               <p className="text-gray-600">Update existing products and variants</p>
             </div>
           </Link>
-
-          <Link 
-            href="/add-variant" 
-            className="block p-8 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow border-2 border-transparent hover:border-green-500"
-          >
-            <div className="text-center">
-              <div className="text-5xl mb-4">🎨</div>
-              <h2 className="text-2xl font-semibold mb-2 text-gray-900">Add Variant</h2>
-              <p className="text-gray-600">Add variants to existing products</p>
-            </div>
-          </Link>
         </div>
 
         <div className="mt-8 text-center text-sm text-gray-500">
