@@ -13,11 +13,11 @@ export default function PreviewPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        // Fetch products and their variants
+        // Fetch products and their variants (most recently updated first)
         const { data: dbProducts, error: productsError } = await supabase
           .from('products')
           .select('*')
-          .order('name');
+          .order('updated_at', { ascending: false });
 
         if (productsError) throw productsError;
 
