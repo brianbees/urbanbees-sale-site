@@ -240,9 +240,9 @@ function EditProductForm() {
 
       setMessage('✅ Product updated successfully! Redirecting to preview...');
       
-      // Redirect to product preview page
+      // Redirect to preview page
       setTimeout(() => {
-        window.location.href = `https://frontend-six-kappa-30.vercel.app/product/${product.id}`;
+        window.location.href = 'https://frontend-six-kappa-30.vercel.app/preview';
       }, 1000);
     } catch (error) {
       console.error('Error saving product:', error);
