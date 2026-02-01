@@ -9,8 +9,6 @@ import type { Product } from '@/data/products';
 export default function PreviewPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [importing, setImporting] = useState(false);
-  const [importMessage, setImportMessage] = useState('');
 
   useEffect(() => {
     async function fetchProducts() {
@@ -83,33 +81,6 @@ export default function PreviewPage() {
     fetchProducts();
   }, []);
 
-  async function handleImport() {
-    setImporting(true);
-    setImportMessage('Checking for products to import...');
-
-    try {
-      const response = await fetch('/api/import-existing', {
-        method: 'POST',
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setImportMessage(`✅ ${result.message}`);
-        // Refresh products list after 2 seconds to show message
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        setImportMessage(`❌ Import failed: ${result.error}`);
-        setImporting(false);
-      }
-    } catch (error) {
-      setImportMessage(`❌ Import failed: ${error}`);
-      setImporting(false);
-    }
-  }
-
   async function handleDelete(productId: string, productName: string) {
     if (!confirm(`Are you sure you want to delete "${productName}"?\n\nThis will also delete all variants and cannot be undone.`)) {
       return;
@@ -150,29 +121,17 @@ export default function PreviewPage() {
                 This page shows products from your Supabase database. Changes are live immediately.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+            <div className="flex-shrink-0">
               <a
                 href="https://urbanbees-product-admin.vercel.app/add-product"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold text-center flex items-center justify-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
               >
-                ➕ <span className="hidden sm:inline">Add Product</span><span className="sm:hidden">Add</span>
+                ➕ Add Product
               </a>
-              <button
-                onClick={handleImport}
-                disabled={importing || products.length >= 69}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-3 rounded-lg font-semibold text-center"
-              >
-                {importing ? 'Importing...' : products.length >= 69 ? '✓ Imported' : '📥 Import'}
-              </button>
             </div>
           </div>
-          {importMessage && (
-            <div className="mt-2 p-2 bg-white rounded text-sm">
-              {importMessage}
-            </div>
-          )}
         </div>
       </div>
 
