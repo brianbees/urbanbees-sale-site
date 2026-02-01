@@ -57,7 +57,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   const imageSrc = firstImage.src;
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow relative">
       <Link href={`/product/${product.id}`} className="block" aria-label={`View ${product.name} details`}>
         <div className="relative h-48 bg-stone-100">
           <Image
