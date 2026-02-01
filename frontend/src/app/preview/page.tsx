@@ -9,9 +9,7 @@ import type { Product } from '@/data/products';
 export default function PreviewPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deploying, setDeploying] = useState(false);
   const [importing, setImporting] = useState(false);
-  const [deployMessage, setDeployMessage] = useState('');
   const [importMessage, setImportMessage] = useState('');
 
   useEffect(() => {
@@ -138,29 +136,6 @@ export default function PreviewPage() {
     }
   }
 
-  async function handleDeploy() {
-    setDeploying(true);
-    setDeployMessage('Exporting products to production...');
-
-    try {
-      const response = await fetch('/api/deploy-products', {
-        method: 'POST',
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setDeployMessage('✅ Successfully deployed! The main site will update in ~30 seconds.');
-      } else {
-        setDeployMessage(`❌ Deploy failed: ${result.error}`);
-      }
-    } catch (error) {
-      setDeployMessage(`❌ Deploy failed: ${error}`);
-    } finally {
-      setDeploying(false);
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Deploy Banner */}
@@ -169,10 +144,10 @@ export default function PreviewPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex-1">
               <h2 className="text-lg font-bold text-yellow-900">
-                🔍 Preview Mode - Database Products
+                🔍 Preview Mode - Live Database
               </h2>
               <p className="text-sm text-yellow-700">
-                This page shows products from your Supabase database. When satisfied, deploy to production.
+                This page shows products from your Supabase database. Changes are live immediately.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
@@ -184,32 +159,18 @@ export default function PreviewPage() {
               >
                 ➕ <span className="hidden sm:inline">Add Product</span><span className="sm:hidden">Add</span>
               </a>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleImport}
-                  disabled={importing || products.length >= 69}
-                  className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-3 rounded-lg font-semibold text-center"
-                >
-                  {importing ? 'Importing...' : products.length >= 69 ? '✓ Imported' : '📥 Import'}
-                </button>
-                <button
-                  onClick={handleDeploy}
-                  disabled={deploying}
-                  className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-3 rounded-lg font-semibold text-center"
-                >
-                  {deploying ? 'Deploying...' : '🚀 Deploy'}
-                </button>
-              </div>
+              <button
+                onClick={handleImport}
+                disabled={importing || products.length >= 69}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-3 rounded-lg font-semibold text-center"
+              >
+                {importing ? 'Importing...' : products.length >= 69 ? '✓ Imported' : '📥 Import'}
+              </button>
             </div>
           </div>
           {importMessage && (
             <div className="mt-2 p-2 bg-white rounded text-sm">
               {importMessage}
-            </div>
-          )}
-          {deployMessage && (
-            <div className="mt-2 p-2 bg-white rounded text-sm">
-              {deployMessage}
             </div>
           )}
         </div>
