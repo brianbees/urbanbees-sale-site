@@ -246,8 +246,6 @@ export default function PreviewPage() {
                 <div className="absolute top-2 right-2 flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                   <a
                     href={`https://urbanbees-product-admin.vercel.app/edit-product?id=${product.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-full shadow-lg"
                     title="Edit product"
                   >

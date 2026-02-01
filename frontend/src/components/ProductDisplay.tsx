@@ -32,8 +32,6 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
         </button>
         <a
           href={`https://urbanbees-product-admin.vercel.app/edit-product?id=${product.id}`}
-          target="_blank"
-          rel="noopener noreferrer"
           className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
