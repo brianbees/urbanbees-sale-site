@@ -12,7 +12,7 @@ interface ProductDisplayProps {
 
 export default function ProductDisplay({ product }: ProductDisplayProps) {
   const router = useRouter();
-  const addItem = useCartStore((state) => state.addItem);
+  const { addItem, items } = useCartStore();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
   const [showToast, setShowToast] = useState(false);
@@ -38,6 +38,8 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
       return;
     }
     
+    const variantName = getVariantName();
+    
     // Check real-time stock before adding
     try {
       const response = await fetch('/api/check-stock', {
@@ -48,8 +50,25 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
       
       const stockData = await response.json();
       
-      if (!stockData.available || (stockData.stockQty !== null && stockData.stockQty < 1)) {
+      // Check current quantity in cart
+      const existingItem = items.find(
+        (item) => item.productId === product.id && item.variantName === variantName
+      );
+      const currentQtyInCart = existingItem ? existingItem.quantity : 0;
+      const availableStock = stockData.stockQty;
+      
+      if (!stockData.available || availableStock === 0) {
         alert('Sorry, this item is currently out of stock.');
+        return;
+      }
+      
+      if (availableStock !== null && currentQtyInCart >= availableStock) {
+        alert(`You already have the maximum available quantity (${availableStock}) in your cart.`);
+        return;
+      }
+      
+      if (availableStock !== null && currentQtyInCart + 1 > availableStock) {
+        alert(`Only ${availableStock} available. You already have ${currentQtyInCart} in your cart.`);
         return;
       }
       
