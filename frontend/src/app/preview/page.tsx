@@ -121,7 +121,15 @@ export default function PreviewPage() {
                 This page shows products from your Supabase database. Changes are live immediately.
               </p>
             </div>
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 flex gap-3">
+              <a
+                href="https://urbanbees-product-admin.vercel.app/deploy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
+              >
+                🚀 Deploy Changes
+              </a>
               <a
                 href="https://urbanbees-product-admin.vercel.app/add-product"
                 target="_blank"
