@@ -3,10 +3,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { useRouter } from 'next/navigation';
 import type { WebsiteProduct } from '../../types/database';
-import { compressImage } from '@/lib/image-utils';
+import { compressImage } from '../../lib/image-utils';
 
 export default function AddProductPage() {
   const router = useRouter();

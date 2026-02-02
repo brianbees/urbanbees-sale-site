@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { useSearchParams } from 'next/navigation';
 import type { DatabaseProduct, DatabaseVariant } from '../../types/database';
-import { compressImage } from '@/lib/image-utils';
+import { compressImage } from '../../lib/image-utils';
 
 function EditProductForm() {
   const searchParams = useSearchParams();
