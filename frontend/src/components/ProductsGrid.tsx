@@ -95,22 +95,24 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
           </div>
         </div>
 
-        {/* Category Filter Buttons */}
+        {/* Category Filter Buttons - Horizontal Scroll on Mobile */}
         {categories.length > 1 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-3 py-1.5 text-sm md:text-base rounded-lg font-medium transition-colors ${
-                  selectedCategory === category
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {category === 'all' ? 'All' : category}
-              </button>
-            ))}
+          <div className="mt-3 -mx-3 md:mx-0">
+            <div className="flex gap-2 overflow-x-auto px-3 md:px-0 pb-2 md:pb-0 md:flex-wrap scrollbar-hide">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`flex-shrink-0 px-3 py-1.5 text-xs md:text-sm rounded-lg font-medium transition-colors whitespace-nowrap ${
+                    selectedCategory === category
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {category === 'all' ? 'All' : category}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
