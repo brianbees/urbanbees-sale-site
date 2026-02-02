@@ -66,72 +66,67 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
 
   return (
     <>
-      {/* Search and Filter Bar */}
-      <div className="bg-white rounded-lg shadow-md p-3 md:p-4 mb-6 md:mb-8">
-        <div className="flex flex-col gap-3">
-          {/* Search Input */}
-          <div className="w-full">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+      {/* Search Bar */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 mb-3">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
 
-          {/* Sort Dropdown */}
-          <div className="w-full">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="name-asc">Name (A-Z)</option>
-              <option value="name-desc">Name (Z-A)</option>
-              <option value="price-asc">Price (Low-High)</option>
-              <option value="price-desc">Price (High-Low)</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Category Filter Buttons - Horizontal Scroll on Mobile */}
+      {/* Filters Row - eBay Style */}
+      <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
+        {/* Category Filter */}
         {categories.length > 1 && (
-          <div className="mt-3 -mx-3 md:mx-0">
-            <div className="flex gap-2 overflow-x-auto px-3 md:px-0 pb-2 md:pb-0 md:flex-wrap scrollbar-hide">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`flex-shrink-0 px-3 py-1.5 text-xs md:text-sm rounded-lg font-medium transition-colors whitespace-nowrap ${
-                    selectedCategory === category
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {category === 'all' ? 'All' : category}
-                </button>
-              ))}
-            </div>
-          </div>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="flex-shrink-0 px-3 py-2 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+          >
+            <option value="all">All Categories</option>
+            {categories.filter(cat => cat !== 'all').map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         )}
 
+        {/* Sort Dropdown */}
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="flex-shrink-0 px-3 py-2 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+        >
+          <option value="name-asc">Sort: Name (A-Z)</option>
+          <option value="name-desc">Name (Z-A)</option>
+          <option value="price-asc">Price (Low-High)</option>
+          <option value="price-desc">Price (High-Low)</option>
+        </select>
+
         {/* Results Count */}
-        <div className="mt-3 text-xs md:text-sm text-gray-600 flex flex-wrap items-center gap-2">
-          <span>Showing {filteredProducts.length} of {initialProducts.length} products</span>
-          {(searchTerm || selectedCategory !== 'all') && (
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedCategory('all');
-              }}
-              className="text-blue-600 hover:text-blue-800 underline"
-            >
-              Clear filters
-            </button>
-          )}
+        <div className="flex-shrink-0 ml-auto text-xs md:text-sm text-gray-600 whitespace-nowrap">
+          {filteredProducts.length} of {initialProducts.length}
         </div>
       </div>
+
+      {/* Clear Filters Link */}
+      {(searchTerm || selectedCategory !== 'all') && (
+        <div className="mb-4">
+          <button
+            onClick={() => {
+              setSearchTerm('');
+              setSelectedCategory('all');
+            }}
+            className="text-sm text-blue-600 hover:text-blue-800 underline"
+          >
+            Clear all filters
+          </button>
+        </div>
+      )}
 
       {/* Products Grid */}
       {filteredProducts.length > 0 ? (
