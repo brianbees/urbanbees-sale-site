@@ -67,25 +67,25 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
   return (
     <>
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-8 sticky top-0 z-10">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <div className="bg-white rounded-lg shadow-md p-3 md:p-4 mb-6 md:mb-8">
+        <div className="flex flex-col gap-3">
           {/* Search Input */}
-          <div className="flex-1">
+          <div className="w-full">
             <input
               type="text"
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Sort Dropdown */}
-          <div className="w-full lg:w-48">
+          <div className="w-full">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="name-asc">Name (A-Z)</option>
               <option value="name-desc">Name (Z-A)</option>
@@ -97,12 +97,12 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
 
         {/* Category Filter Buttons */}
         {categories.length > 1 && (
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-3">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-3 py-1.5 text-sm md:text-base rounded-lg font-medium transition-colors ${
                   selectedCategory === category
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -115,15 +115,15 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
         )}
 
         {/* Results Count */}
-        <div className="mt-4 text-sm text-gray-600">
-          Showing {filteredProducts.length} of {initialProducts.length} products
+        <div className="mt-3 text-xs md:text-sm text-gray-600 flex flex-wrap items-center gap-2">
+          <span>Showing {filteredProducts.length} of {initialProducts.length} products</span>
           {(searchTerm || selectedCategory !== 'all') && (
             <button
               onClick={() => {
                 setSearchTerm('');
                 setSelectedCategory('all');
               }}
-              className="ml-3 text-blue-600 hover:text-blue-800 underline"
+              className="text-blue-600 hover:text-blue-800 underline"
             >
               Clear filters
             </button>
@@ -133,20 +133,20 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
 
       {/* Products Grid */}
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {filteredProducts.map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-lg shadow">
-          <p className="text-gray-600 text-lg">No products found matching your search.</p>
+        <div className="text-center py-12 md:py-20 bg-white rounded-lg shadow">
+          <p className="text-gray-600 text-base md:text-lg px-4">No products found matching your search.</p>
           <button
             onClick={() => {
               setSearchTerm('');
               setSelectedCategory('all');
             }}
-            className="mt-4 text-blue-600 hover:text-blue-800 underline"
+            className="mt-4 text-blue-600 hover:text-blue-800 underline text-sm md:text-base"
           >
             Clear filters
           </button>
