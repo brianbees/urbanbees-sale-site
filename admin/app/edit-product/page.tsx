@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useSearchParams } from 'next/navigation';
-import type { DatabaseProduct, DatabaseVariant } from '@/types/database';
+import type { DatabaseProduct, DatabaseVariant } from '../../types/database';
 import { compressImage } from '@/lib/image-utils';
 
 function EditProductForm() {
