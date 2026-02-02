@@ -6,14 +6,23 @@ Customer-facing e-commerce storefront for Urban Bees beekeeping supplies.
 
 ## Overview
 
-This Next.js application serves as the public-facing website where customers can browse products, view details, and add items to their cart. It uses **static product data** for fast performance and simple deployment.
+This Next.js application serves as the public-facing website where customers can browse products, view details, and add items to their cart. It uses **Supabase** for real-time product data and stock management.
 
 **Tech Stack:**
 - Next.js 16.1.6 (App Router + Turbopack)
 - React 19
 - TypeScript (strict mode)
 - Tailwind CSS 4
-- Zustand (cart state management)
+- Zustand (cart state management with localStorage persistence)
+- Supabase (database and storage)
+
+**Key Features:**
+- eBay-style horizontal product cards (image left, details right)
+- Dedicated `/cart` page with proper navigation (no drawer)
+- Global header with cart icon and item count badge
+- Real-time stock validation with cart quantity awareness
+- Stock warnings with disabled checkout when issues exist
+- 5-minute server-side cache for optimal performance
 
 ---
 
@@ -40,29 +49,56 @@ Open [http://localhost:3000](http://localhost:3000) to view the website.
 
 ## Data Source
 
-**Products:** Static TypeScript file at `src/data/products.ts`
+**Products:** Supabase PostgreSQL database with 5-minute server-side cache
 
-This file contains all 69 products with:
-- Product details (name, category, description)
-- Variants (pricing, stock, options)
-- Image references
-- Features and metadata
+The frontend fetches products from:
+- **Table:** `products` (name, description, category, images)
+- **Table:** `variants` (pricing, stock quantities, SKUs, options)
+- **Storage:** Supabase Storage for product images
 
-**No database required** - all data is bundled at build time for maximum performance.
+**Real-time features:**
+- Stock validation on every "Add to Cart"
+- Cart quantity awareness prevents overselling
+- Stock warnings displayed on cart page
+- Checkout disabled when stock issues exist
 
 ---
 
 ## Features
 
-- **Product Catalog:** Browse 69+ beekeeping products across 13 categories
-- **Product Details:** Individual pages with interactive image gallery
-- **Shopping Cart:** Persistent cart using Zustand + localStorage
-- **Preview Mode:** Test database products at `/preview` before deploying
-- **One-Click Deploy:** Export database products to production
-- **Image Gallery:** Click thumbnails to view different product images
+### Product Display
+- **eBay-Style Layout:** Horizontal cards with image left (128-160px), details right
+- **Vertical List:** Products displayed in list format (not grid)
+- **Search & Filter:** Category dropdown, sort by name/price, whole-word search
+- **Product Details:** Full-page view with image gallery, variant selectors, stock info
+
+### Shopping Cart
+- **Dedicated Cart Page:** `/cart` with proper back button navigation
+- **Header Navigation:** Persistent cart icon with item count badge on all pages
+- **Cart Features:**
+  - Two-column layout (items + order summary)
+  - 128px product images
+  - Quantity controls with +/- buttons
+  - Real-time stock validation
+  - Red alert warnings for stock issues
+  - "Proceed to Checkout" disabled when stock problems exist
+  - Confirmation dialog for "Clear Cart"
+
+### Stock Management
+- **Pre-Add Validation:** Checks available stock before adding to cart
+- **Cart Quantity Awareness:** Considers items already in cart when validating
+- **Smart Alerts:**
+  - "Sorry, this item is currently out of stock."
+  - "You already have the maximum available quantity (X) in your cart."
+  - "Only X available. You already have Y in your cart."
+- **Cart Page Warnings:** Red alerts show when items exceed available stock
+
+### Technical
 - **Database Integration:** Supabase for dynamic product management
-- **Responsive Design:** Mobile-first design with Tailwind CSS
-- **Hybrid Rendering:** Static + database-driven product pages
+- **Persistent Cart:** Zustand + localStorage (survives page refresh)
+- **Server-Side Rendering:** 5-minute cache (revalidate=300)
+- **Responsive Design:** Mobile-first with Tailwind CSS
+- **Image Optimization:** Next.js Image component with Supabase CDN
 
 ---
 
@@ -95,67 +131,108 @@ The deploy button:
 frontend/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx              # Home page (product grid)
-│   │   ├── layout.tsx            # Root layout with cart
+│   │   ├── page.tsx              # Home page (product list with filters)
+│   │   ├── layout.tsx            # Root layout with Header component
+│   │   ├── cart/
+│   │   │   └── page.tsx          # Dedicated cart page
 │   │   ├── preview/
 │   │   │   └── page.tsx          # Preview/testing page
 │   │   ├── product/[id]/
 │   │   │   └── page.tsx          # Product detail pages
 │   │   └── api/
+│   │       ├── check-stock/      # Real-time stock validation
 │   │       ├── deploy-products/  # Export database to file
 │   │       ├── import-existing/  # Import static products
-│   │       └── delete-product/   # Delete from database
+│   │       ├── delete-product/   # Delete from database
+│   │       └── revalidate/       # Cache invalidation
 │   ├── components/
-│   │   ├── Cart.tsx              # Shopping cart UI
-│   │   ├── ProductCard.tsx       # Product grid item
-│   │   └── ProductDisplay.tsx    # Interactive image gallery
+│   │   ├── Header.tsx            # Global nav with cart icon
+│   │   ├── ProductCard.tsx       # Horizontal product card (eBay-style)
+│   │   ├── ProductDisplay.tsx    # Full product detail view
+│   │   └── ProductsGrid.tsx      # List container with filters
 │   ├── data/
-│   │   └── products.ts           # Product catalog (auto-generated)
+│   │   └── products.ts           # Product catalog (fallback/static)
 │   ├── lib/
 │   │   └── supabase.ts           # Supabase client
 │   ├── types/
 │   │   └── database.ts           # Database type definitions
 │   └── store/
-│       └── cart.ts               # Cart state management
+│       └── cart.ts               # Cart state (Zustand + localStorage)
 ├── public/
-│   └── images/                   # Product images
-├── scripts/
-│   └── import-products.js        # Manual import script
+│   └── images/                   # Product images (legacy/fallback)
 └── README.md                     # This file
 ```
 
 ---
 
-## Adding Products
+## Cart Store API
 
-To add or modify products, edit `src/data/products.ts`:
+The cart uses Zustand with localStorage persistence:
 
 ```typescript
-export const products: Product[] = [
-  {
-    id: "my-product-id",
-    name: "Product Name",
-    slug: "product-name",
-    category: "Brood Boxes",
-    currency: "GBP",
-    images: [
-      { src: "/images/my-product.jpg", alt: "Product Name" }
-    ],
-    variants: [
-      {
-        id: "default",
-        price: 50.00,
-        stockQty: 10,
-        optionValues: {}
-      }
-    ]
-  }
-];
+import { useCartStore } from '@/store/cart';
+
+// In your component:
+const { items, addItem, removeItem, updateQuantity, clearCart, getTotalItems, getTotalPrice } = useCartStore();
+
+// Add item
+addItem({
+  productId: 'abc',
+  productName: 'Product Name',
+  variantId: 'variant-id',
+  variant: { Size: 'Large' },
+  variantName: 'Large',
+  price: 50.00,
+  image: '/path/to/image.jpg',
+  stockQty: 10
+});
+
+// Update quantity
+updateQuantity('product-id', 'variant-name', 5);
+
+// Remove item
+removeItem('product-id', 'variant-name');
+
+// Get totals
+const itemCount = getTotalItems();  // Returns total quantity
+const total = getTotalPrice();      // Returns total price
 ```
 
-Then add the product image to `public/images/`.
+---
 
-See `../docs/IMAGE_MAPPING.md` for image filename conventions.
+## Stock Validation Flow
+
+1. **User clicks "Add to Cart"**
+   - Frontend calls `/api/check-stock` with `variantId`
+   - Checks current cart quantity for that variant
+   - Compares `currentQtyInCart + 1` vs `availableStock`
+   - Shows alert if insufficient stock
+
+2. **User visits `/cart` page**
+   - On mount, checks stock for all cart items
+   - Displays red warnings for items exceeding stock
+   - Disables "Proceed to Checkout" if any issues exist
+
+3. **User increases quantity in cart**
+   - Immediately checks stock again
+   - Updates warnings dynamically
+   - Prevents checkout if over limit
+
+---
+
+## Adding Products
+
+Products are managed through the **Admin Panel** at https://urbanbees-product-admin.vercel.app
+
+1. Click "Add Product"
+2. Fill in details (name, category, description)
+3. Add variants with prices and stock quantities
+4. Upload images (auto-compressed to 1920px @ 85% quality)
+5. Save → Preview → Deploy
+
+Changes appear on the frontend within 5 minutes due to server-side caching (revalidate=300).
+
+For immediate updates, click the deploy button on the preview page to clear cache.
 
 ---
 

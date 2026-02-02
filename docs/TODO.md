@@ -3,6 +3,15 @@
 ## Recent Updates (Feb 2, 2026)
 
 ### Completed Today ✅
+- **Cart Page System** - Converted from drawer to dedicated `/cart` page with proper navigation
+- **Header Component** - Global navigation with cart icon and item count badge
+- **Smart Stock Validation** - Cart-aware stock checking prevents overselling
+  - Validates available stock before adding items
+  - Considers current cart quantity when adding more
+  - Real-time stock warnings on cart page with red alerts
+  - Disables checkout if stock issues exist
+- **eBay-Style Product Layout** - Horizontal cards (image left, details right)
+- **Enhanced UX** - Add to cart shows notification with "Continue Shopping" / "Go to Cart" options
 - **Search & Filter System** - eBay-style dropdowns with category filter, sort options
 - **Whole-word Search** - Search matches complete words only (not partial)
 - **Responsive Design** - Mobile-optimized filter layout

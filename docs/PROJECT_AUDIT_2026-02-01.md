@@ -17,6 +17,10 @@ The following audit findings have been addressed:
 5. **✅ Frontend now reads from database** - Supabase integration complete
 6. **✅ Search & filter system** - eBay-style dropdowns with whole-word matching
 7. **✅ Deploy mechanism** - One-click cache revalidation on preview page
+8. **✅ Cart drawer removed** - Replaced with dedicated `/cart` page for better UX
+9. **✅ Stock management** - Real-time validation with cart quantity awareness
+10. **✅ Header navigation** - Global cart access with item count badge
+11. **✅ eBay-style layout** - Horizontal product cards (image left, details right)
 
 **Remaining items below are still relevant for future optimization.**
 
