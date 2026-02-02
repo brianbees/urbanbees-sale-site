@@ -4,22 +4,21 @@ import { persist } from 'zustand/middleware';
 export interface CartItem {
   productId: string;
   productName: string;
+  variantId: string;
   variant: Record<string, string>;
   variantName: string;
   price: number;
   quantity: number;
+  image?: string;
+  stockQty?: number | null;
 }
 
 interface CartState {
   items: CartItem[];
-  isOpen: boolean;
   addItem: (item: Omit<CartItem, 'quantity'>) => void;
   removeItem: (productId: string, variantName: string) => void;
   updateQuantity: (productId: string, variantName: string, quantity: number) => void;
   clearCart: () => void;
-  openCart: () => void;
-  closeCart: () => void;
-  toggleCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
 }
@@ -28,7 +27,6 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
-      isOpen: false,
 
       addItem: (item) => {
         const items = get().items;
@@ -72,10 +70,6 @@ export const useCartStore = create<CartState>()(
       },
 
       clearCart: () => set({ items: [] }),
-
-      openCart: () => set({ isOpen: true }),
-      closeCart: () => set({ isOpen: false }),
-      toggleCart: () => set({ isOpen: !get().isOpen }),
 
       getTotalItems: () => {
         return get().items.reduce((total, item) => total + item.quantity, 0);
