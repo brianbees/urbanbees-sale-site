@@ -6,6 +6,22 @@
 
 ---
 
+## ✅ RESOLVED ITEMS (Feb 2, 2026)
+
+The following audit findings have been addressed:
+
+1. **✅ Image compression duplication** - Extracted to `admin/lib/image-utils.ts`
+2. **✅ API routes for mutations** - Created server-side routes to use service role key securely
+3. **✅ Client-side RLS bypass attempt** - Moved all mutations to API routes
+4. **✅ Migration scripts archived** - Moved to `docs/archived-scripts/`
+5. **✅ Frontend now reads from database** - Supabase integration complete
+6. **✅ Search & filter system** - eBay-style dropdowns with whole-word matching
+7. **✅ Deploy mechanism** - One-click cache revalidation on preview page
+
+**Remaining items below are still relevant for future optimization.**
+
+---
+
 ## Summary (High-Level Findings)
 
 1. **Exact duplicate code**: `compressImage()` function duplicated verbatim in `add-product/page.tsx` and `edit-product/page.tsx` (94 lines total, 47 lines each).

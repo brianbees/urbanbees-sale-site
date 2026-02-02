@@ -1,4 +1,12 @@
-# Product Image Mapping
+# ⚠️ OBSOLETE - Product Image Mapping
+
+**Status:** This document is obsolete as of Feb 2, 2026.  
+**Current System:** Images are now uploaded directly through the admin panel and stored in Supabase Storage, not in `public/images/`.  
+**Kept for historical reference only.**
+
+---
+
+# Product Image Mapping (Legacy)
 
 Replace your placeholder images in `public/images/` with actual product photos:
 

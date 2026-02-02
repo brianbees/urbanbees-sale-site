@@ -1,4 +1,12 @@
-# Product Images - Setup Complete ✅
+# ⚠️ OBSOLETE - Product Images Setup
+
+**Status:** This document is obsolete as of Feb 2, 2026.  
+**Current System:** All product images are now managed through the admin panel at https://urbanbees-product-admin.vercel.app and stored in Supabase Storage.  
+**Kept for historical reference only.**
+
+---
+
+# Product Images - Setup Complete ✅ (Legacy)
 
 ## What's Been Done
 

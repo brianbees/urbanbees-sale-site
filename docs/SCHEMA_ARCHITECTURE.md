@@ -1,75 +1,45 @@
 # Schema & Architecture Documentation
 
-**Last Updated:** January 30, 2026  
-**Purpose:** Document data models, schema alignment, and integration points
+**Last Updated:** February 2, 2026  
+**Purpose:** Document data models, schema, and integration points
 
 ---
 
-## System Architecture
+## System Architecture (Current)
 
-This project contains **TWO SEPARATE APPLICATIONS** with **DIFFERENT DATA SOURCES**:
+This project contains **TWO SEPARATE APPLICATIONS** with **UNIFIED DATA SOURCE**:
 
 ```
 ┌─────────────────────────────────────┐
 │  FRONTEND (Customer E-commerce)    │
-│  - Static TypeScript data           │
-│  - No database                      │
-│  - Read-only product catalog        │
-│  - IDs: String slugs                │
+│  - Reads from Supabase database    │
+│  - Public read-only access (RLS)   │
+│  - Server-side rendering (SSR)     │
+│  - 5-minute cache, on-demand clear │
 └─────────────────────────────────────┘
-
+                  ↓
+         ┌────────────────┐
+         │  SUPABASE DB   │
+         │  (PostgreSQL)  │
+         └────────────────┘
+                  ↑
 ┌─────────────────────────────────────┐
 │  ADMIN (Product Management)         │
-│  - Supabase PostgreSQL database     │
-│  - Create/update products           │
-│  - IDs: UUIDs (auto-generated)      │
+│  - Writes via API routes            │
+│  - Service role key (bypasses RLS) │
+│  - Create/update/delete products   │
+│  - Image upload to Storage          │
 └─────────────────────────────────────┘
 ```
 
-**⚠️ IMPORTANT:** These systems DO NOT automatically sync. Frontend uses static data; Admin writes to database.
+**✅ UNIFIED:** Both systems use the same Supabase database. Admin writes, frontend reads.  
+**🔒 SECURITY:** Row Level Security (RLS) enforces public read-only, admin full CRUD.
 
 ---
 
 ## Data Models
 
-### Frontend Data Model (`frontend/src/data/products.ts`)
-
-```typescript
-interface Product {
-  id: string;              // Slug format: "bb-1412-assembled-cedar"
-  name: string;
-  slug: string;
-  category: ProductCategory;
-  description?: string;
-  features?: string[];
-  currency: Currency;
-  options?: ProductOption[];
-  variants: ProductVariant[];
-  images: ProductImage[];   // Objects: { src: string, alt: string }
-}
-
-interface ProductVariant {
-  id: string;              // "default" or variant identifier
-  sku?: string;
-  optionValues: Record<string, string>;
-  price: number | null;
-  msrp?: number | null;
-  stockQty: number | null;
-}
-
-interface ProductImage {
-  src: string;             // URL or path
-  alt: string;
-}
-```
-
-**Data Source:** Static TypeScript file with 69 products  
-**Update Method:** Manual file editing  
-**Used By:** Customer-facing website pages and cart
-
----
-
-### Admin/Database Model (`admin/types/database.ts`)
+### Database Model (Supabase)
 
 ```typescript
 interface DatabaseProduct {
