@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import PayPalButton from '@/components/PayPalButton';
 
 interface StockWarning {
   variantId: string;
@@ -196,16 +197,19 @@ export default function CartPage() {
                   </div>
                 )}
                 
-                <button 
+                {/* PayPal Button */}
+                <PayPalButton 
+                  items={items.map(item => ({
+                    variantId: item.variantId,
+                    productId: item.productId,
+                    name: `${item.productName}${item.variantName !== 'Standard' ? ` - ${item.variantName}` : ''}`,
+                    variantName: item.variantName,
+                    price: item.price,
+                    quantity: item.quantity,
+                    image: item.image,
+                  }))}
                   disabled={hasStockIssues}
-                  className={`w-full py-3 px-6 rounded-lg font-bold text-white transition-colors mb-3 ${
-                    hasStockIssues 
-                      ? 'bg-gray-300 cursor-not-allowed' 
-                      : 'bg-blue-600 hover:bg-blue-700'
-                  }`}
-                >
-                  Proceed to Checkout
-                </button>
+                />
                 
                 <Link
                   href="/"

@@ -1,6 +1,7 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,6 +16,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <Header />
         {children}
+        {/* PayPal SDK */}
+        <Script
+          src={`https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}&currency=GBP`}
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
