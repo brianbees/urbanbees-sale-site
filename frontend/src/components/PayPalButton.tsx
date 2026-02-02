@@ -40,6 +40,7 @@ export default function PayPalButton({ items, disabled }: PayPalButtonProps) {
           // Create order on the server
           createOrder: async () => {
             try {
+              console.log('Creating PayPal order with items:', items);
               const response = await fetch('/api/paypal/create-order', {
                 method: 'POST',
                 headers: {
@@ -49,15 +50,17 @@ export default function PayPalButton({ items, disabled }: PayPalButtonProps) {
               });
 
               const data = await response.json();
+              console.log('Create order response:', data);
               
               if (!response.ok) {
+                console.error('Failed to create order:', data);
                 throw new Error(data.error || 'Failed to create order');
               }
 
               return data.orderID;
             } catch (error) {
               console.error('Error creating order:', error);
-              alert('Failed to create PayPal order. Please try again.');
+              alert(`Failed to create PayPal order: ${error instanceof Error ? error.message : 'Unknown error'}`);
               throw error;
             }
           },
