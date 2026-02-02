@@ -9,6 +9,8 @@ import type { Product } from '@/data/products';
 export default function PreviewPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deploying, setDeploying] = useState(false);
+  const [deployMessage, setDeployMessage] = useState('');
 
   useEffect(() => {
     async function fetchProducts() {
@@ -81,6 +83,31 @@ export default function PreviewPage() {
     fetchProducts();
   }, []);
 
+  async function handleDeploy() {
+    setDeploying(true);
+    setDeployMessage('🔄 Deploying changes...');
+
+    try {
+      const response = await fetch('/api/revalidate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to deploy');
+      }
+
+      setDeployMessage('✅ Changes deployed! Live site updated.');
+      setTimeout(() => setDeployMessage(''), 3000);
+    } catch (error) {
+      console.error('Deploy error:', error);
+      setDeployMessage('❌ Deploy failed');
+      setTimeout(() => setDeployMessage(''), 3000);
+    } finally {
+      setDeploying(false);
+    }
+  }
+
   async function handleDelete(productId: string, productName: string) {
     if (!confirm(`Are you sure you want to delete "${productName}"?\n\nThis will also delete all variants and cannot be undone.`)) {
       return;
@@ -122,14 +149,13 @@ export default function PreviewPage() {
               </p>
             </div>
             <div className="flex-shrink-0 flex gap-3">
-              <a
-                href="https://urbanbees-product-admin.vercel.app/deploy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
+              <button
+                onClick={handleDeploy}
+                disabled={deploying}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors"
               >
-                🚀 Deploy Changes
-              </a>
+                {deploying ? '🔄 Deploying...' : deployMessage ? deployMessage : '🚀 Deploy Changes'}
+              </button>
               <a
                 href="https://urbanbees-product-admin.vercel.app/add-product"
                 target="_blank"

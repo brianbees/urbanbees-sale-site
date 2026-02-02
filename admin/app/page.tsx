@@ -8,7 +8,7 @@ export default function HomePage() {
           Urban Bees Product Admin
         </h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Link 
             href="/add-product" 
             className="block p-8 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow border-2 border-transparent hover:border-blue-500"
@@ -30,17 +30,17 @@ export default function HomePage() {
               <p className="text-gray-600">Update existing products and variants</p>
             </div>
           </Link>
+        </div>
 
-          <Link 
-            href="/deploy" 
-            className="block p-8 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow border-2 border-transparent hover:border-green-500"
+        <div className="mt-8 text-center">
+          <a 
+            href="https://frontend-six-kappa-30.vercel.app/preview"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
           >
-            <div className="text-center">
-              <div className="text-5xl mb-4">🚀</div>
-              <h2 className="text-2xl font-semibold mb-2 text-gray-900">Deploy Changes</h2>
-              <p className="text-gray-600">Push updates to live site</p>
-            </div>
-          </Link>
+            → View Preview & Deploy Changes
+          </a>
         </div>
 
         <div className="mt-8 text-center text-sm text-gray-500">
