@@ -31,12 +31,14 @@ export default function PayPalButton({ items, disabled }: PayPalButtonProps) {
   useEffect(() => {
     if (disabled || !items.length) return;
 
+    let buttonInstance: any = null;
+
     // Wait for PayPal SDK to load
     const interval = setInterval(() => {
-      if (window.paypal && paypalRef.current) {
+      if (window.paypal && paypalRef.current && !buttonInstance) {
         clearInterval(interval);
         
-        window.paypal.Buttons({
+        buttonInstance = window.paypal.Buttons({
           // Create order on the server
           createOrder: async () => {
             try {
@@ -108,13 +110,23 @@ export default function PayPalButton({ items, disabled }: PayPalButtonProps) {
             shape: 'rect',
             label: 'paypal',
           },
-        }).render(paypalRef.current);
+        });
+        
+        buttonInstance.render(paypalRef.current).catch((err: any) => {
+          console.error('Error rendering PayPal buttons:', err);
+          buttonInstance = null;
+        });
       }
     }, 100);
 
     return () => {
       clearInterval(interval);
       // Clean up PayPal buttons
+      if (buttonInstance) {
+        buttonInstance.close().catch((err: any) => {
+          console.log('Error closing PayPal buttons:', err);
+        });
+      }
       if (paypalRef.current) {
         paypalRef.current.innerHTML = '';
       }

@@ -31,6 +31,12 @@ export default function CartPage() {
       const warnings: StockWarning[] = [];
       
       for (const item of items) {
+        // Skip if no variantId
+        if (!item.variantId) {
+          console.warn('Item missing variantId:', item);
+          continue;
+        }
+        
         try {
           const response = await fetch('/api/check-stock', {
             method: 'POST',
