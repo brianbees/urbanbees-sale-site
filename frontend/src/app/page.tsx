@@ -2,7 +2,7 @@
 // 
 
 import { supabase } from '@/lib/supabase';
-import ProductCard from '@/components/ProductCard';
+import ProductsGrid from '@/components/ProductsGrid';
 import type { DatabaseProduct, DatabaseVariant } from '@/types/database';
 import type { Product } from '@/data/products';
 
@@ -89,11 +89,7 @@ export default async function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
-          ))}
-        </div>
+        <ProductsGrid initialProducts={products} />
       </div>
     </main>
   );
