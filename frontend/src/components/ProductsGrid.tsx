@@ -23,12 +23,14 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
   const filteredProducts = useMemo(() => {
     let filtered = [...initialProducts];
 
-    // Filter by search term
+    // Filter by search term (whole word match)
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
+      const term = searchTerm.toLowerCase().trim();
+      // Create regex with word boundaries for whole word matching
+      const regex = new RegExp(`\\b${term}\\b`, 'i');
       filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(term) || 
-        p.description?.toLowerCase().includes(term)
+        regex.test(p.name) || 
+        (p.description && regex.test(p.description))
       );
     }
 
