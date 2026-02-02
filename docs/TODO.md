@@ -1,13 +1,14 @@
 # TODO - Future Features
 
-## 🚨 IMMEDIATE ACTION REQUIRED
+## Recent Updates (Feb 2, 2026)
 
-**See [DEPLOYMENT_REMINDER.md](DEPLOYMENT_REMINDER.md) for critical next steps!**
-
-**After ~14 hours (Vercel limit resets):**
-1. Update Vercel env variable name: `SUPABASE_SERVICE_ROLE_KEY` → `NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY`
-2. Redeploy admin panel
-3. Test production deployment
+### Completed Today ✅
+- **Search & Filter System** - eBay-style dropdowns with category filter, sort options
+- **Whole-word Search** - Search matches complete words only (not partial)
+- **Responsive Design** - Mobile-optimized filter layout
+- **One-click Deploy** - Deploy button on preview page for instant cache clearing
+- **API Routes for Mutations** - Moved admin CRUD operations server-side to fix RLS issues
+- **Local Development Setup** - Working dev servers on localhost:3000 and localhost:3001
 
 ---
 
