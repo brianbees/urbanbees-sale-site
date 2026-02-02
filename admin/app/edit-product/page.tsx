@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { supabase, supabaseAdmin } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { useSearchParams } from 'next/navigation';
 import type { DatabaseProduct, DatabaseVariant } from '@/types/database';
 import { compressImage } from '@/lib/image-utils';
@@ -166,33 +166,41 @@ function EditProductForm() {
       // Combine existing (not deleted) + new images
       const finalImages = [...existingImages, ...newImageUrls];
 
-      // Update product
-      const { error: updateError } = await supabaseAdmin
-        .from('products')
-        .update({
+      // Update product via API route
+      const productResponse = await fetch('/api/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: product.id,
           name,
           category,
           description,
           images: finalImages,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', product.id);
+        }),
+      });
 
-      if (updateError) throw updateError;
+      if (!productResponse.ok) {
+        const error = await productResponse.json();
+        throw new Error(error.error || 'Failed to update product');
+      }
 
-      // Update variants
+      // Update variants via API route
       for (const variant of variants) {
-        const { error: variantError } = await supabaseAdmin
-          .from('variants')
-          .update({
+        const variantResponse = await fetch('/api/update-variant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            variantId: variant.id,
             sku: variant.sku,
             price: variant.price,
             stock_qty: variant.stock_qty,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', variant.id);
+          }),
+        });
 
-        if (variantError) throw variantError;
+        if (!variantResponse.ok) {
+          const error = await variantResponse.json();
+          throw new Error(error.error || 'Failed to update variant');
+        }
       }
 
       setMessage('✅ Product updated successfully! Redirecting to preview...');
