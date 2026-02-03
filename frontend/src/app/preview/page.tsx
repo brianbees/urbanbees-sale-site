@@ -154,6 +154,12 @@ export default function PreviewPage() {
               </p>
             </div>
             <div className="flex-shrink-0 flex gap-3">
+              <a
+                href="/"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
+              >
+                🏠 View Frontend
+              </a>
               <button
                 onClick={handleDeploy}
                 disabled={deploying}
