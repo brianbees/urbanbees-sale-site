@@ -183,7 +183,7 @@ export default function PreviewPage() {
       {/* Products Grid */}
       <div className="max-w-7xl mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6">
-          Products Preview ({products.length} items)
+          Products Preview ({products.length} items) 
         </h1>
 
         {loading ? (
