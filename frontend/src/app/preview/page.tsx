@@ -144,8 +144,8 @@ export default function PreviewPage() {
       {/* Deploy Banner */}
       <div className="bg-yellow-100 border-b border-yellow-300 p-4 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
-            <div className="flex-1 min-w-0">
+          <div className="flex flex-col gap-3">
+            <div>
               <h2 className="text-lg font-bold text-yellow-900">
                 🔍 Preview Mode - Live Database
               </h2>
@@ -165,7 +165,7 @@ export default function PreviewPage() {
                 disabled={deploying}
                 className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
               >
-                {deploying ? '🔄 Deploying...' : deployMessage ? deployMessage : '🚀 Deploy Changes'}
+                {deploying ? '🔄 Deploying..' : deployMessage ? deployMessage : '🚀 Deploy Changes'}
               </button>
               <a
                 href="https://urbanbees-product-admin.vercel.app/add-product"
