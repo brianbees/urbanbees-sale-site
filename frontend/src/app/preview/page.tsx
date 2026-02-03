@@ -150,7 +150,7 @@ export default function PreviewPage() {
                 🔍 Preview Mode - Live Database
               </h2>
               <p className="text-sm text-yellow-700">
-                This page shows products from your Supabase database. Changes are live immediately.
+                This page shows products from your Supabase database. Changes are live immediately. 
               </p>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
