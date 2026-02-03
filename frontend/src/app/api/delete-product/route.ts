@@ -6,6 +6,8 @@ export async function POST(request: Request) {
   try {
     const { productId } = await request.json();
 
+    console.log('Delete product request for ID:', productId);
+
     if (!productId) {
       return NextResponse.json(
         { error: 'Product ID is required' },
@@ -14,16 +16,32 @@ export async function POST(request: Request) {
     }
 
     // Delete product (variants will be deleted automatically via CASCADE)
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('products')
       .delete()
-      .eq('id', productId);
+      .eq('id', productId)
+      .select();
 
-    if (error) throw error;
+    console.log('Delete result:', { data, error });
 
+    if (error) {
+      console.error('Supabase delete error:', error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      console.warn('No rows deleted for product ID:', productId);
+      return NextResponse.json(
+        { error: 'Product not found or already deleted' },
+        { status: 404 }
+      );
+    }
+
+    console.log('Successfully deleted product:', productId);
     return NextResponse.json({
       success: true,
       message: 'Product deleted successfully',
+      deletedProduct: data[0],
     });
   } catch (error: any) {
     console.error('Delete error:', error);

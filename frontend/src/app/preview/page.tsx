@@ -114,6 +114,7 @@ export default function PreviewPage() {
     }
 
     try {
+      console.log('Deleting product:', productId, productName);
       const response = await fetch('/api/delete-product', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -121,16 +122,20 @@ export default function PreviewPage() {
       });
 
       const result = await response.json();
+      console.log('Delete response:', response.status, result);
 
       if (response.ok) {
         // Remove from local state
         setProducts(products.filter(p => p.id !== productId));
         alert(`✅ Deleted: ${productName}`);
       } else {
-        alert(`❌ Delete failed: ${result.error}`);
+        const errorMsg = result.error || 'Unknown error';
+        console.error('Delete failed:', errorMsg);
+        alert(`❌ Delete failed: ${errorMsg}\n\nCheck console for details.`);
       }
     } catch (error) {
-      alert(`❌ Delete failed: ${error}`);
+      console.error('Delete exception:', error);
+      alert(`❌ Delete failed: ${error}\n\nCheck console for details.`);
     }
   }
 
