@@ -144,8 +144,8 @@ export default function PreviewPage() {
       {/* Deploy Banner */}
       <div className="bg-yellow-100 border-b border-yellow-300 p-4 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex-1">
+          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+            <div className="flex-1 min-w-0">
               <h2 className="text-lg font-bold text-yellow-900">
                 🔍 Preview Mode - Live Database
               </h2>
@@ -153,17 +153,17 @@ export default function PreviewPage() {
                 This page shows products from your Supabase database. Changes are live immediately.
               </p>
             </div>
-            <div className="flex-shrink-0 flex gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               <a
                 href="/"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-flex items-center gap-2 text-sm sm:text-base whitespace-nowrap"
               >
                 🏠 View Frontend
               </a>
               <button
                 onClick={handleDeploy}
                 disabled={deploying}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors"
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
               >
                 {deploying ? '🔄 Deploying...' : deployMessage ? deployMessage : '🚀 Deploy Changes'}
               </button>
@@ -171,7 +171,7 @@ export default function PreviewPage() {
                 href="https://urbanbees-product-admin.vercel.app/add-product"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-flex items-center gap-2 text-sm sm:text-base whitespace-nowrap"
               >
                 ➕ Add Product
               </a>
