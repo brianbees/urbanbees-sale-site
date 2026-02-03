@@ -21,6 +21,14 @@ export default function CartPage() {
 
   useEffect(() => {
     setMounted(true);
+    
+    // Clean up any old cart items without variantId
+    items.forEach(item => {
+      if (!item.variantId) {
+        console.warn('Removing invalid cart item:', item);
+        removeItem(item.productId, item.variantName);
+      }
+    });
   }, []);
 
   // Check stock for all items
