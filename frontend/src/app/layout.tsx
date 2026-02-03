@@ -9,9 +9,6 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: "Urban Bees | Premium Beekeeping Supplies",
   description: "Premium beekeeping supplies and local honey from our urban hives. Support local beekeepers and help our pollinators thrive.",
-  icons: {
-    icon: '/favicon.svg',
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
