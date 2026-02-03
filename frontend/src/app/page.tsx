@@ -87,6 +87,12 @@ export default async function Home() {
             Premium beekeeping supplies and local honey from our urban hives. 
             Support local beekeepers and help our pollinators thrive.
           </p>
+          {/* Temporary admin link - remove before going live */}
+          <p className="mt-2">
+            <a href="/preview" className="text-xs text-gray-400 hover:text-gray-600 underline">
+              Preview/Admin
+            </a>
+          </p>
         </div>
 
         <ProductsGrid initialProducts={products} />
