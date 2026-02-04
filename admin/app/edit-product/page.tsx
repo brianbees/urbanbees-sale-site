@@ -379,40 +379,45 @@ function EditProductForm() {
             <div>
               <h3 className="text-lg font-semibold mb-3">Variants ({variants.length || 1})</h3>
               <div className="space-y-3">
-                {(variants.length > 0 ? variants : [{}]).map((variant, idx) => (
-                  <div key={('id' in variant && variant.id) ? variant.id : idx} className="border border-gray-200 p-4 rounded-lg">
-                    <div className="grid grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-xs text-gray-600 mb-1">SKU</label>
-                        <input
-                          type="text"
-                          value={variant.sku || ''}
-                          onChange={(e) => updateVariant(idx, 'sku', e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-600 mb-1">Price (£)</label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={variant.price || ''}
-                          onChange={(e) => updateVariant(idx, 'price', parseFloat(e.target.value))}
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-600 mb-1">Stock Qty</label>
-                        <input
-                          type="number"
-                          value={variant.stock_qty || ''}
-                          onChange={(e) => updateVariant(idx, 'stock_qty', parseInt(e.target.value))}
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
+                {(variants.length > 0 ? variants : [{}]).map((variant, idx) => {
+                  const sku = 'sku' in variant ? variant.sku : '';
+                  const price = 'price' in variant ? variant.price : '';
+                  const stock_qty = 'stock_qty' in variant ? variant.stock_qty : '';
+                  return (
+                    <div key={('id' in variant && variant.id) ? variant.id : idx} className="border border-gray-200 p-4 rounded-lg">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">SKU</label>
+                          <input
+                            type="text"
+                            value={sku}
+                            onChange={(e) => updateVariant(idx, 'sku', e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Price (£)</label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={price}
+                            onChange={(e) => updateVariant(idx, 'price', parseFloat(e.target.value))}
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Stock Qty</label>
+                          <input
+                            type="number"
+                            value={stock_qty}
+                            onChange={(e) => updateVariant(idx, 'stock_qty', parseInt(e.target.value))}
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
