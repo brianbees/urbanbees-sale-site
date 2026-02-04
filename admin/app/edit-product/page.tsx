@@ -184,8 +184,9 @@ function EditProductForm() {
         throw new Error(error.error || 'Failed to update product');
       }
 
-      // Update variants via API route
+      // Update only variants with a valid id
       for (const variant of variants) {
+        if (!variant.id) continue; // skip blank/new variants
         const variantResponse = await fetch('/api/update-variant', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
