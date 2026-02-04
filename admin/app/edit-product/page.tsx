@@ -380,7 +380,7 @@ function EditProductForm() {
               <h3 className="text-lg font-semibold mb-3">Variants ({variants.length || 1})</h3>
               <div className="space-y-3">
                 {(variants.length > 0 ? variants : [{}]).map((variant, idx) => (
-                  <div key={variant.id || 'new'} className="border border-gray-200 p-4 rounded-lg">
+                  <div key={('id' in variant && variant.id) ? variant.id : idx} className="border border-gray-200 p-4 rounded-lg">
                     <div className="grid grid-cols-3 gap-3">
                       <div>
                         <label className="block text-xs text-gray-600 mb-1">SKU</label>
