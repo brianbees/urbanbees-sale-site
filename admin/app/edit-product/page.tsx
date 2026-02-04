@@ -184,23 +184,41 @@ function EditProductForm() {
         throw new Error(error.error || 'Failed to update product');
       }
 
-      // Update only variants with a valid id
+      // Update existing variants, create new ones if no id
       for (const variant of variants) {
-        if (!variant.id) continue; // skip blank/new variants
-        const variantResponse = await fetch('/api/update-variant', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            variantId: variant.id,
-            sku: variant.sku,
-            price: variant.price,
-            stock_qty: variant.stock_qty,
-          }),
-        });
+        if (variant.id) {
+          // Update existing variant
+          const variantResponse = await fetch('/api/update-variant', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              variantId: variant.id,
+              sku: variant.sku,
+              price: variant.price,
+              stock_qty: variant.stock_qty,
+            }),
+          });
 
-        if (!variantResponse.ok) {
-          const error = await variantResponse.json();
-          throw new Error(error.error || 'Failed to update variant');
+          if (!variantResponse.ok) {
+            const error = await variantResponse.json();
+            throw new Error(error.error || 'Failed to update variant');
+          }
+        } else if (product?.id && (variant.sku || variant.price || variant.stock_qty)) {
+          // Create new variant if any field is filled
+          const createResponse = await fetch('/api/create-variant', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              product_id: product.id,
+              sku: variant.sku,
+              price: variant.price,
+              stock_qty: variant.stock_qty,
+            }),
+          });
+          if (!createResponse.ok) {
+            const error = await createResponse.json();
+            throw new Error(error.error || 'Failed to create variant');
+          }
         }
       }
 
