@@ -142,28 +142,28 @@ export default function PreviewPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Deploy Banner */}
-      <div className="bg-yellow-100 border-b border-yellow-300 p-4 sticky top-0 z-50">
+      <div className="bg-yellow-100 border-b border-yellow-300 p-2 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <div>
-              <h2 className="text-lg font-bold text-yellow-900">
+              <h2 className="text-base font-bold text-yellow-900">
                 🔍 Preview Mode - Live Database
               </h2>
-              <p className="text-sm text-yellow-700">
+              <p className="text-xs text-yellow-700">
                 This page shows products from your Supabase database. Changes are live immediately.
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 sm:gap-3">
+            <div className="flex flex-wrap gap-1">
               <a
                 href="/"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-flex items-center gap-2 text-sm sm:text-base whitespace-nowrap"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-lg font-semibold inline-flex items-center gap-1 text-xs whitespace-nowrap"
               >
                 🏠 View Frontend
               </a>
               <button
                 onClick={handleDeploy}
                 disabled={deploying}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-2 py-1 rounded-lg font-semibold inline-flex items-center gap-1 transition-colors text-xs whitespace-nowrap"
               >
                 {deploying ? '🔄 Deploying..' : deployMessage ? deployMessage : '🚀 Deploy Changes'}
               </button>
@@ -171,7 +171,7 @@ export default function PreviewPage() {
                 href="https://urbanbees-product-admin.vercel.app/add-product"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-flex items-center gap-2 text-sm sm:text-base whitespace-nowrap"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg font-semibold inline-flex items-center gap-1 text-xs whitespace-nowrap"
               >
                 ➕ Add Product
               </a>
