@@ -69,7 +69,7 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
   return (
     <>
       {/* Search Bar */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 mb-3">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 mb-2">
         <input
           type="text"
           placeholder="Search products..."
@@ -80,7 +80,7 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
       </div>
 
       {/* Filters Row - eBay Style */}
-      <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
         {/* Category Filter */}
         {categories.length > 1 && (
           <select
