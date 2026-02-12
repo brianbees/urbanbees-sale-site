@@ -16,6 +16,7 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
   const [showToast, setShowToast] = useState(false);
+  const [showLightbox, setShowLightbox] = useState(false);
   
   const allImages = product.images && product.images.length > 0 ? product.images : [{ src: '/images/placeholder.jpg', alt: 'No image' }];
   const selectedImage = allImages[selectedImageIndex] || allImages[0];
@@ -123,7 +124,10 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
         {/* Left Column - Images */}
         <div className="lg:w-1/2">
           {/* Main Image */}
-          <div className="relative w-full h-[400px] lg:h-[500px] mb-4 bg-gray-100 rounded-lg border border-gray-300">
+          <div 
+            className="relative w-full h-[400px] lg:h-[500px] mb-4 bg-gray-100 rounded-lg border border-gray-300 cursor-zoom-in"
+            onClick={() => setShowLightbox(true)}
+          >
             <Image
               src={selectedImage.src}
               alt={selectedImage.alt || product.name}
@@ -280,6 +284,32 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
           </div>
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {showLightbox && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowLightbox(false)}
+        >
+          <button
+            onClick={() => setShowLightbox(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 text-4xl font-bold"
+            aria-label="Close"
+          >
+            ×
+          </button>
+          <div className="relative w-full h-full max-w-6xl max-h-[90vh]">
+            <Image
+              src={selectedImage.src}
+              alt={selectedImage.alt || product.name}
+              fill
+              className="object-contain"
+              sizes="100vw"
+              priority
+            />
+          </div>
+        </div>
+      )}
 
       {/* Toast notification with action buttons */}
       {showToast && (
