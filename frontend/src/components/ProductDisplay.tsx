@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { Product } from '@/data/products';
 import { useCartStore } from '@/store/cart';
+import { useWishlistStore } from '@/store/wishlist';
 
 interface ProductDisplayProps {
   product: Product;
@@ -13,10 +14,18 @@ interface ProductDisplayProps {
 export default function ProductDisplay({ product }: ProductDisplayProps) {
   const router = useRouter();
   const { addItem, items } = useCartStore();
+  const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
   const [showToast, setShowToast] = useState(false);
   const [showLightbox, setShowLightbox] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const inWishlist = mounted ? isInWishlist(product.id) : false;
   
   const allImages = product.images && product.images.length > 0 ? product.images : [{ src: '/images/placeholder.jpg', alt: 'No image' }];
   const selectedImage = allImages[selectedImageIndex] || allImages[0];
@@ -104,10 +113,24 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
     router.push('/cart');
   };
 
+  const handleWishlistToggle = () => {
+    if (inWishlist) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist({
+        productId: product.id,
+        productName: product.name,
+        price: price,
+        image: selectedImage.src,
+        category: product.category,
+      });
+    }
+  };
+
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto">
       {/* Back Button */}
-      <div className="mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <button
           onClick={() => router.back()}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
@@ -116,6 +139,30 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
           </svg>
           Back
+        </button>
+
+        {/* Wishlist Button */}
+        <button
+          onClick={handleWishlistToggle}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-6 w-6 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600 hover:text-red-500'}`}
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+          <span className="text-sm font-medium text-gray-700">
+            {inWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+          </span>
         </button>
       </div>
 

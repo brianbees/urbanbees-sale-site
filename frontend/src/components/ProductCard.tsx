@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Product } from '@/data/products';
 import { useCartStore } from '@/store/cart';
+import { useWishlistStore } from '@/store/wishlist';
 
 interface ProductCardProps {
   product: Product;
@@ -14,7 +15,19 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index }: ProductCardProps) {
   const { addItem, items } = useCartStore();
+  const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const router = useRouter();
+
+  // Select first variant by default
+  const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
+  const [showToast, setShowToast] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const inWishlist = mounted ? isInWishlist(product.id) : false;
 
   // Select first variant by default
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
@@ -97,12 +110,48 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     router.push('/cart');
   };
 
+  const handleWishlistToggle = () => {
+    if (inWishlist) {
+      removeFromWishlist(product.id);
+    } else {
+      const firstImage = product.images && product.images.length > 0 ? product.images[0] : { src: '/images/placeholder.jpg', alt: 'No image' };
+      addToWishlist({
+        productId: product.id,
+        productName: product.name,
+        price: currentPrice,
+        image: firstImage.src,
+        category: product.category,
+      });
+    }
+  };
+
   // Use image path as-is (for production with basePath, update next.config.js)
   const firstImage = product.images && product.images.length > 0 ? product.images[0] : { src: '/images/placeholder.jpg', alt: 'No image' };
   const imageSrc = firstImage.src;
 
   return (
     <div className="bg-white border border-gray-300 rounded hover:shadow-lg transition-shadow relative">
+      {/* Wishlist Heart Button - Top Right */}
+      <button
+        onClick={handleWishlistToggle}
+        className="absolute top-2 right-2 z-10 p-1.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all"
+        aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className={`h-5 w-5 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400 hover:text-red-500'}`}
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+          />
+        </svg>
+      </button>
+
       {/* eBay-style horizontal layout: Image left, details right */}
       <div className="flex flex-row">
         {/* Left side - Image */}
