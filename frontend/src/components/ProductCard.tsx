@@ -152,7 +152,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       <div className="flex flex-row">
         {/* Left side - Image */}
         <Link href={`/product/${product.id}`} className="flex-shrink-0" aria-label={`View ${product.name} details`}>
-          <div className="relative w-32 h-32 md:w-40 md:h-40 bg-stone-100">
+          <div className="relative w-32 h-36 md:w-40 md:h-44 bg-stone-100">
             <Image
               src={imageSrc}
               alt={firstImage.alt}
@@ -225,41 +225,43 @@ export default function ProductCard({ product, index }: ProductCardProps) {
                   <span className="text-sm font-semibold text-gray-600">Contact for Price</span>
                 )}
               </div>
-              <button
-                onClick={handleAddToCart}
-                disabled={!isPriceAvailable}
-                aria-label={`Add ${product.name} to cart`}
-                className={`font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm ${
-                  isPriceAvailable
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                {isPriceAvailable ? 'Add to cart' : 'Unavailable'}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={!isPriceAvailable}
+                  aria-label={`Add ${product.name} to cart`}
+                  className={`font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm ${
+                    isPriceAvailable
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  {isPriceAvailable ? 'Add to cart' : 'Unavailable'}
+                </button>
+                
+                {/* Wishlist Button */}
+                <button
+                  onClick={handleWishlistToggle}
+                  className="flex items-center justify-center gap-1 py-1.5 px-3 md:py-2 md:px-4 rounded border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700"
+                  aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`h-4 w-4 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600'}`}
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                  <span className="hidden md:inline">{inWishlist ? 'In Wishlist' : 'Wishlist'}</span>
+                </button>
+              </div>
             </div>
-            
-            {/* Wishlist Button */}
-            <button
-              onClick={handleWishlistToggle}
-              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700"
-              aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-4 w-4 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600'}`}
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              {inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-            </button>
           </div>
 
           {/* Toast notification with action buttons */}
