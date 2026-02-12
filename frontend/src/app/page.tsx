@@ -81,17 +81,11 @@ export default async function Home() {
       <div className="container mx-auto px-3 md:px-4 py-6 md:py-12">
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-800 mb-3 md:mb-4">
-            Urban Bees Sale
+            Beekeeping items for sale
           </h1>
           <p className="text-base md:text-lg text-zinc-600 max-w-2xl mx-auto px-4">
-            Premium beekeeping supplies and local honey from our urban hives. 
-            Support local beekeepers and help our pollinators thrive.
-          </p>
-          {/* Temporary admin link - remove before going live */}
-          <p className="mt-2">
-            <a href="/preview" className="text-xs text-gray-400 hover:text-gray-600 underline">
-              Preview/Admin
-            </a>
+            End of business sale. 
+            
           </p>
         </div>
 
