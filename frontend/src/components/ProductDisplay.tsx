@@ -34,6 +34,28 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
   const isPriceAvailable = price !== null;
   const description = product.description ?? "No description available.";
 
+  const renderDescriptionLine = (line: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = line.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (/^https?:\/\/[^\s]+$/.test(part)) {
+        return (
+          <a
+            key={`url-${index}`}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={`text-${index}`}>{part}</span>;
+    });
+  };
+
   const getVariantName = () => {
     const parts: string[] = [];
     Object.entries(selectedVariant.optionValues).forEach(([, value]) => {
@@ -308,7 +330,13 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
           {/* Description */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2 text-gray-900">Description</h2>
-            <p className="text-gray-700 leading-relaxed">{description}</p>
+            <div className="text-gray-700 leading-relaxed space-y-2">
+              {description.split('\n').map((line, lineIndex) => (
+                <p key={`line-${lineIndex}`}>
+                  {renderDescriptionLine(line)}
+                </p>
+              ))}
+            </div>
           </div>
 
           {/* Features */}
