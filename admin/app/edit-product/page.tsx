@@ -453,30 +453,28 @@ function EditProductForm() {
                         src={img}
                         alt={`Image ${idx + 1}`}
                         className="w-full h-24 object-cover rounded border"
-                        crossOrigin="anonymous"
+                        loading="eager"
                       />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity rounded flex items-center justify-center gap-2 pointer-events-none">
-                        {/* Promote Button (only for non-hero images) */}
-                        {idx !== 0 && (
-                          <button
-                            type="button"
-                            onClick={() => promoteToHero(idx)}
-                            className="bg-blue-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto"
-                            title="Promote to hero image"
-                          >
-                            ⭐ Make Hero
-                          </button>
-                        )}
-                        {/* Delete Button */}
+                      {/* Promote Button (only for non-hero images) */}
+                      {idx !== 0 && (
                         <button
                           type="button"
-                          onClick={() => markImageForDeletion(img)}
-                          className="bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto"
-                          title="Remove image"
+                          onClick={() => promoteToHero(idx)}
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-8 bg-blue-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                          title="Promote to hero image"
                         >
-                          ✕ Delete
+                          ⭐ Make Hero
                         </button>
-                      </div>
+                      )}
+                      {/* Delete Button */}
+                      <button
+                        type="button"
+                        onClick={() => markImageForDeletion(img)}
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-2 bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                        title="Remove image"
+                      >
+                        ✕ Delete
+                      </button>
                     </div>
                   ))}
                 </div>
