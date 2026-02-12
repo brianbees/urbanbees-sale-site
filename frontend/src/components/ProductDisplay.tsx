@@ -288,7 +288,7 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
       {/* Lightbox Modal */}
       {showLightbox && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center p-4"
           onClick={() => setShowLightbox(false)}
         >
           <button
@@ -308,6 +308,7 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
               priority
             />
           </div>
+          <p className="text-white text-sm mt-4">Click again to close this zoomed image</p>
         </div>
       )}
 
