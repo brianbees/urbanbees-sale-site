@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import { useSearchParams } from 'next/navigation';
 import type { DatabaseProduct, DatabaseVariant } from '../../types/database';
 import { compressImage } from '../../lib/image-utils';
+import ImageEditor from './ImageEditor';
 
 function EditProductForm() {
   const searchParams = useSearchParams();
@@ -26,6 +27,8 @@ function EditProductForm() {
   const [newImages, setNewImages] = useState<File[]>([]);
   const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null);
+  const [editingImageUrl, setEditingImageUrl] = useState<string>('');
 
   function renderDescriptionLine(line: string) {
     const urlRegex = /((?:https?:\/\/|mailto:)[^\s]+)/g;
@@ -187,6 +190,68 @@ function EditProductForm() {
   // Remove new image before upload
   function removeNewImage(index: number) {
     setNewImages(newImages.filter((_, i) => i !== index));
+  }
+
+  // Open image editor
+  function openImageEditor(index: number) {
+    setEditingImageIndex(index);
+    setEditingImageUrl(existingImages[index]);
+  }
+
+  // Close image editor
+  function closeImageEditor() {
+    setEditingImageIndex(null);
+    setEditingImageUrl('');
+  }
+
+  // Save edited image
+  async function handleEditedImageSave(editedFile: File) {
+    if (editingImageIndex === null || !product) return;
+
+    try {
+      setSaving(true);
+      setMessage('Uploading edited image...');
+
+      // Create slug from product name for filename
+      const slug = name.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'product';
+
+      const fileExt = editedFile.name.split('.').pop();
+      const timestamp = Date.now();
+      const fileName = `${slug}-edited-${editingImageIndex + 1}-${timestamp}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      // Upload edited image to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, editedFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      // Replace the old image URL with the new one
+      const updatedImages = [...existingImages];
+      const oldImageUrl = updatedImages[editingImageIndex];
+      updatedImages[editingImageIndex] = publicUrl;
+      setExistingImages(updatedImages);
+
+      // Mark old image for deletion (optional - remove old file from storage)
+      setImagesToDelete([...imagesToDelete, oldImageUrl]);
+
+      setMessage('✅ Image edited successfully! Remember to click Save Product to finalize changes.');
+      setTimeout(() => setMessage(''), 5000);
+      
+      closeImageEditor();
+    } catch (error) {
+      console.error('Error saving edited image:', error);
+      setMessage('❌ Failed to save edited image');
+    } finally {
+      setSaving(false);
+    }
   }
 
   // Handle variant field update
@@ -460,17 +525,26 @@ function EditProductForm() {
                         <button
                           type="button"
                           onClick={() => promoteToHero(idx)}
-                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-8 bg-blue-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-12 bg-blue-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity z-20"
                           title="Promote to hero image"
                         >
                           ⭐ Make Hero
                         </button>
                       )}
+                      {/* Edit Button */}
+                      <button
+                        type="button"
+                        onClick={() => openImageEditor(idx)}
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-4 bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                        title="Edit image (crop/rotate)"
+                      >
+                        ✎ Edit
+                      </button>
                       {/* Delete Button */}
                       <button
                         type="button"
                         onClick={() => markImageForDeletion(img)}
-                        className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-2 bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-4 bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity z-20"
                         title="Remove image"
                       >
                         ✕ Delete
@@ -578,6 +652,16 @@ function EditProductForm() {
           </div>
         )}
       </div>
+
+      {/* Image Editor Modal */}
+      {editingImageIndex !== null && editingImageUrl && (
+        <ImageEditor
+          imageUrl={editingImageUrl}
+          imageName={`image-${editingImageIndex + 1}.jpg`}
+          onSave={handleEditedImageSave}
+          onCancel={closeImageEditor}
+        />
+      )}
     </div>
   );
 }
