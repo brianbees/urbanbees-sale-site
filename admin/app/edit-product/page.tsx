@@ -265,7 +265,7 @@ function EditProductForm() {
         await fetch('https://frontend-six-kappa-30.vercel.app/api/revalidate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reason: 'image-edit' }),
+          body: JSON.stringify({ reason: 'image-edit', productId: product.id }),
         });
       } catch (e) {
         // Non-blocking: ignore cache clear errors
@@ -391,6 +391,17 @@ function EditProductForm() {
 
       setMessage('✅ Product updated successfully! Redirecting to preview...');
       
+      // Clear frontend cache for this product and homepage to reflect image order/hero changes
+      try {
+        await fetch('https://frontend-six-kappa-30.vercel.app/api/revalidate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: 'admin-save', productId: product.id }),
+        });
+      } catch (e) {
+        console.warn('Cache clear on save failed (non-blocking):', e);
+      }
+
       // Redirect to preview page
       setTimeout(() => {
         window.location.href = 'https://frontend-six-kappa-30.vercel.app/preview';
