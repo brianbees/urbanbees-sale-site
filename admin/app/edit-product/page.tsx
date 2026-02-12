@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import Image from 'next/image';
 import { supabase } from '../../lib/supabase';
 import { useSearchParams } from 'next/navigation';
 import type { DatabaseProduct, DatabaseVariant } from '../../types/database';
@@ -449,11 +450,15 @@ function EditProductForm() {
                           ⋮⋮
                         </div>
                       )}
-                      <img
-                        src={img}
-                        alt={`Image ${idx + 1}`}
-                        className="w-full h-24 object-cover rounded border"
-                      />
+                      <div className="relative w-full h-24">
+                        <Image
+                          src={img}
+                          alt={`Image ${idx + 1}`}
+                          fill
+                          className="object-cover rounded border"
+                          unoptimized
+                        />
+                      </div>
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity rounded flex items-center justify-center gap-2">
                         {/* Promote Button (only for non-hero images) */}
                         {idx !== 0 && (
