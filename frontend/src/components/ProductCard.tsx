@@ -29,10 +29,6 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   const inWishlist = mounted ? isInWishlist(product.id) : false;
 
-  // Select first variant by default
-  const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
-  const [showToast, setShowToast] = useState(false);
-
   const selectedVariant = product.variants.find((v) => v.id === selectedVariantId) || product.variants[0];
   const currentPrice = selectedVariant.price;
   const isPriceAvailable = currentPrice !== null;
