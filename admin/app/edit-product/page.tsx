@@ -130,6 +130,18 @@ function EditProductForm() {
     setExistingImages(existingImages.filter(img => img !== imageUrl));
   }
 
+  // Promote image to hero (move to first position)
+  function promoteToHero(index: number) {
+    if (index === 0) return; // Already hero
+    
+    const newImages = [...existingImages];
+    const [promotedImage] = newImages.splice(index, 1); // Remove from current position
+    newImages.unshift(promotedImage); // Add to beginning
+    setExistingImages(newImages);
+    setMessage('✅ Image promoted to hero. Remember to save changes!');
+    setTimeout(() => setMessage(''), 3000);
+  }
+
   // Handle new image selection
   async function handleNewImages(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
@@ -377,23 +389,44 @@ function EditProductForm() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Current Images ({existingImages.length})
+                  <span className="ml-2 text-xs text-gray-500">First image is the hero image</span>
                 </label>
                 <div className="grid grid-cols-4 gap-4">
                   {existingImages.map((img, idx) => (
                     <div key={idx} className="relative group">
+                      {/* Hero Badge */}
+                      {idx === 0 && (
+                        <div className="absolute top-1 left-1 bg-blue-600 text-white text-xs px-2 py-1 rounded font-semibold z-10">
+                          HERO
+                        </div>
+                      )}
                       <img
                         src={img}
                         alt={`Image ${idx + 1}`}
                         className="w-full h-24 object-cover rounded border"
                       />
-                      <button
-                        type="button"
-                        onClick={() => markImageForDeletion(img)}
-                        className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                        title="Remove image"
-                      >
-                        ✕
-                      </button>
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity rounded flex items-center justify-center gap-2">
+                        {/* Promote Button (only for non-hero images) */}
+                        {idx !== 0 && (
+                          <button
+                            type="button"
+                            onClick={() => promoteToHero(idx)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+                            title="Promote to hero image"
+                          >
+                            ⭐ Make Hero
+                          </button>
+                        )}
+                        {/* Delete Button */}
+                        <button
+                          type="button"
+                          onClick={() => markImageForDeletion(img)}
+                          className="bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Remove image"
+                        >
+                          ✕ Delete
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
