@@ -208,7 +208,7 @@ export default function PreviewPage() {
             {products.map((product, index) => (
               <div key={product.id} className="relative group">
                 <ProductCard product={product} index={index} />
-                <div className="absolute top-2 right-2 flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 left-2 flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                   <a
                     href={`https://urbanbees-product-admin.vercel.app/edit-product?id=${product.id}`}
                     className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-full shadow-lg"

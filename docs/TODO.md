@@ -48,3 +48,13 @@
 **Goal:** Update the checkout logic so that the Cart Summary (items, quantities, and IDs) is sent directly to the payment provider's metadata. Order details should show up automatically in the seller dashboard when a payment is completed.
 
 **Status:** Pending implementation
+
+---
+
+## Internal/Utility Pages
+
+- **For Print Page** (`frontend/src/app/for_print/page.tsx` & `ForPrintClient.tsx`)
+  - Purpose: Generates a print-friendly list of all products, including name, description, price, SKU, and stock quantity.
+  - Data Source: Fetches live product and variant data from Supabase.
+  - Usage: Used for internal inventory printouts or quick reference sheets. Not linked from main navigation.
+  - Status: Not referenced in other documentation until Feb 2026. Now tracked here for completeness.
