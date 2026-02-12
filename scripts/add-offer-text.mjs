@@ -29,13 +29,6 @@ async function addOfferText() {
   for (const product of products) {
     let currentDesc = product.description || '';
     
-    // Skip if description is empty
-    if (!currentDesc.trim()) {
-      console.log(`Skipped: ${product.name} (no description)`);
-      skippedCount++;
-      continue;
-    }
-
     // Remove old offer text if it exists
     currentDesc = currentDesc.replace(oldOfferText, '');
     
@@ -43,8 +36,8 @@ async function addOfferText() {
     const emailPattern = /\nOffers welcome - get in touch - mailto:sales@urbanbees\.co\.uk\?subject=.*$/;
     currentDesc = currentDesc.replace(emailPattern, '');
     
-    // Append the new offer text
-    const newDescription = currentDesc.trim() + newOfferText;
+    // Append the new offer text (add to all products, even if description is empty)
+    const newDescription = currentDesc.trim() ? currentDesc.trim() + newOfferText : newOfferText.trim();
 
     // Update the product
     const { error: updateError } = await supabase
