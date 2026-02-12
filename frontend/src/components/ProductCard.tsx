@@ -215,26 +215,50 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             </div>
           ))}
 
-          {/* Price and Add to Cart - bottom aligned */}
-          <div className="mt-auto pt-2 flex items-center justify-between gap-3">
-            <div>
-              {isPriceAvailable ? (
-                <span className="text-lg md:text-xl font-bold text-gray-900">£{currentPrice.toFixed(2)}</span>
-              ) : (
-                <span className="text-sm font-semibold text-gray-600">Contact for Price</span>
-              )}
+          {/* Price and Buttons - bottom aligned */}
+          <div className="mt-auto pt-2">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <div>
+                {isPriceAvailable ? (
+                  <span className="text-lg md:text-xl font-bold text-gray-900">£{currentPrice.toFixed(2)}</span>
+                ) : (
+                  <span className="text-sm font-semibold text-gray-600">Contact for Price</span>
+                )}
+              </div>
+              <button
+                onClick={handleAddToCart}
+                disabled={!isPriceAvailable}
+                aria-label={`Add ${product.name} to cart`}
+                className={`font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm ${
+                  isPriceAvailable
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {isPriceAvailable ? 'Add to cart' : 'Unavailable'}
+              </button>
             </div>
+            
+            {/* Wishlist Button */}
             <button
-              onClick={handleAddToCart}
-              disabled={!isPriceAvailable}
-              aria-label={`Add ${product.name} to cart`}
-              className={`font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm ${
-                isPriceAvailable
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
+              onClick={handleWishlistToggle}
+              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700"
+              aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
             >
-              {isPriceAvailable ? 'Add to cart' : 'Unavailable'}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-4 w-4 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600'}`}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              {inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
             </button>
           </div>
 
