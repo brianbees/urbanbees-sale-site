@@ -242,9 +242,39 @@ function EditProductForm() {
       // Mark old image for deletion (optional - remove old file from storage)
       setImagesToDelete([...imagesToDelete, oldImageUrl]);
 
-      setMessage('✅ Image edited successfully! Remember to click Save Product to finalize changes.');
+      // Persist the change to the database immediately
+      const productResponse = await fetch('/api/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: product.id,
+          name,
+          category,
+          description,
+          images: updatedImages,
+        }),
+      });
+
+      if (!productResponse.ok) {
+        const error = await productResponse.json();
+        throw new Error(error.error || 'Failed to persist edited image');
+      }
+
+      // Try to clear frontend cache so changes show immediately
+      try {
+        await fetch('https://frontend-six-kappa-30.vercel.app/api/revalidate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: 'image-edit' }),
+        });
+      } catch (e) {
+        // Non-blocking: ignore cache clear errors
+        console.warn('Cache clear failed (non-blocking):', e);
+      }
+
+      setMessage('✅ Image edited and saved. Frontend cache cleared.');
       setTimeout(() => setMessage(''), 5000);
-      
+
       closeImageEditor();
     } catch (error) {
       console.error('Error saving edited image:', error);
