@@ -61,6 +61,26 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
           return priceB - priceA;
         });
         break;
+      case 'newest':
+        filtered.sort((a, b) => {
+          // Get most recent timestamp for each product (max of created_at and updated_at)
+          const getNewestTimestamp = (product: typeof a) => {
+            const created = product.created_at ? new Date(product.created_at).getTime() : 0;
+            const updated = product.updated_at ? new Date(product.updated_at).getTime() : 0;
+            return Math.max(created, updated);
+          };
+          
+          const timestampA = getNewestTimestamp(a);
+          const timestampB = getNewestTimestamp(b);
+          
+          // Descending order (newest first)
+          if (timestampB !== timestampA) {
+            return timestampB - timestampA;
+          }
+          // Fallback to name for consistent ordering
+          return a.name.localeCompare(b.name);
+        });
+        break;
     }
 
     return filtered;
@@ -107,6 +127,7 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
           <option value="name-desc">Name (Z-A)</option>
           <option value="price-asc">Price (Low-High)</option>
           <option value="price-desc">Price (High-Low)</option>
+          <option value="newest">Newest First</option>
         </select>
 
         {/* Results Count */}

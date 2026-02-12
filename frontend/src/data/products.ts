@@ -62,6 +62,8 @@ export interface Product {
   additionalImages?: string[];
   tags?: string[];
   isFeatured?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 /**

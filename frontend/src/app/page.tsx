@@ -63,6 +63,8 @@ async function getProducts() {
             ? [{ src: '/images/placeholder.jpg', alt: 'No image' }]
             : []
         ),
+        created_at: dbProduct.created_at,
+        updated_at: dbProduct.updated_at,
       };
     });
 
