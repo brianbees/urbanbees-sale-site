@@ -85,7 +85,7 @@ export default function PreviewPage() {
 
   async function handleDeploy() {
     setDeploying(true);
-    setDeployMessage('🔄 Deploying changes...');
+    setDeployMessage('🔄 Clearing cache...');
 
     try {
       const response = await fetch('/api/revalidate', {
@@ -94,14 +94,14 @@ export default function PreviewPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to deploy');
+        throw new Error('Failed to revalidate');
       }
 
-      setDeployMessage('✅ Changes deployed! Live site updated.');
+      setDeployMessage('✅ Cache cleared! Changes now visible on live site.');
       setTimeout(() => setDeployMessage(''), 3000);
     } catch (error) {
-      console.error('Deploy error:', error);
-      setDeployMessage('❌ Deploy failed');
+      console.error('Revalidation error:', error);
+      setDeployMessage('❌ Cache clear failed');
       setTimeout(() => setDeployMessage(''), 3000);
     } finally {
       setDeploying(false);
@@ -150,7 +150,7 @@ export default function PreviewPage() {
                 🔍 Preview Mode - Live Database
               </h2>
               <p className="text-xs text-yellow-700">
-                This page shows products from your Supabase database. Changes are live immediately.
+                This page shows products from your Supabase database. Click "Clear Cache" to force refresh the live site (bypasses 5-minute cache).
               </p>
             </div>
             <div className="flex flex-wrap gap-1">
@@ -165,7 +165,7 @@ export default function PreviewPage() {
                 disabled={deploying}
                 className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-2 py-1 rounded-lg font-semibold inline-flex items-center gap-1 transition-colors text-xs whitespace-nowrap"
               >
-                {deploying ? '🔄 Deploying..' : deployMessage ? deployMessage : '🚀 Deploy Changes'}
+                {deploying ? '🔄 Clearing...' : deployMessage ? deployMessage : '🔄 Clear Cache'}
               </button>
               <a
                 href="https://urbanbees-product-admin.vercel.app/add-product"
