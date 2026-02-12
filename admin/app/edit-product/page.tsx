@@ -26,6 +26,29 @@ function EditProductForm() {
   const [newImages, setNewImages] = useState<File[]>([]);
   const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
 
+  function renderDescriptionLine(line: string) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = line.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (/^https?:\/\/[^\s]+$/.test(part)) {
+        return (
+          <a
+            key={`url-${index}`}
+            href={part}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            {part}
+          </a>
+        );
+      }
+
+      return <span key={`text-${index}`}>{part}</span>;
+    });
+  }
+
   // Load all products on mount
   useEffect(() => {
     async function loadProducts() {
@@ -331,6 +354,20 @@ function EditProductForm() {
                 className="w-full p-3 border border-gray-300 rounded-lg"
                 placeholder="Product description..."
               />
+              {description.trim().length > 0 && (
+                <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+                  <p className="text-xs font-semibold text-gray-600 mb-2">
+                    Preview (links clickable)
+                  </p>
+                  <div className="text-sm text-gray-800 space-y-2">
+                    {description.split('\n').map((line, lineIndex) => (
+                      <p key={`line-${lineIndex}`} className="break-words">
+                        {renderDescriptionLine(line)}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Existing Images */}
