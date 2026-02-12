@@ -35,20 +35,22 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
   const description = product.description ?? "No description available.";
 
   const renderDescriptionLine = (line: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urlRegex = /((?:https?:\/\/|mailto:)[^\s]+)/g;
     const parts = line.split(urlRegex);
 
     return parts.map((part, index) => {
-      if (/^https?:\/\/[^\s]+$/.test(part)) {
+      if (/^(?:https?:\/\/|mailto:)[^\s]+$/.test(part)) {
+        const isMailto = part.startsWith('mailto:');
+        const displayText = isMailto ? part.replace('mailto:', '').split('?')[0] : part;
         return (
           <a
             key={`url-${index}`}
             href={part}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={isMailto ? '_self' : '_blank'}
+            rel={isMailto ? undefined : 'noopener noreferrer'}
             className="text-blue-600 hover:text-blue-800 underline"
           >
-            {part}
+            {displayText}
           </a>
         );
       }

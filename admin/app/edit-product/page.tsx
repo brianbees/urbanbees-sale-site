@@ -27,20 +27,22 @@ function EditProductForm() {
   const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
 
   function renderDescriptionLine(line: string) {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urlRegex = /((?:https?:\/\/|mailto:)[^\s]+)/g;
     const parts = line.split(urlRegex);
 
     return parts.map((part, index) => {
-      if (/^https?:\/\/[^\s]+$/.test(part)) {
+      if (/^(?:https?:\/\/|mailto:)[^\s]+$/.test(part)) {
+        const isMailto = part.startsWith('mailto:');
+        const displayText = isMailto ? part.replace('mailto:', '').split('?')[0] : part;
         return (
           <a
             key={`url-${index}`}
             href={part}
-            target="_blank"
-            rel="noreferrer"
+            target={isMailto ? '_self' : '_blank'}
+            rel={isMailto ? undefined : 'noreferrer'}
             className="text-blue-600 hover:text-blue-800 underline"
           >
-            {part}
+            {displayText}
           </a>
         );
       }
