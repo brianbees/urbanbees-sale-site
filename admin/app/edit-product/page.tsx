@@ -25,6 +25,7 @@ function EditProductForm() {
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [newImages, setNewImages] = useState<File[]>([]);
   const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   function renderDescriptionLine(line: string) {
     const urlRegex = /((?:https?:\/\/|mailto:)[^\s]+)/g;
@@ -140,6 +141,40 @@ function EditProductForm() {
     setExistingImages(newImages);
     setMessage('✅ Image promoted to hero. Remember to save changes!');
     setTimeout(() => setMessage(''), 3000);
+  }
+
+  // Drag and drop handlers
+  function handleDragStart(index: number) {
+    if (index === 0) return; // Can't drag hero
+    setDraggedIndex(index);
+  }
+
+  function handleDragOver(e: React.DragEvent, index: number) {
+    e.preventDefault();
+    if (index === 0) return; // Can't drop into hero position
+  }
+
+  function handleDrop(e: React.DragEvent, dropIndex: number) {
+    e.preventDefault();
+    
+    if (draggedIndex === null || draggedIndex === dropIndex || dropIndex === 0) {
+      setDraggedIndex(null);
+      return;
+    }
+
+    // Reorder array atomically
+    const newImages = [...existingImages];
+    const [draggedImage] = newImages.splice(draggedIndex, 1);
+    newImages.splice(dropIndex, 0, draggedImage);
+    
+    setExistingImages(newImages);
+    setDraggedIndex(null);
+    setMessage('✅ Images reordered. Remember to save changes!');
+    setTimeout(() => setMessage(''), 3000);
+  }
+
+  function handleDragEnd() {
+    setDraggedIndex(null);
   }
 
   // Handle new image selection
@@ -389,15 +424,29 @@ function EditProductForm() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Current Images ({existingImages.length})
-                  <span className="ml-2 text-xs text-gray-500">First image is the hero image</span>
+                  <span className="ml-2 text-xs text-gray-500">First image is the hero image • Drag to reorder</span>
                 </label>
                 <div className="grid grid-cols-4 gap-4">
                   {existingImages.map((img, idx) => (
-                    <div key={idx} className="relative group">
+                    <div 
+                      key={idx} 
+                      className={`relative group ${idx === 0 ? '' : 'cursor-move'} ${draggedIndex === idx ? 'opacity-50' : ''}`}
+                      draggable={idx !== 0}
+                      onDragStart={() => handleDragStart(idx)}
+                      onDragOver={(e) => handleDragOver(e, idx)}
+                      onDrop={(e) => handleDrop(e, idx)}
+                      onDragEnd={handleDragEnd}
+                    >
                       {/* Hero Badge */}
                       {idx === 0 && (
                         <div className="absolute top-1 left-1 bg-blue-600 text-white text-xs px-2 py-1 rounded font-semibold z-10">
                           HERO
+                        </div>
+                      )}
+                      {/* Drag Handle Indicator */}
+                      {idx !== 0 && (
+                        <div className="absolute top-1 left-1 bg-gray-800 text-white text-xs px-2 py-1 rounded font-semibold z-10 opacity-0 group-hover:opacity-90 transition-opacity">
+                          ⋮⋮
                         </div>
                       )}
                       <img
