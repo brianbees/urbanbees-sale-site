@@ -265,32 +265,33 @@ export default function ImageEditor({ imageUrl, imageName, onSave, onCancel }: I
             />
             {cropMode && (
               <>
-                {/* Crop overlay */}
+                {/* Crop overlay - just border, no fill */}
                 <div
-                  className="absolute border-2 border-blue-500 bg-blue-500 bg-opacity-20 cursor-move"
+                  className="absolute border-4 border-blue-500 cursor-move pointer-events-auto"
                   style={{
                     left: `${crop.x}%`,
                     top: `${crop.y}%`,
                     width: `${crop.width}%`,
                     height: `${crop.height}%`,
+                    boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.4)',
                   }}
                   onMouseDown={(e) => handleCropMouseDown(e)}
                 >
                   {/* Resize handles */}
                   <div
-                    className="absolute -top-1 -left-1 w-3 h-3 bg-blue-600 cursor-nw-resize"
+                    className="absolute -top-2 -left-2 w-4 h-4 bg-blue-600 border-2 border-white cursor-nw-resize rounded-full"
                     onMouseDown={(e) => handleCropMouseDown(e, 'nw')}
                   />
                   <div
-                    className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 cursor-ne-resize"
+                    className="absolute -top-2 -right-2 w-4 h-4 bg-blue-600 border-2 border-white cursor-ne-resize rounded-full"
                     onMouseDown={(e) => handleCropMouseDown(e, 'ne')}
                   />
                   <div
-                    className="absolute -bottom-1 -left-1 w-3 h-3 bg-blue-600 cursor-sw-resize"
+                    className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-600 border-2 border-white cursor-sw-resize rounded-full"
                     onMouseDown={(e) => handleCropMouseDown(e, 'sw')}
                   />
                   <div
-                    className="absolute -bottom-1 -right-1 w-3 h-3 bg-blue-600 cursor-se-resize"
+                    className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-600 border-2 border-white cursor-se-resize rounded-full"
                     onMouseDown={(e) => handleCropMouseDown(e, 'se')}
                   />
                 </div>
