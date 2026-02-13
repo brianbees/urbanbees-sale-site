@@ -10,7 +10,7 @@ interface ProductsGridProps {
 
 export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name-asc');
+  const [sortBy, setSortBy] = useState('newest');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   // Get unique categories
