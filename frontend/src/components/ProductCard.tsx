@@ -188,12 +188,12 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       {/* Wishlist Heart Button - Top Right */}
       <button
         onClick={handleWishlistToggle}
-        className="absolute top-2 right-2 z-10 p-1.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all"
+        className="absolute top-2 right-2 z-10 p-2.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all"
         aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className={`h-5 w-5 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400 hover:text-red-500'}`}
+          className={`h-6 w-6 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400 hover:text-red-500'}`}
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={2}
