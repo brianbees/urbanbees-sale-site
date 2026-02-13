@@ -1,12 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://pdovgefwzxfawuyngrke.supabase.co';
-const supabaseKey = 'sb_publishable_i0DqtdlAYPAjxn_eEPUi3Q_0eeiCxpD';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkb3ZnZWZ3enhd2F3dXluZ3JrZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzM0NjE5NjA4LCJleHAiOjIwNTAxOTU2MDh9.1e3f0TckJPPbhAFyc9dR0w6dYlMAO_HkOHcg3xGRznY';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function checkProduct() {
-  const productId = 'b060c17a-2cb7-4ed3-b560-91964733e71f';
+  const productId = 'd09213f7-6f14-44e1-ae99-06da53122e69';
   
   console.log(`\n🔍 Checking product: ${productId}\n`);
   
