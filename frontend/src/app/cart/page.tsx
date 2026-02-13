@@ -157,7 +157,7 @@ export default function CartPage() {
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => updateQuantity(item.productId, item.variantName, item.quantity - 1)}
-                              className="w-9 h-9 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 flex items-center justify-center transition-colors"
+                              className="w-11 h-11 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 flex items-center justify-center transition-colors text-lg font-semibold"
                               aria-label="Decrease quantity"
                             >
                               −
@@ -165,7 +165,7 @@ export default function CartPage() {
                             <span className="text-gray-900 font-semibold w-12 text-center">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.productId, item.variantName, item.quantity + 1)}
-                              className="w-9 h-9 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 flex items-center justify-center transition-colors"
+                              className="w-11 h-11 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 flex items-center justify-center transition-colors text-lg font-semibold"
                               aria-label="Increase quantity"
                             >
                               +
