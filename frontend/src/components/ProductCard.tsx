@@ -22,7 +22,6 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   // Select first variant by default
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
-  const [showToast, setShowToast] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
@@ -141,7 +140,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         stockQty: selectedVariant.stockQty,
       });
 
-      setShowToast(true);
+      showToast('success', 'Added to cart!');
       
     } catch (error) {
       console.error('Error checking stock:', error);
@@ -155,15 +154,6 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     } finally {
       setIsAddingToCart(false);
     }
-  };
-
-  const handleContinueShopping = () => {
-    setShowToast(false);
-  };
-
-  const handleGoToCart = () => {
-    setShowToast(false);
-    router.push('/cart');
   };
 
   const handleWishlistToggle = () => {
@@ -341,32 +331,6 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               </div>
             </div>
           </div>
-
-          {/* Toast notification with action buttons */}
-          {showToast && (
-            <div className="fixed top-20 right-4 bg-white border-2 border-green-500 rounded-lg shadow-xl z-50 p-4 min-w-[300px]">
-              <div className="flex items-center gap-2 mb-3 text-green-600 font-semibold">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                Added to cart!
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleContinueShopping}
-                  className="flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-sm transition-colors"
-                >
-                  Continue Shopping
-                </button>
-                <button
-                  onClick={handleGoToCart}
-                  className="flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-sm transition-colors"
-                >
-                  Go to Cart
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
