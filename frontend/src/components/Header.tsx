@@ -6,16 +6,16 @@ import { useWishlistStore } from '@/store/wishlist';
 import { useEffect, useState } from 'react';
 
 export default function Header() {
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
-  const getTotalWishlistItems = useWishlistStore((state) => state.getTotalItems);
+  const items = useCartStore((state) => state.items);
+  const wishlistItems = useWishlistStore((state) => state.items);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const itemCount = mounted ? getTotalItems() : 0;
-  const wishlistCount = mounted ? getTotalWishlistItems() : 0;
+  const itemCount = mounted ? items.reduce((total, item) => total + item.quantity, 0) : 0;
+  const wishlistCount = mounted ? wishlistItems.length : 0;
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
