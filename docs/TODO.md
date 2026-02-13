@@ -1,5 +1,52 @@
 # TODO - Future Features
 
+## Recent Updates (Feb 13, 2026)
+
+### Completed Today ✅
+- **Image Editing Tools** - Built-in crop and rotate functionality in product editor
+  - Canvas-based image editor with modal UI
+  - 90°/180° rotation controls
+  - Interactive crop tool with drag-to-move and corner handles for resizing
+  - Dark overlay shows area to be removed (standard crop UX)
+  - Images persist immediately to database and clear frontend cache
+  - Edited images replace originals automatically
+- **Hero Image Management** - Promote any gallery image to hero with one click
+  - "Make Hero" button on all non-hero images
+  - Drag-and-drop reordering for gallery images (hero stays fixed at position 0)
+  - Visual indicators (HERO badge, drag handles)
+- **Newest First Sorting** - Default sort changed to show most recently created/updated products
+  - Smart timestamp logic (max of created_at or updated_at)
+  - Maintains alphabetical fallback for ties
+- **Add-to-Cart Performance Fixes** - Eliminated delays and inconsistent cart updates
+  - Loading states with spinner animation ("Adding to Cart...")
+  - 5-second timeout with AbortController prevents indefinite hangs
+  - Duplicate click prevention (button disabled during request)
+  - Proper error messages ("Request timed out" vs "Failed to add")
+  - Error handling stops cart update on failure (no silent failures)
+- **Automatic URL Shortening** - Long URLs in descriptions shortened on save
+  - Uses is.gd API (free, no API key required)
+  - Skips URLs under 40 characters or already shortened
+  - Parallel processing for multiple URLs
+  - Graceful fallback (keeps original on failure)
+  - Console logging for debugging
+- **Consistent Link Rendering** - URLs and mailto links clickable everywhere
+  - Fixed: Homepage product cards now render clickable links
+  - Matches product detail page behavior
+  - mailto links show clean email without protocol prefix
+  - Links don't trigger card navigation (stopPropagation)
+- **Targeted Cache Revalidation** - Frontend cache clears specific product pages
+  - Revalidate API accepts productId parameter
+  - Admin triggers cache clear after image edits and full saves
+  - Changes appear immediately on frontend (no 5-minute wait)
+
+### System Architecture Improvements
+- **Image Edit Persistence** - Edited images save immediately, don't wait for "Save Product"
+- **Frontend-Backend Sync** - Admin calls frontend revalidation API after mutations
+- **Error Visibility** - All failures surface to users (no silent errors)
+- **Performance Monitoring** - Console logs track shortening, cache clears, stock checks
+
+---
+
 ## Recent Updates (Feb 2, 2026)
 
 ### Completed Today ✅
