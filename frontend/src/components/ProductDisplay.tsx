@@ -236,6 +236,7 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
               className="object-contain rounded-lg"
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
+              unoptimized
             />
           </div>
 
