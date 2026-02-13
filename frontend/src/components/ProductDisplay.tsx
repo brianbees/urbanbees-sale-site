@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import type { Product } from '@/data/products';
 import { useCartStore } from '@/store/cart';
 import { useWishlistStore } from '@/store/wishlist';
+import { useToast } from '@/components/ToastProvider';
 
 interface ProductDisplayProps {
   product: Product;
@@ -13,6 +14,7 @@ interface ProductDisplayProps {
 
 export default function ProductDisplay({ product }: ProductDisplayProps) {
   const router = useRouter();
+  const { showToast } = useToast();
   const { addItem, items } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -111,19 +113,19 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
       const availableStock = stockData.stockQty;
       
       if (!stockData.available || availableStock === 0) {
-        alert('Sorry, this item is currently out of stock.');
+        showToast('error', 'Sorry, this item is currently out of stock.');
         setIsAddingToCart(false);
         return;
       }
       
       if (availableStock !== null && currentQtyInCart >= availableStock) {
-        alert(`You already have the maximum available quantity (${availableStock}) in your cart.`);
+        showToast('warning', `You already have the maximum available quantity (${availableStock}) in your cart.`);
         setIsAddingToCart(false);
         return;
       }
       
       if (availableStock !== null && currentQtyInCart + 1 > availableStock) {
-        alert(`Only ${availableStock} available. You already have ${currentQtyInCart} in your cart.`);
+        showToast('warning', `Only ${availableStock} available. You already have ${currentQtyInCart} in your cart.`);
         setIsAddingToCart(false);
         return;
       }
@@ -149,9 +151,9 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
       
       // Check if it was a timeout
       if (error instanceof Error && error.name === 'AbortError') {
-        alert('Request timed out. Please check your connection and try again.');
+        showToast('error', 'Request timed out. Please check your connection and try again.');
       } else {
-        alert('Failed to add item to cart. Please try again.');
+        showToast('error', 'Failed to add item to cart. Please try again.');
       }
     } finally {
       setIsAddingToCart(false);

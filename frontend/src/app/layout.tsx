@@ -1,6 +1,7 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 import HeaderWrapper from '@/components/HeaderWrapper';
+import { ToastProvider } from '@/components/ToastProvider';
 import Script from 'next/script';
 import type { Metadata } from 'next';
 
@@ -29,7 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
-        <HeaderWrapper>{children}</HeaderWrapper>
+        <ToastProvider>
+          <HeaderWrapper>{children}</HeaderWrapper>
+        </ToastProvider>
       </body>
     </html>
   );
