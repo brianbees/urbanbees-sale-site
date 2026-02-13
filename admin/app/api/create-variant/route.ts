@@ -17,10 +17,23 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { product_id, sku, price, stock_qty } = body;
 
+    // Fetch product name
+    const { data: product, error: productError } = await supabaseAdmin
+      .from('products')
+      .select('name')
+      .eq('id', product_id)
+      .single();
+
+    if (productError) {
+      console.error('Error fetching product:', productError);
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    }
+
     const { data, error } = await supabaseAdmin
       .from('variants')
       .insert({
         product_id,
+        product_name: product.name,
         sku,
         price,
         stock_qty,

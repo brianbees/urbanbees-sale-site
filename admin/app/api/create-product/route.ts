@@ -34,7 +34,8 @@ export async function POST(request: NextRequest) {
     if (variants && variants.length > 0) {
       const variantsWithProductId = variants.map((v: any) => ({
         ...v,
-        product_id: newProduct.id
+        product_id: newProduct.id,
+        product_name: newProduct.name
       }));
 
       const { error: variantsError } = await supabaseAdmin

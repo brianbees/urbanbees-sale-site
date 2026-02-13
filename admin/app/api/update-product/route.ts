@@ -35,6 +35,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
+    // Update product_name in all variants for this product
+    const { error: variantsUpdateError } = await supabaseAdmin
+      .from('variants')
+      .update({
+        product_name: name,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('product_id', productId);
+
+    if (variantsUpdateError) {
+      console.error('Error updating variant product names:', variantsUpdateError);
+      // Don't fail the request, just log the error
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Error in update-product API:', error);

@@ -13,6 +13,7 @@ export interface DatabaseProduct {
 export interface DatabaseVariant {
   id: string; // UUID
   product_id: string; // FK to products.id
+  product_name?: string; // Denormalized for easier CSV exports
   sku?: string;
   price: number;
   stock_qty: number;
