@@ -22,6 +22,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
   const [showToast, setShowToast] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -47,13 +48,31 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   const handleAddToCart = async () => {
     if (!isPriceAvailable || currentPrice === null || currentPrice === undefined) return;
     
+    // Prevent duplicate clicks
+    if (isAddingToCart) {
+      return;
+    }
+    
+    setIsAddingToCart(true);
+    
     // Check real-time stock before adding
     try {
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
       const response = await fetch('/api/check-stock', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ variantId: selectedVariantId }),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error('Stock check failed');
+      }
       
       const stockData = await response.json();
       
@@ -66,35 +85,48 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       
       if (!stockData.available || availableStock === 0) {
         alert('Sorry, this item is currently out of stock.');
+        setIsAddingToCart(false);
         return;
       }
       
       if (availableStock !== null && currentQtyInCart >= availableStock) {
         alert(`You already have the maximum available quantity (${availableStock}) in your cart.`);
+        setIsAddingToCart(false);
         return;
       }
       
       if (availableStock !== null && currentQtyInCart + 1 > availableStock) {
         alert(`Only ${availableStock} available. You already have ${currentQtyInCart} in your cart.`);
+        setIsAddingToCart(false);
         return;
       }
+      
+      // Add to cart
+      addItem({
+        productId: product.id,
+        productName: product.name,
+        variantId: selectedVariantId,
+        variant: selectedVariant.optionValues,
+        variantName,
+        price: currentPrice,
+        image: imageSrc,
+        stockQty: selectedVariant.stockQty,
+      });
+
+      setShowToast(true);
+      
     } catch (error) {
       console.error('Error checking stock:', error);
-      // Continue anyway if stock check fails (don't block legitimate purchases)
+      
+      // Check if it was a timeout
+      if (error instanceof Error && error.name === 'AbortError') {
+        alert('Request timed out. Please check your connection and try again.');
+      } else {
+        alert('Failed to add item to cart. Please try again.');
+      }
+    } finally {
+      setIsAddingToCart(false);
     }
-    
-    addItem({
-      productId: product.id,
-      productName: product.name,
-      variantId: selectedVariantId,
-      variant: selectedVariant.optionValues,
-      variantName,
-      price: currentPrice,
-      image: imageSrc,
-      stockQty: selectedVariant.stockQty,
-    });
-
-    setShowToast(true);
   };
 
   const handleContinueShopping = () => {
@@ -228,15 +260,27 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               <div className="flex gap-2">
                 <button
                   onClick={handleAddToCart}
-                  disabled={!isPriceAvailable}
+                  disabled={!isPriceAvailable || isAddingToCart}
                   aria-label={`Add ${product.name} to cart`}
-                  className={`font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm ${
-                    isPriceAvailable
+                  className={`font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm flex items-center gap-1 ${
+                    isPriceAvailable && !isAddingToCart
                       ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-gray-400 text-white cursor-not-allowed'
                   }`}
                 >
-                  {isPriceAvailable ? 'Add to cart' : 'Unavailable'}
+                  {isAddingToCart ? (
+                    <>
+                      <svg className="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span className="hidden md:inline">Adding...</span>
+                    </>
+                  ) : isPriceAvailable ? (
+                    'Add to cart'
+                  ) : (
+                    'Unavailable'
+                  )}
                 </button>
                 
                 {/* Wishlist Button */}

@@ -20,6 +20,7 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
   const [showToast, setShowToast] = useState(false);
   const [showLightbox, setShowLightbox] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -71,16 +72,34 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
       console.log('Cannot add to cart: price not available', { isPriceAvailable, price });
       return;
     }
+
+    // Prevent duplicate clicks
+    if (isAddingToCart) {
+      return;
+    }
+    
+    setIsAddingToCart(true);
     
     const variantName = getVariantName();
     
     // Check real-time stock before adding
     try {
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
       const response = await fetch('/api/check-stock', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ variantId: selectedVariantId }),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error('Stock check failed');
+      }
       
       const stockData = await response.json();
       
@@ -93,39 +112,50 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
       
       if (!stockData.available || availableStock === 0) {
         alert('Sorry, this item is currently out of stock.');
+        setIsAddingToCart(false);
         return;
       }
       
       if (availableStock !== null && currentQtyInCart >= availableStock) {
         alert(`You already have the maximum available quantity (${availableStock}) in your cart.`);
+        setIsAddingToCart(false);
         return;
       }
       
       if (availableStock !== null && currentQtyInCart + 1 > availableStock) {
         alert(`Only ${availableStock} available. You already have ${currentQtyInCart} in your cart.`);
+        setIsAddingToCart(false);
         return;
       }
       
       console.log('Stock check passed:', stockData);
+      
+      // Add to cart
+      addItem({
+        productId: product.id,
+        productName: product.name,
+        variantId: selectedVariantId,
+        variant: selectedVariant.optionValues,
+        variantName: getVariantName(),
+        price: price,
+        image: selectedImage.src,
+        stockQty: selectedVariant.stockQty,
+      });
+
+      setShowToast(true);
+      
     } catch (error) {
       console.error('Error checking stock:', error);
-      // Continue anyway if stock check fails
+      
+      // Check if it was a timeout
+      if (error instanceof Error && error.name === 'AbortError') {
+        alert('Request timed out. Please check your connection and try again.');
+      } else {
+        alert('Failed to add item to cart. Please try again.');
+      }
+    } finally {
+      setIsAddingToCart(false);
     }
-    
-    console.log('Adding to cart:', { productId: product.id, productName: product.name, price });
-    
-    addItem({
-      productId: product.id,
-      productName: product.name,
-      variantId: selectedVariantId,
-      variant: selectedVariant.optionValues,
-      variantName: getVariantName(),
-      price: price,
-      image: selectedImage.src,
-      stockQty: selectedVariant.stockQty,
-    });
-
-    setShowToast(true);
   };
 
   const handleContinueShopping = () => {
@@ -311,14 +341,26 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
           <div className="mb-6">
             <button
               onClick={handleAddToCart}
-              disabled={!isPriceAvailable}
-              className={`w-full py-3 px-6 rounded-lg font-bold text-lg transition-colors ${
-                isPriceAvailable
+              disabled={!isPriceAvailable || isAddingToCart}
+              className={`w-full py-3 px-6 rounded-lg font-bold text-lg transition-colors flex items-center justify-center gap-2 ${
+                isPriceAvailable && !isAddingToCart
                   ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gray-400 text-white cursor-not-allowed'
               }`}
             >
-              {isPriceAvailable ? 'Add to Cart' : 'Unavailable'}
+              {isAddingToCart ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Adding to Cart...
+                </>
+              ) : isPriceAvailable ? (
+                'Add to Cart'
+              ) : (
+                'Unavailable'
+              )}
             </button>
           </div>
 
