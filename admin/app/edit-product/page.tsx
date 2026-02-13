@@ -298,6 +298,25 @@ function EditProductForm() {
     setVariants(updated);
   }
 
+  // Add new empty variant
+  function addNewVariant() {
+    setVariants([...variants, { sku: '', price: 0, stock_qty: 0 } as any]);
+    setMessage('✅ New variant added. Fill in the details and save.');
+    setTimeout(() => setMessage(''), 3000);
+  }
+
+  // Remove variant
+  function removeVariant(index: number) {
+    const variant = variants[index];
+    if (variant.id && !confirm('Are you sure you want to delete this variant? This cannot be undone.')) {
+      return;
+    }
+    const updated = variants.filter((_, i) => i !== index);
+    setVariants(updated);
+    setMessage('✅ Variant removed. Remember to save changes.');
+    setTimeout(() => setMessage(''), 3000);
+  }
+
   // Save changes
   async function handleSave() {
     if (!product) return;
@@ -647,7 +666,16 @@ function EditProductForm() {
 
             {/* Variants */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">Variants ({variants.length || 1})</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold">Variants ({variants.length || 1})</h3>
+                <button
+                  type="button"
+                  onClick={addNewVariant}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2"
+                >
+                  ➕ Add Variant
+                </button>
+              </div>
               <div className="space-y-3">
                 {(variants.length > 0 ? variants : [{}]).map((variant, idx) => {
                   const sku = 'sku' in variant ? variant.sku : '';
@@ -655,35 +683,47 @@ function EditProductForm() {
                   const stock_qty = 'stock_qty' in variant ? variant.stock_qty : '';
                   return (
                     <div key={('id' in variant && variant.id) ? variant.id : idx} className="border border-gray-200 p-4 rounded-lg">
-                      <div className="grid grid-cols-3 gap-3">
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1">SKU</label>
-                          <input
-                            type="text"
-                            value={sku}
-                            onChange={(e) => updateVariant(idx, 'sku', e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded"
-                          />
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1 grid grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">SKU</label>
+                            <input
+                              type="text"
+                              value={sku}
+                              onChange={(e) => updateVariant(idx, 'sku', e.target.value)}
+                              className="w-full p-2 border border-gray-300 rounded"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">Price (£)</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={price}
+                              onChange={(e) => updateVariant(idx, 'price', parseFloat(e.target.value))}
+                              className="w-full p-2 border border-gray-300 rounded"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">Stock Qty</label>
+                            <input
+                              type="number"
+                              value={stock_qty}
+                              onChange={(e) => updateVariant(idx, 'stock_qty', parseInt(e.target.value))}
+                              className="w-full p-2 border border-gray-300 rounded"
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1">Price (£)</label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={price}
-                            onChange={(e) => updateVariant(idx, 'price', parseFloat(e.target.value))}
-                            className="w-full p-2 border border-gray-300 rounded"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1">Stock Qty</label>
-                          <input
-                            type="number"
-                            value={stock_qty}
-                            onChange={(e) => updateVariant(idx, 'stock_qty', parseInt(e.target.value))}
-                            className="w-full p-2 border border-gray-300 rounded"
-                          />
-                        </div>
+                        {variants.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeVariant(idx)}
+                            className="mt-6 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-semibold"
+                            title="Delete this variant"
+                          >
+                            🗑️
+                          </button>
+                        )}
                       </div>
                     </div>
                   );
