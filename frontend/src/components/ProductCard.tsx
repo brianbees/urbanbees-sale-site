@@ -265,7 +265,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
                     <button
                       key={value}
                       onClick={() => setSelectedVariantId(matchingVariant.id)}
-                      className={`py-1 px-2 rounded border text-xs font-medium transition-all ${
+                      className={`py-2 px-3 rounded border text-xs md:text-sm font-medium transition-all ${
                         isSelected
                           ? 'border-blue-500 bg-blue-50 text-blue-700'
                           : 'border-gray-300 hover:border-gray-400 text-gray-700'
