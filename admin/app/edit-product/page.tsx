@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import { useSearchParams } from 'next/navigation';
 import type { DatabaseProduct, DatabaseVariant } from '../../types/database';
 import { compressImage } from '../../lib/image-utils';
+import { shortenUrlsInDescription } from '../../lib/url-shortener';
 import ImageEditor from './ImageEditor';
 
 function EditProductForm() {
@@ -242,6 +243,12 @@ function EditProductForm() {
       // Mark old image for deletion (optional - remove old file from storage)
       setImagesToDelete([...imagesToDelete, oldImageUrl]);
 
+      // Shorten URLs in description before persisting
+      const processedDescription = await shortenUrlsInDescription(description);
+      if (processedDescription !== description) {
+        setDescription(processedDescription);
+      }
+
       // Persist the change to the database immediately
       const productResponse = await fetch('/api/update-product', {
         method: 'POST',
@@ -250,7 +257,7 @@ function EditProductForm() {
           productId: product.id,
           name,
           category,
-          description,
+          description: processedDescription,
           images: updatedImages,
         }),
       });
@@ -333,6 +340,15 @@ function EditProductForm() {
       // Combine existing (not deleted) + new images
       const finalImages = [...existingImages, ...newImageUrls];
 
+      // Shorten URLs in description before saving
+      setMessage('Processing description (shortening URLs)...');
+      const processedDescription = await shortenUrlsInDescription(description);
+      
+      // Update local state if URLs were shortened
+      if (processedDescription !== description) {
+        setDescription(processedDescription);
+      }
+
       // Update product via API route
       const productResponse = await fetch('/api/update-product', {
         method: 'POST',
@@ -341,7 +357,7 @@ function EditProductForm() {
           productId: product.id,
           name,
           category,
-          description,
+          description: processedDescription,
           images: finalImages,
         }),
       });
