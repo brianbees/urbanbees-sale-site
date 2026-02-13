@@ -63,7 +63,7 @@ export default function AddProductPage() {
       const fileExt = file.name.split('.').pop();
       const timestamp = Date.now();
       const fileName = `${slug}-${i + 1}-${timestamp}.${fileExt}`;
-      const filePath = `products/${fileName}`;
+      const filePath = `${fileName}`;
       const { error } = await supabase.storage
         .from('product-images')
         .upload(filePath, file);
