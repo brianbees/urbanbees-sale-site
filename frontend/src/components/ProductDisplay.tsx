@@ -272,37 +272,62 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
           </div>
 
           {/* Variant Selectors */}
-          {product.variants.length > 1 && product.options && product.options.map((option) => (
-            <div key={option.id} className="mb-4">
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                {option.label}:
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {option.values.map((value) => {
-                  const matchingVariant = product.variants.find(
-                    (v) => v.optionValues[option.id] === value
-                  );
-                  if (!matchingVariant) return null;
+          {product.variants.length > 1 && (
+            <>
+              {/* Option-based selectors (for products with defined options) */}
+              {product.options && product.options.map((option) => (
+                <div key={option.id} className="mb-4">
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    {option.label}:
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {option.values.map((value) => {
+                      const matchingVariant = product.variants.find(
+                        (v) => v.optionValues[option.id] === value
+                      );
+                      if (!matchingVariant) return null;
 
-                  const isSelected = selectedVariantId === matchingVariant.id;
-                  
-                  return (
-                    <button
-                      key={value}
-                      onClick={() => setSelectedVariantId(matchingVariant.id)}
-                      className={`py-2 px-4 rounded border-2 font-medium transition-all ${
-                        isSelected
-                          ? 'border-blue-500 bg-blue-50 text-blue-700'
-                          : 'border-gray-300 hover:border-gray-400 text-gray-700'
-                      }`}
-                    >
-                      {value}
+                      const isSelected = selectedVariantId === matchingVariant.id;
+                      
+                      return (
+                        <button
+                          key={value}
+                          onClick={() => setSelectedVariantId(matchingVariant.id)}
+                          className={`py-2 px-4 rounded border-2 font-medium transition-all ${
+                            isSelected
+                              ? 'border-blue-500 bg-blue-50 text-blue-700'
+                              : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                          }`}
+                        >
+                          {value}
                     </button>
                   );
                 })}
               </div>
             </div>
           ))}
+          
+          {/* Simple variant selector (for products without options but multiple variants) */}
+          {(!product.options || product.options.length === 0) && (
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Select Option:
+              </label>
+              <select
+                value={selectedVariantId}
+                onChange={(e) => setSelectedVariantId(e.target.value)}
+                className="w-full p-3 border-2 border-gray-300 rounded-lg font-medium text-gray-700 focus:border-blue-500 focus:outline-none"
+              >
+                {product.variants.map((variant, index) => (
+                  <option key={variant.id} value={variant.id}>
+                    {variant.sku ? `${variant.sku} - £${variant.price?.toFixed(2)}` : `Option ${index + 1} - £${variant.price?.toFixed(2)}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          </>
+          )}
 
           {/* Add to Cart Button */}
           <div className="mb-6">
