@@ -45,6 +45,32 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   const variantName = getVariantName();
 
+  // Render URLs and mailto links as clickable
+  const renderDescriptionLine = (line: string) => {
+    const urlRegex = /((?:https?:\/\/|mailto:)[^\s]+)/g;
+    const parts = line.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (/^(?:https?:\/\/|mailto:)[^\s]+$/.test(part)) {
+        const isMailto = part.startsWith('mailto:');
+        const displayText = isMailto ? part.replace('mailto:', '').split('?')[0] : part;
+        return (
+          <a
+            key={`url-${index}`}
+            href={part}
+            target={isMailto ? '_self' : '_blank'}
+            rel={isMailto ? undefined : 'noopener noreferrer'}
+            className="text-blue-600 hover:text-blue-800 underline"
+            onClick={(e) => e.stopPropagation()} // Prevent card link click
+          >
+            {displayText}
+          </a>
+        );
+      }
+      return <span key={`text-${index}`}>{part}</span>;
+    });
+  };
+
   const handleAddToCart = async () => {
     if (!isPriceAvailable || currentPrice === null || currentPrice === undefined) return;
     
@@ -201,7 +227,13 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           <Link href={`/product/${product.id}`} className="block mb-2" aria-label={`View ${product.name} details`}>
             <h3 className="text-sm md:text-lg font-bold text-gray-900 hover:text-blue-600 mb-1">{product.name}</h3>
             {product.description && (
-              <p className="text-gray-600 text-xs md:text-sm mb-2 line-clamp-2">{product.description}</p>
+              <p className="text-gray-600 text-xs md:text-sm mb-2 line-clamp-2">
+                {product.description.split('\n').slice(0, 2).map((line, idx) => (
+                  <span key={`desc-${idx}`} className="block">
+                    {renderDescriptionLine(line)}
+                  </span>
+                ))}
+              </p>
             )}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-gray-500">{product.category}</span>
