@@ -3,6 +3,16 @@
 ## Recent Updates (Feb 13, 2026)
 
 ### Completed Today ✅
+- **Variant Management** - Full workflow for adding/removing variants to products
+  - "+ Add Variant" button in edit-product page
+  - Delete variant button (🗑️) with confirmation dialog
+  - New variants auto-created on save (via `/api/create-variant`)
+  - No more manual database edits required
+- **Smart Variant Selector** - Frontend displays variants for all product types
+  - Dropdown selector for products without defined options
+  - Shows "SKU - £XX.XX" format in dropdown
+  - Button selector for products with options (Size, Color, etc.)
+  - Fixes: variants now visible on all multi-variant products
 - **Image Editing Tools** - Built-in crop and rotate functionality in product editor
   - Canvas-based image editor with modal UI
   - 90°/180° rotation controls

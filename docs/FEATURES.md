@@ -1,7 +1,7 @@
 # Urban Bees Sale Site - Feature Documentation
 
 **Last Updated:** February 13, 2026  
-**Version:** 3.0.0  
+**Version:** 3.1.0  
 
 ## Table of Contents
 1. [Admin Panel Features](#admin-panel-features)
@@ -35,7 +35,13 @@
   - **Promote to Hero** button on any gallery image (swaps to position 0)
   - **Delete** button with visual confirmation
   - **Edit Image** button opens built-in editor
-- Variant editing with create/update logic
+- **Variant Management** (NEW Feb 13, 2026):
+  - View all existing variants with SKU, price, stock quantity
+  - **"+ Add Variant"** button to create additional variants
+  - **Delete variant** button (🗑️) for each variant when multiple exist
+  - Confirmation dialog when deleting existing variants
+  - Auto-creates new variants via API on save
+  - Auto-updates existing variants
 - Auto-saves edited images immediately with frontend cache clear
 
 ### Image Editing Tools (NEW Feb 13, 2026)
@@ -117,7 +123,10 @@ After:  https://is.gd/abc123
 - Product name + category badge
 - First image with hover effects
 - Price display or "Contact for Price"
-- Variant selector (if multiple variants)
+- **Variant selector** (if multiple variants):
+  - Button-based selector for products with defined options (e.g., Size, Color)
+  - Dropdown selector for products without options but multiple variants
+  - Shows SKU and price in dropdown options
 - Stock availability indicator
 
 ### Product Detail Page
@@ -128,7 +137,11 @@ After:  https://is.gd/abc123
 - **Gallery thumbnails** (6 per row)
 - **Lightbox modal** for full-size viewing
 - **Full description** with clickable URLs and mailto links
-- **Variant selector** (if product has options)
+- **Smart Variant Selector** (NEW Feb 13, 2026):
+  - Button-based selector for products with defined options (e.g., Size: S/M/L)
+  - **Dropdown selector** for products with multiple variants but no options
+  - Shows "SKU - £XX.XX" or "Option N - £XX.XX" in dropdown
+  - Automatically selects appropriate UI based on product data
 - **Add to Cart** with:
   - Real-time stock validation (checks current cart quantity)
   - Loading spinner during stock check

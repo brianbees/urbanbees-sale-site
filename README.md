@@ -2,7 +2,7 @@
 
 A modern e-commerce platform for beekeeping equipment with full-featured admin panel and customer storefront.
 
-**Version:** 3.0.0  
+**Version:** 3.1.0  
 **Last Updated:** February 13, 2026
 
 ## 🚀 Quick Links
@@ -48,9 +48,10 @@ A modern e-commerce platform for beekeeping equipment with full-featured admin p
 - **CDN:** Vercel Edge Network + Supabase CDN
 - **Caching:** ISR (5-min homepage, 60s product pages)
 
-## ✨ Key Features (v3.0.0)
+## ✨ Key Features (v3.1.0)
 
 ### Admin Panel
+- ✅ **Variant Management** (add/remove variants to products)
 - ✅ **Image Editing Tools** (crop + rotate) built-in
 - ✅ **Hero Image Management** (promote any image to hero)
 - ✅ **Drag-and-Drop Reordering** for gallery images
@@ -61,6 +62,7 @@ A modern e-commerce platform for beekeeping equipment with full-featured admin p
 - ✅ **Immediate Persistence** (edited images save instantly)
 
 ### Customer Frontend
+- ✅ **Smart Variant Selector** (dropdown or buttons based on product)
 - ✅ **Newest First Sorting** (default)
 - ✅ **Smart Add-to-Cart** (loading states, timeouts, error handling)
 - ✅ **Clickable Links Everywhere** (URLs, mailto in descriptions)

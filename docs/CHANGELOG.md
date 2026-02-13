@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.1.0] - 2026-02-13
+
+### Added
+- **Variant Management in Admin Panel**
+  - "+ Add Variant" button in edit-product page
+  - Add multiple variants to existing products without database access
+  - Delete variant button (🗑️) for each variant when multiple exist
+  - Confirmation dialog when deleting saved variants
+  - Automatic creation of new variants via `/api/create-variant` on save
+  - `addNewVariant()` and `removeVariant()` functions
+- **Smart Variant Selector on Frontend**
+  - Dropdown selector for products with multiple variants but no defined options
+  - Shows "SKU - £XX.XX" or "Option N - £XX.XX" format
+  - Complements existing button-based selector for products with options
+  - Automatically chooses appropriate UI based on product data structure
+
+### Fixed
+- **Variant Visibility:** Products with multiple variants but no options now show selector
+- **Workflow Gap:** Previously required manual database INSERT to add variants to existing products
+
+### Technical
+- Modified `ProductDisplay.tsx` to show dropdown when `variants.length > 1` and `!product.options`
+- Enhanced `edit-product/page.tsx` with variant array manipulation functions
+- Leveraged existing `/api/create-variant` endpoint (no new API routes needed)
+
+---
+
 ## [3.0.0] - 2026-02-13
 
 ### Added
