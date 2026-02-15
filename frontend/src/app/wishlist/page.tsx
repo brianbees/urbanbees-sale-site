@@ -4,13 +4,19 @@ import { useRouter } from 'next/navigation';
 import { useWishlistStore } from '@/store/wishlist';
 import { useCartStore } from '@/store/cart';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function WishlistPage() {
   const router = useRouter();
   const { items, removeItem } = useWishlistStore();
   const { addItem } = useCartStore();
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by waiting for client-side mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleAddToCart = (item: typeof items[0]) => {
     if (item.price === null) {
@@ -60,6 +66,23 @@ export default function WishlistPage() {
       router.push('/');
     }
   };
+
+  // Prevent hydration mismatch - don't render until mounted
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="mb-6">
+            <div className="h-10 w-20 bg-gray-200 animate-pulse rounded"></div>
+          </div>
+          <h1 className="text-3xl font-bold mb-6">My Wishlist</h1>
+          <div className="text-center py-20">
+            <p className="text-gray-500">Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
