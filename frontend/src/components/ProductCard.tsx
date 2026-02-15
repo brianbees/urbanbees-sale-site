@@ -291,10 +291,8 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
             </Link>
 
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 overflow-hidden">
-              {isPriceAvailable ? (
+              {isPriceAvailable && (
                 <span className="text-sm sm:text-base font-bold text-gray-900 whitespace-nowrap">£{currentPrice.toFixed(2)}</span>
-              ) : (
-                <span className="text-[10px] sm:text-xs text-gray-600 whitespace-nowrap">Call us</span>
               )}
               <button
                 onClick={handleAddToCart}
