@@ -8,10 +8,13 @@ interface ProductsGridProps {
   initialProducts: Product[];
 }
 
+type ViewStyle = 'grid' | 'list' | 'compact';
+
 export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [viewStyle, setViewStyle] = useState<ViewStyle>('list');
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -101,6 +104,49 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
 
       {/* Filters Row - eBay Style */}
       <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
+        {/* View Style Toggle */}
+        <div className="flex gap-1 border border-gray-300 rounded p-1 bg-white flex-shrink-0">
+          <button
+            onClick={() => setViewStyle('grid')}
+            className={`p-2 rounded transition-colors ${
+              viewStyle === 'grid'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-600 hover:bg-gray-100'
+            }`}
+            title="Grid view"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewStyle('list')}
+            className={`p-2 rounded transition-colors ${
+              viewStyle === 'list'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-600 hover:bg-gray-100'
+            }`}
+            title="List view"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewStyle('compact')}
+            className={`p-2 rounded transition-colors ${
+              viewStyle === 'compact'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-600 hover:bg-gray-100'
+            }`}
+            title="Compact view"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
         {/* Category Filter */}
         {categories.length > 1 && (
           <select
@@ -151,11 +197,22 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
         </div>
       )}
 
-      {/* Products Grid - eBay style vertical list */}
+      {/* Products Grid - Dynamic Layout */}
       {filteredProducts.length > 0 ? (
-        <div className="space-y-3">
+        <div className={
+          viewStyle === 'grid'
+            ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4'
+            : viewStyle === 'compact'
+            ? 'space-y-2'
+            : 'space-y-3'
+        }>
           {filteredProducts.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              index={index}
+              viewStyle={viewStyle}
+            />
           ))}
         </div>
       ) : (

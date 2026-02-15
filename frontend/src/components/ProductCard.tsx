@@ -12,9 +12,10 @@ import { useToast } from '@/components/ToastProvider';
 interface ProductCardProps {
   product: Product;
   index?: number;
+  viewStyle?: 'grid' | 'list' | 'compact';
 }
 
-export default function ProductCard({ product, index }: ProductCardProps) {
+export default function ProductCard({ product, index, viewStyle = 'list' }: ProductCardProps) {
   const { addItem, items } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const { showToast } = useToast();
@@ -175,6 +176,125 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   const firstImage = product.images && product.images.length > 0 ? product.images[0] : { src: '/images/placeholder.jpg', alt: 'No image' };
   const imageSrc = firstImage.src;
 
+  // Grid View - Vertical card layout
+  if (viewStyle === 'grid') {
+    return (
+      <div className="bg-white border border-gray-300 rounded hover:shadow-lg transition-shadow relative flex flex-col">
+        {/* Wishlist Heart Button - Top Right */}
+        <button
+          onClick={handleWishlistToggle}
+          className="absolute top-2 right-2 z-10 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all"
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-5 w-5 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400 hover:text-red-500'}`}
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+        </button>
+
+        {/* Image */}
+        <Link href={`/product/${product.id}`} aria-label={`View ${product.name} details`}>
+          <div className="relative w-full h-48 bg-stone-100">
+            <Image
+              src={imageSrc}
+              alt={firstImage.alt}
+              fill
+              priority={index !== undefined && index < 8}
+              className="object-cover"
+              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          </div>
+        </Link>
+
+        {/* Details */}
+        <div className="p-3 flex flex-col flex-1">
+          <Link href={`/product/${product.id}`} className="block mb-2">
+            <h3 className="text-sm font-bold text-gray-900 hover:text-blue-600 mb-1 line-clamp-2">{product.name}</h3>
+            <span className="text-xs text-gray-500">{product.category}</span>
+          </Link>
+
+          <div className="mt-auto">
+            <div className="mb-2">
+              {isPriceAvailable ? (
+                <span className="text-lg font-bold text-gray-900">£{currentPrice.toFixed(2)}</span>
+              ) : (
+                <span className="text-xs font-semibold text-gray-600">Contact for Price</span>
+              )}
+            </div>
+            <button
+              onClick={handleAddToCart}
+              disabled={!isPriceAvailable || isAddingToCart}
+              className={`w-full font-semibold py-2 px-3 rounded transition-colors text-xs flex items-center justify-center gap-1 ${
+                isPriceAvailable && !isAddingToCart
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+                  : 'bg-gray-400 text-white cursor-not-allowed'
+              }`}
+            >
+              {isAddingToCart ? 'Adding...' : isPriceAvailable ? 'Add to cart' : 'Unavailable'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Compact View - Minimal horizontal layout
+  if (viewStyle === 'compact') {
+    return (
+      <div className="bg-white border border-gray-300 rounded hover:shadow-md transition-shadow relative">
+        <div className="flex flex-row items-center">
+          <Link href={`/product/${product.id}`} className="flex-shrink-0">
+            <div className="relative w-20 h-20 bg-stone-100">
+              <Image
+                src={imageSrc}
+                alt={firstImage.alt}
+                fill
+                className="object-cover"
+                sizes="80px"
+              />
+            </div>
+          </Link>
+
+          <div className="flex-1 p-2 flex items-center justify-between gap-2">
+            <Link href={`/product/${product.id}`} className="flex-1 min-w-0">
+              <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600 truncate">{product.name}</h3>
+              <span className="text-xs text-gray-500">{product.category}</span>
+            </Link>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {isPriceAvailable ? (
+                <span className="text-base font-bold text-gray-900 whitespace-nowrap">£{currentPrice.toFixed(2)}</span>
+              ) : (
+                <span className="text-xs text-gray-600 whitespace-nowrap">Contact</span>
+              )}
+              <button
+                onClick={handleAddToCart}
+                disabled={!isPriceAvailable || isAddingToCart}
+                className={`py-1.5 px-3 rounded text-xs font-semibold transition-colors whitespace-nowrap ${
+                  isPriceAvailable && !isAddingToCart
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                    : 'bg-gray-400 text-white cursor-not-allowed'
+                }`}
+              >
+                {isAddingToCart ? '+' : isPriceAvailable ? 'Add' : 'N/A'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // List View - Default horizontal layout (existing)
   return (
     <div className="bg-white border border-gray-300 rounded hover:shadow-lg transition-shadow relative">
       {/* Wishlist Heart Button - Top Right */}
