@@ -28,6 +28,16 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
     year: 'numeric'
   });
 
+  // Clean description by removing offer text for print view
+  const cleanDescription = (desc: string) => {
+    if (!desc) return desc;
+    // Remove the "Offers welcome - get in touch - mailto:..." line
+    return desc
+      .replace(/Offers welcome.*?mailto:sales@urbanbees\.co\.uk\?subject=.*$/gim, '')
+      .replace(/\n\s*\n\s*\n/g, '\n\n') // Clean up multiple blank lines
+      .trim();
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -58,7 +68,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           onClick={() => router.back()}
           className="back-button"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
           </svg>
           Back
@@ -68,7 +78,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
             onClick={handleEmail}
             className="email-button"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
               <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
               <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
             </svg>
@@ -78,7 +88,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
             onClick={handlePrint}
             className="print-button"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
             </svg>
             Print List
@@ -94,50 +104,78 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
       </div>
 
       {/* Column Headers */}
-      <div className="for-print-headers">
-        {mode === 'wishlist' && <div className="for-print-checkbox-col">☐</div>}
-        <div className="for-print-img-col"></div>
-        <div className="for-print-name-col">Product</div>
-        <div className="for-print-details-col">Description</div>
-        <div className="for-print-price-col">Price</div>
-        <div className="for-print-sku-col">SKU</div>
-        <div className="for-print-quantity-col">Stock</div>
-      </div>
+      {mode === 'wishlist' ? (
+        <div className="for-print-headers">
+          <div className="for-print-checkbox-col">☐</div>
+          <div className="for-print-img-col"></div>
+          <div className="for-print-name-col">Product</div>
+          <div className="for-print-details-col">Description</div>
+          <div className="for-print-price-col">Price</div>
+          <div className="for-print-sku-col">SKU</div>
+          <div className="for-print-quantity-col">Stock</div>
+        </div>
+      ) : (
+        <div className="for-print-headers-compact">
+          <div className="compact-img-col"></div>
+          <div className="compact-info-col">Product Info</div>
+          <div className="compact-price-col">Price</div>
+        </div>
+      )}
 
       <div className="for-print-list">
         {products.map((product, idx) => (
           <React.Fragment key={product.id}>
-            <div className="for-print-item">
-              {mode === 'wishlist' && (
+            {mode === 'wishlist' ? (
+              <div className="for-print-item">
                 <div className="for-print-checkbox">
                   <input type="checkbox" className="print-checkbox" />
                 </div>
-              )}
-              <div className="for-print-img-holder">
-                <img
-                  src={product.images?.[0] || '/placeholder.jpg'}
-                  alt={product.name}
-                  className="for-print-img"
-                  style={{ objectFit: 'cover', borderRadius: 8, height: '50px', width: '50px' }}
-                />
+                <div className="for-print-img-holder">
+                  <img
+                    src={product.images?.[0] || '/placeholder.jpg'}
+                    alt={product.name}
+                    className="for-print-img"
+                    style={{ objectFit: 'cover', borderRadius: 8, height: '50px', width: '50px' }}
+                  />
+                </div>
+                <div className="for-print-name">
+                  <h2>{product.name}</h2>
+                  {product.category && <p className="for-print-category">{product.category}</p>}
+                </div>
+                <div className="for-print-details">
+                  <p>{cleanDescription(product.description || '')}</p>
+                </div>
+                <div className="for-print-price">
+                  <p>{product.price != null ? `£${product.price.toFixed(2)}` : '-'}</p>
+                </div>
+                <div className="for-print-sku">
+                  <p>{product.sku || '-'}</p>
+                </div>
+                <div className="for-print-quantity">
+                  <p>{product.quantity != null ? product.quantity : '-'}</p>
+                </div>
               </div>
-              <div className="for-print-name">
-                <h2>{product.name}</h2>
-                {product.category && <p className="for-print-category">{product.category}</p>}
+            ) : (
+              <div className="compact-item">
+                <div className="compact-img">
+                  <img
+                    src={product.images?.[0] || '/placeholder.jpg'}
+                    alt={product.name}
+                    style={{ objectFit: 'cover', borderRadius: 4, height: '40px', width: '40px' }}
+                  />
+                </div>
+                <div className="compact-info">
+                  <h3>{product.name}</h3>
+                  {product.category && <span className="compact-category">{product.category}</span>}
+                  {product.description && (
+                    <p className="compact-desc">{cleanDescription(product.description)}</p>
+                  )}
+                </div>
+                <div className="compact-price">
+                  {product.price != null ? `£${product.price.toFixed(2)}` : 'Contact'}
+                </div>
               </div>
-              <div className="for-print-details">
-                <p>{product.description}</p>
-              </div>
-              <div className="for-print-price">
-                <p>{product.price != null ? `£${product.price.toFixed(2)}` : '-'}</p>
-              </div>
-              <div className="for-print-sku">
-                <p>{product.sku || '-'}</p>
-              </div>
-              <div className="for-print-quantity">
-                <p>{product.quantity != null ? product.quantity : '-'}</p>
-              </div>
-            </div>
+            )}
             {idx < products.length - 1 && <hr className="for-print-divider" />}
           </React.Fragment>
         ))}
