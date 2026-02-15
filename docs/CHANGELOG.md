@@ -22,15 +22,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Shows "SKU - £XX.XX" or "Option N - £XX.XX" format
   - Complements existing button-based selector for products with options
   - Automatically chooses appropriate UI based on product data structure
+- **Image Editing Tools** (built-in canvas-based editor)
+  - Canvas-based crop tool with interactive drag-to-move and corner-resize handles
+  - Rotation controls (90°, -90°, 180°)
+  - Dark overlay shows crop area vs. removal area
+  - Immediate persistence to database and frontend cache clear
+  - Modal UI with save/cancel workflow
+- **Hero Image Management**
+  - "Make Hero" button promotes any gallery image to hero position (index 0)
+  - Visual HERO badge on first image
+  - Drag-and-drop reordering for gallery images (hero locked at position 0)
+  - ⋮⋮ drag handle indicators
+- **Automatic URL Shortening**
+  - is.gd API integration (free, no API key)
+  - Shortens URLs >40 characters on product save
+  - Skips already-shortened domains
+  - Parallel processing, graceful fallback
+- **Consistent Link Rendering**
+  - URLs and mailto links now clickable on homepage product cards
+  - Matches product detail page behavior
+  - stopPropagation prevents card navigation when clicking embedded links
+- **Enhanced Add-to-Cart UX**
+  - Spinner animation with "Adding to Cart..." text
+  - 5-second timeout with AbortController
+  - Duplicate click prevention (button disabled during request)
+  - Proper error messages surface to users (no silent failures)
+
+### Changed
+- **Default Sort:** Frontend homepage now defaults to "Newest First" (max of created_at/updated_at)
+- **Cache Revalidation:** Frontend API now accepts specific `productId` for targeted cache clearing
+- **Image Edit Flow:** Edited images persist immediately without requiring "Save Product" click
+- **Admin Triggers:** Image edits and product saves now automatically clear frontend cache
 
 ### Fixed
 - **Variant Visibility:** Products with multiple variants but no options now show selector
 - **Workflow Gap:** Previously required manual database INSERT to add variants to existing products
+- **Add-to-Cart Delays:** Eliminated 3-5 second hangs with proper loading states
+- **Cart Update Reliability:** Stock check errors now prevent cart update (removed "continue anyway" logic)
+- **Timeout Handling:** Requests that exceed 5 seconds show "Request timed out" alert
+- **Error Visibility:** All failure scenarios show user-facing alerts with specific messages
+- **Link Rendering Inconsistency:** Homepage product cards now render clickable URLs/mailto links
 
 ### Technical
 - Modified `ProductDisplay.tsx` to show dropdown when `variants.length > 1` and `!product.options`
 - Enhanced `edit-product/page.tsx` with variant array manipulation functions
 - Leveraged existing `/api/create-variant` endpoint (no new API routes needed)
+- Refactored cache revalidation to accept `productId` parameter
+- Added `isAddingToCart` state to ProductDisplay and ProductCard components
+- Created url-shortener utility (`admin/lib/url-shortener.ts`)
+- Enhanced error handling with specific timeout detection
+- Added `onClick={(e) => e.stopPropagation()}` to embedded links in ProductCard
 
 ---
 

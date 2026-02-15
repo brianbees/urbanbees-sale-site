@@ -7,7 +7,7 @@ Your Supabase tables currently allow public read/write access. This is a securit
 ### Steps to Enable RLS:
 
 1. **Visit Supabase Dashboard:**
-   https://supabase.com/dashboard/project/pdovgefwzxfawuyngrke/auth/policies
+   Go to your Supabase project → Authentication → Policies
 
 2. **Enable RLS on tables:**
    - Click on `products` table
@@ -45,7 +45,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 ```
 
 Get your service role key from:
-https://supabase.com/dashboard/project/pdovgefwzxfawuyngrke/settings/api
+Your Supabase project → Settings → API → Service Role Key
 
 ### Test After Enabling:
 

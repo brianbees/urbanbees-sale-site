@@ -18,11 +18,11 @@ A modern e-commerce platform for beekeeping equipment with full-featured admin p
 ├── admin/          # Product management admin panel (Next.js 16)
 ├── frontend/       # Customer-facing storefront (Next.js 16)
 ├── docs/          # Comprehensive documentation
-│   ├── FEATURES.md           # Complete feature list
-│   ├── CHANGELOG.md          # Version history
-│   ├── TODO.md               # Planned features
-│   ├── PROJECT_AUDIT.md      # Code quality audit
-│   └── SCHEMA_ARCHITECTURE.md # Database schema
+│   ├── FEATURES.md                    # Complete feature list
+│   ├── CHANGELOG.md                   # Version history
+│   ├── TODO.md                        # Planned features
+│   ├── PROJECT_AUDIT_2026-02-01.md    # Code quality audit
+│   └── SCHEMA_ARCHITECTURE.md         # Database schema
 └── scripts/       # Utility scripts
 
 ```
@@ -84,55 +84,143 @@ Comprehensive documentation in [docs/](docs/):
 
 ## 🗄 Database
 
-**Supabase Project:** pdovgefwzxfawuyngrke
+**Provider:** Supabase PostgreSQL with Storage  
+**Dashboard:** Access via your Supabase project dashboard
 
 ### Tables
-- `products` - Product information (name, description, slug, images[], category, created_at, updated_at)
-- `variants` - Product variants (SKU, variant_name, price_aud, stock_available, is_primary)
 
-### Storage Buckets
-- `product-images` - Compressed JPEG images (public access, max 1920px, 85% quality)
+**`products`**
+```sql
+id UUID PRIMARY KEY
+name TEXT NOT NULL
+slug TEXT
+category TEXT
+description TEXT
+images TEXT[]  -- Supabase Storage URLs
+created_at TIMESTAMPTZ
+updated_at TIMESTAMPTZ
+```
 
-### Row-Level Security
-- Products: Public read, admin write
-- Variants: Public read, admin write
-- Images: Public access via CDN
+**`variants`**
+```sql
+id UUID PRIMARY KEY
+product_id UUID REFERENCES products(id)
+sku TEXT
+price NUMERIC NOT NULL
+stock_qty INTEGER NOT NULL
+product_name TEXT  -- Denormalized for CSV exports
+option_values JSONB
+created_at TIMESTAMPTZ
+updated_at TIMESTAMPTZ
+```
+
+### Storage
+
+**Bucket:** `product-images` (public access)  
+**Format:** JPEG, max 1920px width, 85% quality  
+**CDN:** Global delivery via Supabase edge network
+
+### Security (Row-Level Security)
+
+**Public Access:** Read-only (SELECT via anon key)  
+**Admin Access:** Full CRUD (via service role key in API routes)
+
+**Verify RLS status:**
+```sql
+SELECT tablename, rowsecurity 
+FROM pg_tables 
+WHERE tablename IN ('products', 'variants');
+-- rowsecurity should be TRUE
+```
+
+**Setup documentation:** See [SUPABASE_RLS_SETUP.md](docs/SUPABASE_RLS_SETUP.md)
 
 ## ⚙️ Environment Variables
 
 ### Admin Panel (`admin/.env.local`)
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=https://pdovgefwzxfawuyngrke.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+# Supabase Connection (required)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_key_here
+
+# Service Role Key (server-side API routes only - never expose to client)
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 ```
 
 ### Frontend (`frontend/.env.local`)
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=https://pdovgefwzxfawuyngrke.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+# Supabase Connection (required)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_key_here
+
+# PayPal Integration (required for checkout)
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=your_paypal_client_id_here
 ```
 
+### Vercel Environment Variables (Production)
+
+**Admin Panel:**
+- ✅ `NEXT_PUBLIC_SUPABASE_URL`
+- ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- ✅ `SUPABASE_SERVICE_ROLE_KEY` (NOT prefixed with NEXT_PUBLIC)
+
+**Frontend:**
+- ✅ `NEXT_PUBLIC_SUPABASE_URL`
+- ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- ✅ `NEXT_PUBLIC_PAYPAL_CLIENT_ID`
+
+**Security Note:** Service role key bypasses RLS. Only use server-side (API routes). Never add `NEXT_PUBLIC_` prefix to service role key.
+
 ## 🚀 Development
 
-Each app runs independently:
+### Initial Setup
 
+1. **Clone repository**
+   ```bash
+   git clone https://github.com/brianbees/urbanbees-sale-site.git
+   cd urbanbees-sale-site
+   ```
+
+2. **Install dependencies**
+   ```bash
+   # Admin panel
+   cd admin
+   npm install
+   
+   # Frontend
+   cd ../frontend
+   npm install
+   ```
+
+3. **Configure environment variables**
+   - Create `admin/.env.local` (see Environment Variables section)
+   - Create `frontend/.env.local` (see Environment Variables section)
+
+4. **Verify Supabase connection**
+   - Test admin: http://localhost:3000
+   - Test frontend: http://localhost:3001
+
+### Run Development Servers
+
+**Admin Panel (port 3000)**
 ```bash
-# Admin panel (port 3000)
 cd admin
-npm install
-npm run dev
-
-# Frontend (port 3001)
-cd frontend
-npm install
 npm run dev
 ```
 
+**Frontend (port 3001 - avoid conflict)**
+```bash
+cd frontend
+npm run dev -- -p 3001
+```
+
+**Access locally:**
+- Admin: http://localhost:3000
+- Frontend: http://localhost:3001
+
 ### Build Commands
 ```bash
-# Production build
+# Production build (in each app folder)
 npm run build
 
 # Type checking
@@ -144,19 +232,43 @@ npm run lint
 
 ## 📦 Deployment
 
-**Method:** Automatic via GitHub → Vercel integration
+### Automatic Deployment (Recommended)
 
-1. Push to `main` branch
+**Setup:** GitHub → Vercel integration configured
+
+1. Push changes to `main` branch
+   ```bash
+   git push origin main
+   ```
+
 2. Vercel auto-builds and deploys both apps
-3. Admin: `urbanbees-product-admin.vercel.app`
-4. Frontend: `frontend-six-kappa-30.vercel.app`
+   - Admin: https://urbanbees-product-admin.vercel.app
+   - Frontend: https://frontend-six-kappa-30.vercel.app
 
-**Manual Deploy:**
+3. Monitor builds at https://vercel.com/brianbees-projects
+
+### Manual Deployment
+
+**From workspace root:**
 ```bash
-# From workspace root
-npm run deploy:admin    # or run task: Deploy Admin to Vercel
-npm run deploy:frontend # or run task: Deploy Frontend to Vercel
+# Deploy admin panel
+cd admin
+npx vercel --prod --yes
+
+# Deploy frontend
+cd ../frontend
+npx vercel --prod --yes
 ```
+
+**Via VS Code tasks:**
+- Command Palette → "Tasks: Run Task"
+- Select "Deploy Admin to Vercel" or "Deploy Frontend to Vercel"
+
+### Post-Deployment Verification
+
+1. **Admin Panel** - Create/edit test product
+2. **Frontend** - Verify product appears (may take 5 min for cache)
+3. **Clear cache** - Use preview page "Clear Cache" button if needed
 
 ## 🔧 Key Technologies
 
@@ -169,37 +281,49 @@ npm run deploy:frontend # or run task: Deploy Frontend to Vercel
 - **HTML5 Canvas** - Client-side image editing (crop/rotate)
 - **is.gd API** - Automatic URL shortening
 
-## 📝 Recent Updates (v3.0.0 - Feb 13, 2026)
+## 📝 Recent Updates
 
-### Added
-- Image editing tools (crop + rotate) in Edit Product screen
-- Hero image promotion (any image → hero position)
-- Drag-and-drop image reordering with locked hero
-- Automatic URL shortening using is.gd API (40+ char threshold)
-- Clickable links in product descriptions (homepage + product pages)
-- Loading states for Add-to-Cart (spinner + text)
-- 5-second timeout protection for Add-to-Cart operations
-- User-facing error messages (timeout vs. general error)
+**Version 3.1.0** (Feb 13, 2026) - See [CHANGELOG.md](docs/CHANGELOG.md) for details
 
-### Changed
-- Default sort: "Newest First" (was "Name A-Z")
-- Cache revalidation: Now accepts productId for targeted clearing
-- Edit workflow: Images save immediately with frontend sync
+- Variant management (add/delete variants in admin)
+- Image editing tools (crop + rotate)
+- Hero image promotion
+- Automatic URL shortening (is.gd)
+- Add-to-cart improvements (loading states, timeouts)
+- Smart variant selector (dropdown or buttons)
+- Default "Newest First" sorting
 
-### Fixed
-- Add-to-Cart delays (3-5 seconds with no feedback)
-- Duplicate Add-to-Cart clicks during slow operations
-- Inconsistent link rendering between homepage and product pages
-- Cache not clearing after image edits
+## 🔧 Troubleshooting
+
+**Products not appearing on frontend after creation:**
+- Wait 5 minutes for cache to expire, or
+- Use preview page "Clear Cache" button
+
+**Admin can't create/edit products (401 error):**
+- Verify `SUPABASE_SERVICE_ROLE_KEY` in Vercel environment variables
+- Key should NOT have `NEXT_PUBLIC_` prefix
+- Redeploy admin after changing env vars
+
+**Images not loading:**
+- Check `next.config.ts` has Supabase `remotePatterns`
+- Verify image URLs start with your Supabase project URL
+
+**Local dev: Port already in use:**
+```bash
+# Use different port
+npm run dev -- -p 3002
+```
 
 ## 🐛 Known Issues
 
-- None at this time
+See [TODO.md](docs/TODO.md) for planned improvements and [PROJECT_AUDIT.md](docs/PROJECT_AUDIT_2026-02-01.md) for technical debt.
 
 ## 📞 Support
 
-For technical questions or bug reports, see the GitHub repository issues page.
+**Documentation:** [docs/](docs/)  
+**Issues:** https://github.com/brianbees/urbanbees-sale-site/issues  
+**Supabase Dashboard:** Access via your Supabase project settings
 
 ---
 
-**Version 3.0.0** | Built with ❤️ for Urban Bees | February 2026
+**Version 3.1.0** | Built for Urban Bees | February 2026

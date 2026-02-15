@@ -108,6 +108,35 @@
 
 ---
 
+## Planned Features
+
+### Print List Feature (Print Preview Page)
+
+**Request:** Add a dedicated print preview feature to the app for easy printing of product lists.
+
+**Requirements:**
+1. Reuse existing Supabase data-fetching logic
+2. Create new route `/print-preview`
+3. Add "Print List" button on main list page
+4. Print preview page features:
+   - Clean, text-only, easy-to-read vertical layout
+   - Simple spacing, no UI chrome, no colors
+   - "Print" button at top (triggers browser print dialog)
+5. CSS print media queries:
+   - Only list content prints
+   - Print button and navigation hidden during print
+6. Implementation approach:
+   - New route component for `/print-preview`
+   - Update main list component with new button
+   - CSS for print-only formatting
+   - Idiomatic React + Next.js + Supabase implementation
+
+**Status:** Pending implementation  
+**Priority:** Low  
+**Estimated Effort:** 2-3 hours
+
+---
+
 ## Internal/Utility Pages
 
 - **For Print Page** (`frontend/src/app/for_print/page.tsx` & `ForPrintClient.tsx`)

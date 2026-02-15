@@ -1,7 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const supabaseUrl = 'https://pdovgefwzxfawuyngrke.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkb3ZnZWZ3enhd2F3dXluZ3JrZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzM0NjE5NjA4LCJleHAiOjIwNTAxOTU2MDh9.1e3f0TckJPPbhAFyc9dR0w6dYlMAO_HkOHcg3xGRznY';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Read credentials from admin/.env.local
+const envPath = join(__dirname, '..', 'admin', '.env.local');
+const envContent = readFileSync(envPath, 'utf-8');
+const envVars = {};
+
+envContent.split('\n').forEach(line => {
+  const match = line.match(/^([^=#]+)=(.*)$/);
+  if (match) {
+    const key = match[1].trim();
+    let value = match[2].trim();
+    if ((value.startsWith('"') && value.endsWith('"')) || 
+        (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    envVars[key] = value;
+  }
+});
+
+const supabaseUrl = envVars.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = envVars.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

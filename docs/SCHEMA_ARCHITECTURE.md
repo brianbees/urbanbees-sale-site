@@ -1,96 +1,51 @@
 # Schema & Architecture Documentation
 
-**Last Updated:** February 2, 2026  
-**Purpose:** Document data models, schema, and integration points
+**Last Updated:** February 15, 2026  
+**Status:** Production system using Supabase as single source of truth
 
 ---
 
-## System Architecture (Current)
-
-This project contains **TWO SEPARATE APPLICATIONS** with **UNIFIED DATA SOURCE**:
+## System Architecture
 
 ```
 ┌─────────────────────────────────────┐
 │  FRONTEND (Customer E-commerce)    │
-│  - Reads from Supabase database    │
-│  - Public read-only access (RLS)   │
-│  - Server-side rendering (SSR)     │
-│  - 5-minute cache, on-demand clear │
+│  - Reads from Supabase via ISR     │
+│  - 5-min cache (homepage)          │
+│  - 60-sec cache (product pages)    │
 └─────────────────────────────────────┘
                   ↓
          ┌────────────────┐
          │  SUPABASE DB   │
          │  (PostgreSQL)  │
+         │  + Storage CDN │
          └────────────────┘
                   ↑
 ┌─────────────────────────────────────┐
 │  ADMIN (Product Management)         │
 │  - Writes via API routes            │
 │  - Service role key (bypasses RLS) │
-│  - Create/update/delete products   │
-│  - Image upload to Storage          │
+│  - Clears frontend cache on save   │
 └─────────────────────────────────────┘
 ```
 
-**✅ UNIFIED:** Both systems use the same Supabase database. Admin writes, frontend reads.  
-**🔒 SECURITY:** Row Level Security (RLS) enforces public read-only, admin full CRUD.
-
----
-
-## Data Models
-
-### Database Model (Supabase)
-
-```typescript
-interface DatabaseProduct {
-  id: string;              // UUID (e.g., "a1b2c3d4-...")
-  name: string;
-  slug?: string;           // URL-friendly slug for frontend mapping
-  category: string;
-  description?: string;
-  images: string[];        // Array of URLs from Supabase Storage
-  created_at?: string;
-  updated_at?: string;
-}
-
-interface DatabaseVariant {
-  id: string;              // UUID
-  product_id: string;      // FK to products.id (UUID)
-  sku?: string;
-  price: number;
-  stock_qty: number;
-  option_values: Record<string, string>;
-  created_at?: string;
-  updated_at?: string;
-}
-
-interface WebsiteProduct {
-  id: string;              // String slug matching frontend
-  name: string;
-  slug?: string;
-  category?: string;
-}
-```
-
-**Data Source:** Supabase PostgreSQL database  
-**Update Method:** Admin panel forms  
-**Used By:** Inventory management, future database-driven features
+**Security Model:**
+- Public: Read-only (SELECT via RLS)
+- Admin: Full CRUD (service role key via API routes)
 
 ---
 
 ## Database Schema
 
-### Supabase Tables
-
-#### `products` table
+### `products` Table
 ```sql
 CREATE TABLE products (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  slug TEXT,                    -- URL-friendly identifier
+  slug TEXT,
   category TEXT,
   description TEXT,
-  images TEXT[],                 -- Array of image URLs
+  images TEXT[],                          -- Array of Supabase Storage URLs
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -98,7 +53,7 @@ CREATE TABLE products (
 CREATE INDEX idx_products_slug ON products(slug);
 ```
 
-#### `variants` table
+### `variants` Table
 ```sql
 CREATE TABLE variants (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -106,6 +61,7 @@ CREATE TABLE variants (
   sku TEXT,
   price NUMERIC NOT NULL,
   stock_qty INTEGER NOT NULL,
+  product_name TEXT,                     -- Denormalized for CSV exports
   option_values JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -114,223 +70,178 @@ CREATE TABLE variants (
 CREATE INDEX idx_variants_product_id ON variants(product_id);
 ```
 
-#### `website_products` table (Reference)
+### `website_products` Table (Reference Only)
 ```sql
 CREATE TABLE website_products (
-  id TEXT PRIMARY KEY,           -- Slug from frontend (e.g., "bb-1412-assembled-cedar")
+  id TEXT PRIMARY KEY,                   -- Slug from legacy system
   name TEXT NOT NULL,
   slug TEXT,
   category TEXT
 );
 ```
 
-**Purpose:** Provides a reference list of frontend products for admin dropdown  
-**Maintenance:** Must be manually synced with `frontend/src/data/products.ts`
+**Purpose:** Provides dropdown options in admin panel for existing product names.
 
 ---
 
-## Schema Alignment & Data Flow
+## TypeScript Interfaces
 
-### Current State
-
-**Frontend → Customer**
-```
-products.ts → Next.js pages → Customer sees products
-```
-
-**Admin → Database**
-```
-Admin forms → Supabase → Database (NOT visible to customers)
-```
-
-### Key Schema Differences
-
-| Aspect | Frontend | Database |
-|--------|----------|----------|
-| **Product ID** | String slug | UUID |
-| **Images** | `ProductImage[]` objects | `string[]` URLs |
-| **Variants** | Nested in Product | Separate table with FK |
-| **Updates** | Manual file edit | Admin panel |
-| **Source of Truth** | `products.ts` file | Supabase tables |
-
----
-
-## Integration Points
-
-### How They Connect (Currently)
-
-1. **Product Name Reference:**
-   - Admin loads `website_products` table
-   - Dropdown shows frontend product names
-   - User selects existing product or enters new name
-
-2. **Slug Generation:**
-   - Admin generates slug from product name
-   - Stored in `products.slug` field
-   - Could be used for frontend mapping (not implemented)
-
-### What's Missing
-
-- [ ] No sync from database → frontend
-- [ ] No API to fetch database products on frontend
-- [ ] No automated export process
-- [ ] No slug uniqueness validation
-
----
-
-## Usage Guidelines
-
-### Adding Products to Frontend
-
-**Method 1: Manual (Current)**
-1. Edit `frontend/src/data/products.ts`
-2. Add product object with slug ID
-3. Add images to `frontend/public/images/`
-4. Commit changes
-
-**Method 2: Admin Panel (Future)**
-1. Use admin to create product
-2. Run export script to generate `products.ts`
-3. Sync images from Supabase Storage
-4. Rebuild frontend
-
-### Adding Products to Database
-
-1. Open admin panel: http://localhost:3001
-2. Click "Add Product"
-3. Select from website products or enter new name
-4. Upload images (stored in Supabase Storage bucket `product-images`)
-5. Save (creates record with UUID)
-6. Add variants with pricing/inventory
-
-### Maintaining Data Consistency
-
-**Option A: Frontend-Only (Current)**
-- Keep using static `products.ts`
-- Ignore admin database
-- Simple, no sync needed
-
-**Option B: Database-Driven (Future)**
-- Migrate frontend to read from Supabase
-- Remove static data file
-- Single source of truth
-- Requires Supabase client on frontend
-
-**Option C: Hybrid with Sync**
-- Admin writes to database
-- Export script generates `products.ts`
-- Manual sync step before deployment
-- Complex but flexible
-
----
-
-## Known Issues & Limitations
-
-### ⚠️ Current Limitations
-
-1. **No Automatic Sync**
-   - Database products won't appear on frontend without manual export
-   - Frontend products won't appear in admin unless added to `website_products`
-
-2. **Duplicate Data**
-   - Same product can exist in both systems with different IDs
-   - No validation to prevent duplicates
-
-3. **Type Inconsistencies**
-   - Frontend: `images: ProductImage[]`
-   - Database: `images: string[]`
-   - If systems were merged, would need transformation layer
-
-4. **Slug Collision Risk**
-   - Manual slug generation could create duplicates
-   - No uniqueness constraint enforced
-
-### 🔧 Fixed Issues
-
-- ✅ UUID vs string ID mismatch in variants (now uses UUIDs correctly)
-- ✅ Duplicate file input fields (removed)
-- ✅ TypeScript `any[]` types (now properly typed)
-- ✅ Missing slug field (now stored in database)
-- ✅ Inconsistent dropdown source (now clear which table is used)
-
----
-
-## Future Recommendations
-
-### Short Term
-1. Add slug uniqueness validation in admin
-2. Create `website_products` sync script from `products.ts`
-3. Add database schema migration files
-4. Add error handling for FK violations
-
-### Long Term
-1. Decide on architectural direction (static vs database-driven)
-2. If database-driven: Migrate frontend to Supabase
-3. If static: Remove admin or convert to data generator
-4. Add image sync between Supabase Storage and `public/images/`
-5. Implement proper TypeScript SDK for database types
-
----
-
-## Type Safety Checklist
-
-- [x] Database types defined in `admin/types/database.ts`
-- [x] Admin forms use typed state variables
-- [x] Supabase queries return typed data
-- [x] Frontend Product types documented
-- [ ] Shared types package (if systems merge)
-- [ ] Runtime validation for database inserts
-- [ ] Zod schemas for form validation
-
----
-
-## Migration Path (If Unifying Systems)
-
-### Step 1: Add API Layer
 ```typescript
-// frontend/app/api/products/route.ts
-import { supabase } from '@/lib/supabase';
+interface DatabaseProduct {
+  id: string;              // UUID
+  name: string;
+  slug?: string;           // URL-friendly identifier
+  category: string;
+  description?: string;
+  images: string[];        // Supabase Storage URLs
+  created_at?: string;
+  updated_at?: string;
+}
 
-export async function GET() {
-  const { data } = await supabase.from('products').select('*');
-  return Response.json(data);
+interface DatabaseVariant {
+  id: string;              // UUID
+  product_id: string;      // FK to products.id
+  sku?: string;
+  price: number;
+  stock_qty: number;
+  product_name?: string;   // Denormalized
+  option_values: Record<string, string>;
+  created_at?: string;
+  updated_at?: string;
 }
 ```
 
-### Step 2: Transform Database → Frontend Format
-```typescript
-function transformDbProduct(dbProduct: DatabaseProduct): Product {
-  return {
-    id: dbProduct.slug || dbProduct.id,
-    name: dbProduct.name,
-    slug: dbProduct.slug || dbProduct.id,
-    category: dbProduct.category as ProductCategory,
-    images: dbProduct.images.map(src => ({ src, alt: dbProduct.name })),
-    // ... transform other fields
-  };
-}
-```
+---
 
-### Step 3: Update Frontend to Fetch
-```typescript
-// frontend/app/page.tsx
-async function getProducts() {
-  const res = await fetch('/api/products');
-  return res.json();
-}
-```
+## Image Storage
 
-### Step 4: Remove Static Data
-- Delete `frontend/src/data/products.ts`
-- Update all imports
-- Rebuild
+**Bucket:** `product-images` (Supabase Storage)
+
+**Naming Convention:**
+- Original uploads: `{slug}-{position}-{timestamp}.jpg`
+- Edited images: `{slug}-edited-{position}-{timestamp}.jpg`
+
+**Processing:**
+- Auto-compression: Max 1920px width, 85% JPEG quality
+- Editing: Canvas-based crop/rotate (client-side)
+- CDN: Automatic via Supabase global network
+
+**Legacy System Note:**
+Prior to Feb 2026, images were stored in `/public/images/` with manual filename mapping (68 placeholder files). System migrated to Supabase Storage with direct uploads.
 
 ---
 
-## Contact & Support
+## Row-Level Security (RLS)
 
-For questions about:
-- **Frontend data:** Check `frontend/src/data/products.ts`
-- **Database schema:** See Supabase dashboard
-- **Admin forms:** Review `admin/app/add-*` pages
-- **This document:** Located at `docs/SCHEMA_ARCHITECTURE.md`
+### Products Table Policies
+```sql
+-- Allow public read access
+CREATE POLICY "Public products are viewable" ON products
+FOR SELECT USING (true);
+
+-- No INSERT/UPDATE/DELETE policies = admin service role key only
+```
+
+### Variants Table Policies
+```sql
+-- Allow public read access
+CREATE POLICY "Public variants are viewable" ON variants
+FOR SELECT USING (true);
+```
+
+**Admin Access:** Uses `SUPABASE_SERVICE_ROLE_KEY` via API routes to bypass RLS.
+
+---
+
+## Data Flow Examples
+
+### Adding a Product (Admin → Database)
+1. Admin uploads images → Compressed → Supabase Storage
+2. Admin fills form → Validates → Sends to `/api/create-product`
+3. API route uses service role key → INSERT into `products`
+4. Variants INSERTed into `variants` table with `product_id` FK
+5. API returns success → Admin redirects to preview
+6. Frontend cache cleared via `/api/revalidate`
+
+### Viewing Products (Customer → Frontend)
+1. User visits homepage → Next.js fetches from Supabase
+2. Query: `SELECT * FROM products ORDER BY created_at DESC`
+3. ISR cache serves result (5-minute freshness)
+4. User clicks product → Fetches specific product + variants
+5. ISR cache (60-second freshness)
+
+### Editing an Image (Admin → Immediate Sync)
+1. Admin clicks "Edit" on image → Canvas editor opens
+2. Crop/rotate applied → Exported as new JPEG blob
+3. Upload to Supabase Storage with new filename
+4. UPDATE `products` SET `images[n]` = new URL
+5. Call `/api/revalidate?productId={id}` → Clears specific product cache
+6. Frontend shows updated image within seconds
+
+---
+
+## Environment Variables
+
+### Required for Both Apps
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon_key>
+```
+
+### Admin Only
+```env
+SUPABASE_SERVICE_ROLE_KEY=<service_role_key>  # Server-side, never exposed to client
+```
+
+### Frontend Only
+```env
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=<paypal_client_id>
+```
+
+---
+
+## API Routes (Admin Backend)
+
+**Mutation Endpoints:**
+- `POST /api/create-product` - Creates product + variants
+- `POST /api/update-product` - Updates product + variants (with product_name sync)
+- `POST /api/create-variant` - Adds variant to existing product
+- `POST /api/update-variant` - Updates variant details
+
+**Frontend Endpoints:**
+- `POST /api/check-stock` - Validates available quantity (cart-aware)
+- `POST /api/revalidate` - Clears ISR cache (homepage, product pages)
+
+**All mutations use service role key to bypass RLS.**
+
+---
+
+## Caching Strategy
+
+| Page Type | Revalidation | Trigger |
+|-----------|-------------|---------|
+| Homepage | 5 minutes | Manual or on product save |
+| Product Detail | 60 seconds | Manual or on product save |
+| Preview Page | 5 minutes | Manual or on product save |
+
+**Cache Clearing:**
+- Automatic: Admin panel triggers after save/edit
+- Manual: Preview page "Clear Cache" button
+- Targeted: Accepts `productId` to clear specific product page only
+
+---
+
+## Known Limitations
+
+1. **Type Duplication:** `DatabaseProduct` and `DatabaseVariant` exist in both `admin/types/` and `frontend/src/types/`. Keep manually synced.
+2. **Slug Collision:** No uniqueness constraint on `slug` field. Manual validation required.
+3. **Image Deletion:** Old images marked for deletion but not auto-removed (manual cleanup needed).
+
+---
+
+## Related Documentation
+- **Features & Workflows:** [FEATURES.md](FEATURES.md)
+- **Change History:** [CHANGELOG.md](CHANGELOG.md)
+- **Security Setup:** [SUPABASE_RLS_SETUP.md](SUPABASE_RLS_SETUP.md)
+- **Planned Work:** [TODO.md](TODO.md)
+

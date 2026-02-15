@@ -40,10 +40,10 @@
 ### Original Instructions (Now Completed)
 
 ### Step 1: Update Vercel Environment Variable
-1. Go to: https://vercel.com/brianbees-projects/urbanbees-product-admin/settings/environment-variables
+1. Go to: https://vercel.com/your-account/your-project/settings/environment-variables
 2. Find the variable `SUPABASE_SERVICE_ROLE_KEY`
 3. **Edit it and change the name to:** `NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY`
-4. Keep the value the same: `sb_secret_rTpRmXlcDW3zQA9oM_MMcw_P6hqCwKm`
+4. Keep the value (your actual service role key)
 5. Ensure it's applied to: Production, Preview, Development (all three)
 6. Click Save
 
@@ -110,15 +110,15 @@ Open: http://localhost:3000
 
 **Admin (.env.local):**
 ```env
-NEXT_PUBLIC_SUPABASE_URL="https://pdovgefwzxfawuyngrke.supabase.co"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_i0DqtdlAYPAjxn_eEPUi3Q_0eeiCxpD"
-NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY="sb_secret_rTpRmXlcDW3zQA9oM_MMcw_P6hqCwKm"
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your_publishable_key_here"
+SUPABASE_SERVICE_ROLE_KEY="your_service_role_key_here"
 ```
 
 **Frontend (.env.local):**
 ```env
-NEXT_PUBLIC_SUPABASE_URL="https://pdovgefwzxfawuyngrke.supabase.co"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_i0DqtdlAYPAjxn_eEPUi3Q_0eeiCxpD"
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your_publishable_key_here"
 ```
 
 **Vercel (Admin Panel) - NEEDS UPDATE:**
@@ -139,7 +139,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_i0DqtdlAYPAjxn_eEPUi3Q_0eeiCxpD"
 - Restart dev server if running locally
 
 ### RLS Policy Issues
-- Check policies exist in Supabase dashboard: https://supabase.com/dashboard/project/pdovgefwzxfawuyngrke/auth/policies
+- Check policies exist in Supabase dashboard: Project → Authentication → Policies
 - Verify RLS is enabled on all 3 tables (products, variants, website_products)
 
 ---
