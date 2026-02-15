@@ -252,7 +252,7 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
     return (
       <div className="bg-white border border-gray-300 rounded hover:shadow-md transition-shadow relative">
         <div className="flex flex-row items-center">
-          <Link href={`/product/${product.id}`} className="flex-shrink-0">
+          <Link href={`/product/${product.id}`} className="flex-shrink-0 relative">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-stone-100">
               <Image
                 src={imageSrc}
@@ -262,6 +262,26 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
                 sizes="(max-width: 640px) 64px, 80px"
               />
             </div>
+            {/* Wishlist Heart Button - Small for compact view */}
+            <button
+              onClick={handleWishlistToggle}
+              className="absolute top-0.5 right-0.5 z-10 p-1 bg-white rounded-full shadow-sm hover:shadow-md transition-all"
+              aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-3 w-3 sm:h-4 sm:w-4 transition-colors ${inWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400 hover:text-red-500'}`}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+            </button>
           </Link>
 
           <div className="flex-1 px-1.5 sm:px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 min-w-0 overflow-hidden">
@@ -274,7 +294,7 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
               {isPriceAvailable ? (
                 <span className="text-sm sm:text-base font-bold text-gray-900 whitespace-nowrap">£{currentPrice.toFixed(2)}</span>
               ) : (
-                <span className="text-[10px] sm:text-xs text-gray-600 whitespace-nowrap">Contact</span>
+                <span className="text-[10px] sm:text-xs text-gray-600 whitespace-nowrap">Call us</span>
               )}
               <button
                 onClick={handleAddToCart}
