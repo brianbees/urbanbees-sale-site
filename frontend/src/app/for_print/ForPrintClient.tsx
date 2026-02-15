@@ -57,7 +57,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
     }).join('\n\n');
     
     const totalText = mode === 'wishlist' 
-      ? `\n\n----------\nTotal: £${totalPrice.toFixed(2)}\n\nItems: ${products.length}`
+      ? `\n\n----------\nItems: ${products.length}`
       : '';
 
     const fullBody = `Hello,\n\nI am interested in the following products:\n\n${emailBody}${totalText}\n\nThank you.`;
