@@ -182,6 +182,21 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
         </div>
       </div>
 
+      {/* Print Product List Link */}
+      <div className="mb-3 flex items-center justify-end">
+        <a
+          href="/for_print?mode=all"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-gray-600 hover:text-blue-600 underline flex items-center gap-1"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+          </svg>
+          Print full product list
+        </a>
+      </div>
+
       {/* Clear Filters Link */}
       {(searchTerm || selectedCategory !== 'all') && (
         <div className="mb-4">

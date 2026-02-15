@@ -21,7 +21,7 @@ interface ForPrintClientProps {
 export default function ForPrintClient({ products, mode = 'all' }: ForPrintClientProps) {
   const router = useRouter();
   const totalPrice = products.reduce((sum, p) => sum + (p.price || 0), 0);
-  const listTitle = mode === 'wishlist' ? 'Wishlist' : 'Product Catalogue';
+  const listTitle = mode === 'wishlist' ? 'Wishlist' : 'Full Product Catalogue';
   const currentDate = new Date().toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -95,7 +95,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
 
       {/* Column Headers */}
       <div className="for-print-headers">
-        <div className="for-print-checkbox-col">☐</div>
+        {mode === 'wishlist' && <div className="for-print-checkbox-col">☐</div>}
         <div className="for-print-img-col"></div>
         <div className="for-print-name-col">Product</div>
         <div className="for-print-details-col">Description</div>
@@ -108,9 +108,11 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         {products.map((product, idx) => (
           <React.Fragment key={product.id}>
             <div className="for-print-item">
-              <div className="for-print-checkbox">
-                <input type="checkbox" className="print-checkbox" />
-              </div>
+              {mode === 'wishlist' && (
+                <div className="for-print-checkbox">
+                  <input type="checkbox" className="print-checkbox" />
+                </div>
+              )}
               <div className="for-print-img-holder">
                 <img
                   src={product.images?.[0] || '/placeholder.jpg'}
@@ -227,7 +229,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         }
         .for-print-headers {
           display: grid;
-          grid-template-columns: 30px 50px 180px 1fr 80px 80px 80px;
+          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr 80px 80px 80px;
           align-items: center;
           gap: 8px;
           font-weight: bold;
@@ -245,7 +247,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         }
         .for-print-item {
           display: grid;
-          grid-template-columns: 30px 50px 180px 1fr 80px 80px 80px;
+          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr 80px 80px 80px;
           align-items: center;
           gap: 8px;
           page-break-inside: avoid;
