@@ -114,13 +114,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           <div className="for-print-sku-col">SKU</div>
           <div className="for-print-quantity-col">Stock</div>
         </div>
-      ) : (
-        <div className="for-print-headers-compact">
-          <div className="compact-img-col"></div>
-          <div className="compact-info-col">Product Info</div>
-          <div className="compact-price-col">Price</div>
-        </div>
-      )}
+      ) : null}
 
       <div className="for-print-list">
         {products.map((product, idx) => (
@@ -161,7 +155,6 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
                   <img
                     src={product.images?.[0] || '/placeholder.jpg'}
                     alt={product.name}
-                    style={{ objectFit: 'cover', borderRadius: 4, height: '40px', width: '40px' }}
                   />
                 </div>
                 <div className="compact-info">
@@ -170,9 +163,9 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
                   {product.description && (
                     <p className="compact-desc">{cleanDescription(product.description)}</p>
                   )}
-                </div>
-                <div className="compact-price">
-                  {product.price != null ? `£${product.price.toFixed(2)}` : 'Contact'}
+                  {product.price != null && (
+                    <p className="compact-price">£{product.price.toFixed(2)}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -334,6 +327,54 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           border: none;
           border-top: 1px solid #ddd;
           margin: 4px 0;
+        }
+        .compact-item {
+          display: flex;
+          gap: 12px;
+          align-items: flex-start;
+          page-break-inside: avoid;
+          padding: 8px 0;
+        }
+        .compact-img {
+          flex-shrink: 0;
+          width: 60px;
+          height: 60px;
+        }
+        .compact-img img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+        }
+        .compact-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .compact-info h3 {
+          margin: 0;
+          font-size: 14px;
+          font-weight: bold;
+          color: #333;
+        }
+        .compact-category {
+          font-size: 11px;
+          color: #666;
+          font-style: italic;
+        }
+        .compact-desc {
+          margin: 0;
+          font-size: 12px;
+          color: #555;
+          line-height: 1.4;
+        }
+        .compact-price {
+          margin: 4px 0 0 0;
+          font-size: 13px;
+          font-weight: bold;
+          color: #2563eb;
         }
         .for-print-footer {
           margin-top: 20px;
