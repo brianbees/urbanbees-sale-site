@@ -1,12 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useCartStore } from '@/store/cart';
 import { useWishlistStore } from '@/store/wishlist';
 import { useEffect, useState } from 'react';
 
 export default function Header() {
-  const items = useCartStore((state) => state.items);
   const wishlistItems = useWishlistStore((state) => state.items);
   const [mounted, setMounted] = useState(false);
 
@@ -14,7 +12,6 @@ export default function Header() {
     setMounted(true);
   }, []);
 
-  const itemCount = mounted ? items.reduce((total, item) => total + item.quantity, 0) : 0;
   const wishlistCount = mounted ? wishlistItems.length : 0;
 
   return (
@@ -57,35 +54,6 @@ export default function Header() {
                 </span>
               )}
             </Link>
-
-            {/* Cart Icon */}
-            <Link
-              href="/cart"
-              className="relative flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-700"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
-            <span className="text-gray-700 font-medium hidden sm:inline">Cart</span>
-            
-            {/* Badge */}
-            {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {itemCount > 9 ? '9+' : itemCount}
-              </span>
-            )}
-          </Link>
           </div>
         </div>
       </div>
