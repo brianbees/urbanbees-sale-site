@@ -116,7 +116,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
       {/* Column Headers */}
       {mode === 'wishlist' ? (
         <div className="for-print-headers">
-          <div className="for-print-checkbox-col">☐</div>
+          {!preview && <div className="for-print-checkbox-col">☐</div>}
           <div className="for-print-img-col"></div>
           <div className="for-print-name-col">Product</div>
           <div className="for-print-details-col">Description</div>
@@ -131,9 +131,11 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
           <React.Fragment key={product.id}>
             {mode === 'wishlist' ? (
               <div className="for-print-item">
-                <div className="for-print-checkbox">
-                  <input type="checkbox" className="print-checkbox" />
-                </div>
+                {!preview && (
+                  <div className="for-print-checkbox">
+                    <input type="checkbox" className="print-checkbox" />
+                  </div>
+                )}
                 <div className="for-print-img-holder">
                   <img
                     src={product.images?.[0] || '/placeholder.jpg'}
@@ -267,7 +269,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         }
         .for-print-headers {
           display: grid;
-          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
+          grid-template-columns: ${mode === 'wishlist' && !preview ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
           align-items: center;
           gap: 8px;
           font-weight: bold;
@@ -285,7 +287,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         }
         .for-print-item {
           display: grid;
-          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
+          grid-template-columns: ${mode === 'wishlist' && !preview ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
           align-items: center;
           gap: 8px;
           page-break-inside: avoid;
