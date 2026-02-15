@@ -132,48 +132,51 @@ export default function WishlistPage() {
             {items.map((item) => (
               <div
                 key={item.productId}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex gap-4 hover:shadow-md transition-shadow"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
               >
-                {/* Image */}
-                <div className="relative w-24 h-24 flex-shrink-0">
-                  <Image
-                    src={item.image || '/images/placeholder.jpg'}
-                    alt={item.productName}
-                    fill
-                    className="object-cover rounded"
-                    sizes="96px"
-                  />
+                {/* Top section: Image and Details */}
+                <div className="flex gap-3 mb-3">
+                  {/* Image */}
+                  <div className="relative w-16 h-16 md:w-24 md:h-24 flex-shrink-0">
+                    <Image
+                      src={item.image || '/images/placeholder.jpg'}
+                      alt={item.productName}
+                      fill
+                      className="object-cover rounded"
+                      sizes="(max-width: 768px) 64px, 96px"
+                    />
+                  </div>
+
+                  {/* Details */}
+                  <div className="flex-grow min-w-0">
+                    <h3 className="font-semibold text-base md:text-lg mb-1">
+                      <button
+                        onClick={() => router.push(`/product/${item.productId}`)}
+                        className="hover:text-blue-600 transition-colors text-left truncate block w-full"
+                      >
+                        {item.productName}
+                      </button>
+                    </h3>
+                    <p className="text-xs md:text-sm text-gray-500 mb-2">{item.category}</p>
+                    {item.price !== null && (
+                      <p className="text-base md:text-lg font-bold text-gray-900">£{item.price.toFixed(2)}</p>
+                    )}
+                  </div>
                 </div>
 
-                {/* Details */}
-                <div className="flex-grow">
-                  <h3 className="font-semibold text-lg mb-1">
-                    <button
-                      onClick={() => router.push(`/product/${item.productId}`)}
-                      className="hover:text-blue-600 transition-colors text-left"
-                    >
-                      {item.productName}
-                    </button>
-                  </h3>
-                  <p className="text-sm text-gray-500 mb-2">{item.category}</p>
-                  {item.price !== null && (
-                    <p className="text-lg font-bold text-gray-900">£{item.price.toFixed(2)}</p>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col gap-2 justify-center">
+                {/* Bottom section: Actions */}
+                <div className="flex gap-2">
                   {item.price !== null && (
                     <button
                       onClick={() => handleAddToCart(item)}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-sm transition-colors whitespace-nowrap"
+                      className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-sm transition-colors"
                     >
                       {addedToCart === item.productId ? '✓ Added' : 'Add to Cart'}
                     </button>
                   )}
                   <button
                     onClick={() => removeItem(item.productId)}
-                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-sm transition-colors whitespace-nowrap"
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-sm transition-colors"
                   >
                     Remove
                   </button>
