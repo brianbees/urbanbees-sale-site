@@ -26,8 +26,17 @@ export default function ForPrintPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client-side hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    // Don't load products until mounted to prevent hydration mismatch
+    if (!mounted) return;
+
     async function loadProducts() {
       if (mode === 'wishlist') {
         // Convert wishlist items to product format
@@ -63,7 +72,7 @@ export default function ForPrintPage() {
             price: variant.price,
             sku: variant.sku,
             quantity: variant.stock_qty,
-          };
+          };, mounted
         });
 
         setProducts(productsWithVariant);
