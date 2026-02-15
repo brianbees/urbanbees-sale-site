@@ -32,6 +32,23 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
     window.print();
   };
 
+  const handleEmail = () => {
+    // Build email body with product list
+    const emailBody = products.map((product, idx) => {
+      return `${idx + 1}. ${product.name}${product.price ? ` - £${product.price.toFixed(2)}` : ''}${product.sku ? ` (SKU: ${product.sku})` : ''}${product.description ? `\n   ${product.description}` : ''}`;
+    }).join('\n\n');
+    
+    const totalText = mode === 'wishlist' 
+      ? `\n\n----------\nTotal: £${totalPrice.toFixed(2)}\n\nItems: ${products.length}`
+      : '';
+
+    const fullBody = `Hello,\n\nI am interested in the following products:\n\n${emailBody}${totalText}\n\nThank you.`;
+    
+    const mailtoLink = `mailto:sale@urbanbees.co.uk?subject=${encodeURIComponent('I am interested in these products')}&body=${encodeURIComponent(fullBody)}`;
+    
+    window.location.href = mailtoLink;
+  };
+
   return (
     <div className="for-print-wrapper">
       {/* Print Controls - Hidden when printing */}
@@ -45,15 +62,27 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           </svg>
           Back
         </button>
-        <button
-          onClick={handlePrint}
-          className="print-button"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
-          </svg>
-          Print List
-        </button>
+        <div className="action-buttons">
+          <button
+            onClick={handleEmail}
+            className="email-button"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+            Email List
+          </button>
+          <button
+            onClick={handlePrint}
+            className="print-button"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+            </svg>
+            Print List
+          </button>
+        </div>
       </div>
 
       <div className="for-print-container">
@@ -138,7 +167,11 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           border-radius: 8px;
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .back-button, .print-button {
+        .action-buttons {
+          display: flex;
+          gap: 10px;
+        }
+        .back-button, .print-button, .email-button {
           display: flex;
           align-items: center;
           gap: 8px;
@@ -156,6 +189,13 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         }
         .back-button:hover {
           background: #d1d5db;
+        }
+        .email-button {
+          background: #2563eb;
+          color: white;
+        }
+        .email-button:hover {
+          background: #1d4ed8;
         }
         .print-button {
           background: #1f2937;
