@@ -129,13 +129,13 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
                 <p>{product.description}</p>
               </div>
               <div className="for-print-price">
-                <p>{product.price !== undefined ? `£${product.price.toFixed(2)}` : '-'}</p>
+                <p>{product.price != null ? `£${product.price.toFixed(2)}` : '-'}</p>
               </div>
               <div className="for-print-sku">
                 <p>{product.sku || '-'}</p>
               </div>
               <div className="for-print-quantity">
-                <p>{product.quantity !== undefined ? product.quantity : '-'}</p>
+                <p>{product.quantity != null ? product.quantity : '-'}</p>
               </div>
             </div>
             {idx < products.length - 1 && <hr className="for-print-divider" />}
