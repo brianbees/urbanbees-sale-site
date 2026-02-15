@@ -5,14 +5,20 @@ import { useWishlistStore } from '@/store/wishlist';
 import { useEffect, useState } from 'react';
 
 export default function Header() {
-  const wishlistItems = useWishlistStore((state) => state.items);
   const [mounted, setMounted] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
   useEffect(() => {
     setMounted(true);
+    // Subscribe to wishlist after mount to avoid hydration mismatch
+    const unsubscribe = useWishlistStore.subscribe((state) => {
+      setWishlistCount(state.items.length);
+    });
+    // Set initial count
+    setWishlistCount(useWishlistStore.getState().items.length);
+    
+    return unsubscribe;
   }, []);
-
-  const wishlistCount = mounted ? wishlistItems.length : 0;
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
