@@ -72,7 +72,7 @@ export default function ForPrintPage() {
             price: variant.price,
             sku: variant.sku,
             quantity: variant.stock_qty,
-          };, mounted
+          };
         });
 
         setProducts(productsWithVariant);
@@ -81,7 +81,7 @@ export default function ForPrintPage() {
     }
 
     loadProducts();
-  }, [mode, wishlistItems]);
+  }, [mode, wishlistItems, mounted]);
 
   if (loading) {
     return (
