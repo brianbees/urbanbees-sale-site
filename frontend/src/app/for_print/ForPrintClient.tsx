@@ -46,7 +46,10 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
     
     const mailtoLink = `mailto:sale@urbanbees.co.uk?subject=${encodeURIComponent('I am interested in these products')}&body=${encodeURIComponent(fullBody)}`;
     
-    window.location.href = mailtoLink;
+    // Use anchor element click for better browser compatibility
+    const link = document.createElement('a');
+    link.href = mailtoLink;
+    link.click();
   };
 
   return (
