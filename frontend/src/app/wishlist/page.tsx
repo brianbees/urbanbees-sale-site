@@ -51,6 +51,10 @@ export default function WishlistPage() {
     const link = document.createElement('a');
     link.href = mailtoLink;
     link.click();
+  };
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
       router.back();
     } else {
       router.push('/');
