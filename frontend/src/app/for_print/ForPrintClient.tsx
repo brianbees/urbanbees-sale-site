@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from 'next/navigation';
 
 interface Product {
   id: string;
@@ -18,6 +19,7 @@ interface ForPrintClientProps {
 }
 
 export default function ForPrintClient({ products, mode = 'all' }: ForPrintClientProps) {
+  const router = useRouter();
   const totalPrice = products.reduce((sum, p) => sum + (p.price || 0), 0);
   const listTitle = mode === 'wishlist' ? 'Wishlist' : 'Product Catalogue';
   const currentDate = new Date().toLocaleDateString('en-GB', {
@@ -26,8 +28,35 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
     year: 'numeric'
   });
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="for-print-container">
+    <div className="for-print-wrapper">
+      {/* Print Controls - Hidden when printing */}
+      <div className="print-controls no-print">
+        <button
+          onClick={() => router.back()}
+          className="back-button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Back
+        </button>
+        <button
+          onClick={handlePrint}
+          className="print-button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+          </svg>
+          Print List
+        </button>
+      </div>
+
+      <div className="for-print-container">
       {/* Print Header */}
       <div className="for-print-header">
         <h1>{listTitle}</h1>
@@ -90,7 +119,51 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           </div>
         </div>
       )}
+      </div>
+
       <style jsx>{`
+        .for-print-wrapper {
+          min-height: 100vh;
+          background: #f3f4f6;
+          padding: 20px;
+        }
+        .print-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          max-width: 1200px;
+          margin: 0 auto 20px;
+          padding: 15px;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .back-button, .print-button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 6px;
+          font-size: 16px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .back-button {
+          background: #e5e7eb;
+          color: #374151;
+        }
+        .back-button:hover {
+          background: #d1d5db;
+        }
+        .print-button {
+          background: #1f2937;
+          color: white;
+        }
+        .print-button:hover {
+          background: #111827;
+        }
         .for-print-container {
           padding: 20px;
           font-family: Arial, sans-serif;
@@ -195,9 +268,17 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           .for-print-container {
             background: white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
           }
         }
         @media print {
+          .for-print-wrapper {
+            background: white;
+            padding: 0;
+          }
+          .print-controls {
+            display: none !important;
+          }
           body * {
             visibility: hidden;
           }
@@ -210,6 +291,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
             top: 0;
             width: 100%;
             box-shadow: none;
+            padding: 10px;
           }
         }
       `}</style>

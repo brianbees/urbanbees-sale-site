@@ -73,16 +73,6 @@ export default function ForPrintPage() {
     loadProducts();
   }, [mode, wishlistItems]);
 
-  // Auto-trigger print dialog after a short delay
-  useEffect(() => {
-    if (!loading && products.length > 0) {
-      const timer = setTimeout(() => {
-        window.print();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [loading, products]);
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
