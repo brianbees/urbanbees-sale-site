@@ -351,7 +351,7 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
               ) : isPriceAvailable ? (
                 'Add to Cart'
               ) : (
-                'Unavailable'
+                'Make an offer'
               )}
             </button>
           </div>

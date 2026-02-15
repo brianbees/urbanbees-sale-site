@@ -239,7 +239,7 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
                   : 'bg-gray-400 text-white cursor-not-allowed'
               }`}
             >
-              {isAddingToCart ? 'Adding...' : isPriceAvailable ? 'Add to cart' : 'Unavailable'}
+              {isAddingToCart ? 'Adding...' : isPriceAvailable ? 'Add to cart' : 'Make an offer'}
             </button>
           </div>
         </div>
@@ -441,7 +441,7 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
                   ) : isPriceAvailable ? (
                     'Add to cart'
                   ) : (
-                    'Unavailable'
+                    'Make an offer'
                   )}
                 </button>
                 
