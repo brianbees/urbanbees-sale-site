@@ -38,6 +38,14 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
       .trim();
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -65,7 +73,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
       {/* Print Controls - Hidden when printing */}
       <div className="print-controls no-print">
         <button
-          onClick={() => router.back()}
+          onClick={handleBack}
           className="back-button"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
