@@ -47,10 +47,8 @@ export default function WishlistPage() {
     
     const mailtoLink = `mailto:sale@urbanbees.co.uk?subject=${encodeURIComponent('I am interested in these products')}&body=${encodeURIComponent(fullBody)}`;
     
-    // Use anchor element click for better browser compatibility
-    const link = document.createElement('a');
-    link.href = mailtoLink;
-    link.click();
+    // Use window.open for better PC browser compatibility
+    window.open(mailtoLink, '_self');
   };
 
   return (
