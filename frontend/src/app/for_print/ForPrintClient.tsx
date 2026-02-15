@@ -140,7 +140,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
                 )}
                 <div className="for-print-img-holder">
                   <img
-                    src={product.images?.[0] || '/placeholder.jpg'}
+                    src={product.images?.[0] || '/images/placeholder.jpg'}
                     alt={product.name}
                     className="for-print-img"
                     style={{ objectFit: 'cover', borderRadius: 8, height: '50px', width: '50px' }}
@@ -173,7 +173,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
               <div className="compact-item">
                 <div className="compact-img">
                   <img
-                    src={product.images?.[0] || '/placeholder.jpg'}
+                    src={product.images?.[0] || '/images/placeholder.jpg'}
                     alt={product.name}
                   />
                 </div>
