@@ -151,12 +151,6 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
               </div>
             ) : (
               <div className="compact-item">
-                <div className="compact-img">
-                  <img
-                    src={product.images?.[0] || '/placeholder.jpg'}
-                    alt={product.name}
-                  />
-                </div>
                 <div className="compact-info">
                   <h3>{product.name}</h3>
                   {product.category && <span className="compact-category">{product.category}</span>}
@@ -335,23 +329,33 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           page-break-inside: avoid;
           padding: 8px 0;
         }
-        .compact-img {
-          flex-shrink: 0;
-          width: 60px;
-          height: 60px;
-        }
-        .compact-img img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          border-radius: 4px;
-          border: 1px solid #ccc;
-        }
         .compact-info {
           flex: 1;
           display: flex;
           flex-direction: column;
           gap: 4px;
+        }
+        @media (min-width: 768px) {
+          .compact-info {
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+          }
+          .compact-info h3 {
+            flex: 0 0 auto;
+            max-width: 250px;
+          }
+          .compact-category {
+            flex: 0 0 auto;
+          }
+          .compact-desc {
+            flex: 1 1 auto;
+          }
+          .compact-price {
+            flex: 0 0 auto;
+            margin: 0;
+          }
         }
         .compact-info h3 {
           margin: 0;
