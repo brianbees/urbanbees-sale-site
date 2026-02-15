@@ -138,39 +138,18 @@
 
 ---
 
-## Planned Features
+## Completed Features (Unlisted Until Now)
 
-### Print List Feature (Print Preview Page)
-
-**Request:** Add a dedicated print preview feature to the app for easy printing of product lists.
-
-**Requirements:**
-1. Reuse existing Supabase data-fetching logic
-2. Create new route `/print-preview`
-3. Add "Print List" button on main list page
-4. Print preview page features:
-   - Clean, text-only, easy-to-read vertical layout
-   - Simple spacing, no UI chrome, no colors
-   - "Print" button at top (triggers browser print dialog)
-5. CSS print media queries:
-   - Only list content prints
-   - Print button and navigation hidden during print
-6. Implementation approach:
-   - New route component for `/print-preview`
-   - Update main list component with new button
-   - CSS for print-only formatting
-   - Idiomatic React + Next.js + Supabase implementation
-
-**Status:** Pending implementation  
-**Priority:** Low  
-**Estimated Effort:** 2-3 hours
+### Print List Feature ✅
+**Route:** `/for_print` (`frontend/src/app/for_print/page.tsx` & `ForPrintClient.tsx`)
+- Print-friendly product lists with multiple view modes
+- Mode toggle: Wishlist (with checkboxes) or All Products
+- Email and Print buttons with mailto generation
+- Responsive layout (stacked mobile, inline desktop)
+- Clean description rendering (offer text removed)
+- Fetches live data from Supabase
+- Not linked from main navigation (internal tool)
 
 ---
 
-## Internal/Utility Pages
-
-- **For Print Page** (`frontend/src/app/for_print/page.tsx` & `ForPrintClient.tsx`)
-  - Purpose: Generates a print-friendly list of all products, including name, description, price, SKU, and stock quantity.
-  - Data Source: Fetches live product and variant data from Supabase.
-  - Usage: Used for internal inventory printouts or quick reference sheets. Not linked from main navigation.
-  - Status: Not referenced in other documentation until Feb 2026. Now tracked here for completeness.
+## Planned Features
