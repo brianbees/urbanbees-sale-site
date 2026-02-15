@@ -152,9 +152,9 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="flex-shrink-0 px-3 py-2 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            className="min-w-0 flex-1 sm:flex-shrink-0 sm:flex-1-0 px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
           >
-            <option value="all">All Categories</option>
+            <option value="all">All</option>
             {categories.filter(cat => cat !== 'all').map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -167,13 +167,13 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="flex-shrink-0 px-3 py-2 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+          className="min-w-0 flex-1 sm:flex-shrink-0 sm:flex-1-0 px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
         >
-          <option value="name-asc">Sort: Name (A-Z)</option>
-          <option value="name-desc">Name (Z-A)</option>
-          <option value="price-asc">Price (Low-High)</option>
-          <option value="price-desc">Price (High-Low)</option>
-          <option value="newest">Newest First</option>
+          <option value="name-asc">A-Z</option>
+          <option value="name-desc">Z-A</option>
+          <option value="price-asc">$ Low</option>
+          <option value="price-desc">$ High</option>
+          <option value="newest">Newest</option>
         </select>
 
         {/* Results Count */}
