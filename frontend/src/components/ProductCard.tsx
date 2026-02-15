@@ -230,17 +230,15 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
                 <span className="text-xs font-semibold text-gray-600">Contact for Price</span>
               )}
             </div>
-            <button
-              onClick={handleAddToCart}
-              disabled={!isPriceAvailable || isAddingToCart}
-              className={`w-full font-semibold py-2 px-3 rounded transition-colors text-xs flex items-center justify-center gap-1 ${
-                isPriceAvailable && !isAddingToCart
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                  : 'bg-gray-400 text-white cursor-not-allowed'
-              }`}
-            >
-              {isAddingToCart ? 'Adding...' : isPriceAvailable ? 'Add to cart' : 'Make an offer'}
-            </button>
+            {isPriceAvailable && (
+              <button
+                onClick={handleAddToCart}
+                disabled={isAddingToCart}
+                className="w-full font-semibold py-2 px-3 rounded transition-colors text-xs flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+              >
+                {isAddingToCart ? 'Adding...' : 'Add to cart'}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -420,30 +418,26 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
                 )}
               </div>
               <div className="flex gap-2">
-                <button
-                  onClick={handleAddToCart}
-                  disabled={!isPriceAvailable || isAddingToCart}
-                  aria-label={`Add ${product.name} to cart`}
-                  className={`font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm flex items-center gap-1 ${
-                    isPriceAvailable && !isAddingToCart
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                      : 'bg-gray-400 text-white cursor-not-allowed'
-                  }`}
-                >
-                  {isAddingToCart ? (
-                    <>
-                      <svg className="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <span className="hidden md:inline">Adding...</span>
-                    </>
-                  ) : isPriceAvailable ? (
-                    'Add to cart'
-                  ) : (
-                    'Make an offer'
-                  )}
-                </button>
+                {isPriceAvailable && (
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={isAddingToCart}
+                    aria-label={`Add ${product.name} to cart`}
+                    className="font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition-colors text-xs md:text-sm flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                  >
+                    {isAddingToCart ? (
+                      <>
+                        <svg className="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="hidden md:inline">Adding...</span>
+                      </>
+                    ) : (
+                      'Add to cart'
+                    )}
+                  </button>
+                )}
                 
                 {/* Wishlist Button */}
                 <button
