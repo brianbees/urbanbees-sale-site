@@ -253,33 +253,33 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
       <div className="bg-white border border-gray-300 rounded hover:shadow-md transition-shadow relative">
         <div className="flex flex-row items-center">
           <Link href={`/product/${product.id}`} className="flex-shrink-0">
-            <div className="relative w-20 h-20 bg-stone-100">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-stone-100">
               <Image
                 src={imageSrc}
                 alt={firstImage.alt}
                 fill
                 className="object-cover"
-                sizes="80px"
+                sizes="(max-width: 640px) 64px, 80px"
               />
             </div>
           </Link>
 
-          <div className="flex-1 p-2 flex items-center justify-between gap-2">
+          <div className="flex-1 px-1.5 sm:px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
             <Link href={`/product/${product.id}`} className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600 truncate">{product.name}</h3>
-              <span className="text-xs text-gray-500">{product.category}</span>
+              <h3 className="text-xs sm:text-sm font-semibold text-gray-900 hover:text-blue-600 truncate">{product.name}</h3>
+              <span className="text-[10px] sm:text-xs text-gray-500">{product.category}</span>
             </Link>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               {isPriceAvailable ? (
-                <span className="text-base font-bold text-gray-900 whitespace-nowrap">£{currentPrice.toFixed(2)}</span>
+                <span className="text-sm sm:text-base font-bold text-gray-900 whitespace-nowrap">£{currentPrice.toFixed(2)}</span>
               ) : (
-                <span className="text-xs text-gray-600 whitespace-nowrap">Contact</span>
+                <span className="text-[10px] sm:text-xs text-gray-600 whitespace-nowrap">Contact</span>
               )}
               <button
                 onClick={handleAddToCart}
                 disabled={!isPriceAvailable || isAddingToCart}
-                className={`py-1.5 px-3 rounded text-xs font-semibold transition-colors whitespace-nowrap ${
+                className={`py-1 px-2 sm:py-1.5 sm:px-3 rounded text-[10px] sm:text-xs font-semibold transition-colors whitespace-nowrap ${
                   isPriceAvailable && !isAddingToCart
                     ? 'bg-blue-600 hover:bg-blue-700 text-white'
                     : 'bg-gray-400 text-white cursor-not-allowed'
