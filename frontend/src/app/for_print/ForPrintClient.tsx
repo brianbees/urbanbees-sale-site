@@ -84,7 +84,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         <div className="action-buttons">
           <button
             onClick={handleEmail}
-            className="email-button"
+            className="action-link"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
               <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -94,7 +94,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           </button>
           <button
             onClick={handlePrint}
-            className="print-button"
+            className="action-link"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
@@ -159,6 +159,12 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
               </div>
             ) : (
               <div className="compact-item">
+                <div className="compact-img">
+                  <img
+                    src={product.images?.[0] || '/placeholder.jpg'}
+                    alt={product.name}
+                  />
+                </div>
                 <div className="compact-info">
                   <h3>{product.name}</h3>
                   {product.category && <span className="compact-category">{product.category}</span>}
@@ -205,40 +211,35 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         }
         .action-buttons {
           display: flex;
-          gap: 10px;
+          gap: 15px;
         }
-        .back-button, .print-button, .email-button {
+        .back-button, .action-link {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 10px 20px;
+          gap: 6px;
           border: none;
-          border-radius: 6px;
-          font-size: 16px;
-          font-weight: 500;
+          background: none;
+          font-size: 14px;
           cursor: pointer;
           transition: all 0.2s;
         }
         .back-button {
+          padding: 8px 16px;
           background: #e5e7eb;
           color: #374151;
+          border-radius: 6px;
+          font-weight: 500;
         }
         .back-button:hover {
           background: #d1d5db;
         }
-        .email-button {
-          background: #2563eb;
-          color: white;
+        .action-link {
+          color: #2563eb;
+          text-decoration: underline;
+          padding: 0;
         }
-        .email-button:hover {
-          background: #1d4ed8;
-        }
-        .print-button {
-          background: #1f2937;
-          color: white;
-        }
-        .print-button:hover {
-          background: #111827;
+        .action-link:hover {
+          color: #1d4ed8;
         }
         .for-print-container {
           padding: 20px;
@@ -336,6 +337,18 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           align-items: flex-start;
           page-break-inside: avoid;
           padding: 8px 0;
+        }
+        .compact-img {
+          flex-shrink: 0;
+          width: 30px;
+          height: 30px;
+        }
+        .compact-img img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 4px;
+          border: 1px solid #ccc;
         }
         .compact-info {
           flex: 1;
