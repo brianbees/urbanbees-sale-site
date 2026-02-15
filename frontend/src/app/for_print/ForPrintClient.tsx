@@ -121,8 +121,8 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
           <div className="for-print-name-col">Product</div>
           <div className="for-print-details-col">Description</div>
           {!preview && <div className="for-print-price-col">Price</div>}
-          <div className="for-print-sku-col">SKU</div>
-          <div className="for-print-quantity-col">Stock</div>
+          {!preview && <div className="for-print-sku-col">SKU</div>}
+          {!preview && <div className="for-print-quantity-col">Stock</div>}
         </div>
       ) : null}
 
@@ -156,12 +156,16 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
                     <p>{product.price != null ? `£${product.price.toFixed(2)}` : '-'}</p>
                   </div>
                 )}
-                <div className="for-print-sku">
-                  <p>{product.sku || '-'}</p>
-                </div>
-                <div className="for-print-quantity">
-                  <p>{product.quantity != null ? product.quantity : '-'}</p>
-                </div>
+                {!preview && (
+                  <div className="for-print-sku">
+                    <p>{product.sku || '-'}</p>
+                  </div>
+                )}
+                {!preview && (
+                  <div className="for-print-quantity">
+                    <p>{product.quantity != null ? product.quantity : '-'}</p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="compact-item">
@@ -269,7 +273,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         }
         .for-print-headers {
           display: grid;
-          grid-template-columns: ${mode === 'wishlist' && !preview ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
+          grid-template-columns: ${mode === 'wishlist' && !preview ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px 80px 80px'};
           align-items: center;
           gap: 8px;
           font-weight: bold;
@@ -287,7 +291,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         }
         .for-print-item {
           display: grid;
-          grid-template-columns: ${mode === 'wishlist' && !preview ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
+          grid-template-columns: ${mode === 'wishlist' && !preview ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px 80px 80px'};
           align-items: center;
           gap: 8px;
           page-break-inside: avoid;
