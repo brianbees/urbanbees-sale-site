@@ -264,13 +264,13 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
             </div>
           </Link>
 
-          <div className="flex-1 px-1.5 sm:px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
-            <Link href={`/product/${product.id}`} className="flex-1 min-w-0">
-              <h3 className="text-xs sm:text-sm font-semibold text-gray-900 hover:text-blue-600 truncate">{product.name}</h3>
-              <span className="text-[10px] sm:text-xs text-gray-500">{product.category}</span>
+          <div className="flex-1 px-1.5 sm:px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 min-w-0 overflow-hidden">
+            <Link href={`/product/${product.id}`} className="flex-1 min-w-0 overflow-hidden">
+              <h3 className="text-xs sm:text-sm font-semibold text-gray-900 hover:text-blue-600 truncate overflow-hidden">{product.name}</h3>
+              <span className="text-[10px] sm:text-xs text-gray-500 truncate block overflow-hidden">{product.category}</span>
             </Link>
 
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 overflow-hidden">
               {isPriceAvailable ? (
                 <span className="text-sm sm:text-base font-bold text-gray-900 whitespace-nowrap">£{currentPrice.toFixed(2)}</span>
               ) : (
@@ -279,7 +279,7 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
               <button
                 onClick={handleAddToCart}
                 disabled={!isPriceAvailable || isAddingToCart}
-                className={`py-1 px-2 sm:py-1.5 sm:px-3 rounded text-[10px] sm:text-xs font-semibold transition-colors whitespace-nowrap ${
+                className={`py-1 px-2 sm:py-1.5 sm:px-3 rounded text-[10px] sm:text-xs font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${
                   isPriceAvailable && !isAddingToCart
                     ? 'bg-blue-600 hover:bg-blue-700 text-white'
                     : 'bg-gray-400 text-white cursor-not-allowed'
