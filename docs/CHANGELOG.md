@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.2.0] - 2026-02-15
+
+### Changed
+- **Favicon System:** Converted from dynamic icon.tsx to static favicon.ico + favicon.svg
+  - Removed runtime ImageResponse generation
+  - Static 9.6KB Urban Bees logo favicon.ico (highest priority)
+  - SVG fallback with teal-to-green gradient and "UB" text
+  - Simpler, faster, more reliable browser support
+- **Print View Layout:** Responsive print view with compact design
+  - 30px images in compact mode (reduced from 60px)
+  - Responsive: stacked vertical (mobile), inline horizontal (desktop ≥768px)
+  - Email/Print controls converted to text links (blue underlined) from solid buttons
+  - Icons reduced to h-3 w-3 for minimalist appearance
+  - Removed "Offers welcome" text from printed descriptions
+- **Wishlist Mobile Layout:** Cards now stack vertically on mobile
+  - Image/details section at top
+  - Action buttons at bottom
+  - Improved readability on small screens
+- **Header Navigation:** Simplified to logo + wishlist only
+  - Removed cart icon (functionality not needed currently)
+  - Cleaner, more focused navigation
+
+### Fixed
+- **Back Button Navigation:** Now redirects to homepage when no browser history
+  - Fixes broken back button when opening product in new tab
+  - Checks `window.history.length` before calling `router.back()`
+- **Email Body Cleanup:** Removed "Total: £0.00" line from email templates
+  - Displays item count only, cleaner output
+
+### Technical
+- Deleted `frontend/src/app/icon.tsx` (dynamic generation)
+- Created `frontend/src/app/favicon.ico` with Urban Bees branding
+- Updated `frontend/src/app/favicon.svg` with matching gradient design
+- Modified `ForPrintClient.tsx` with `cleanDescription()` regex to remove offer text
+- Updated `wishlist/page.tsx` with mobile-first stacked card layout
+- Simplified `Header.tsx` by removing cart icon and useCartStore import
+- Enhanced `ProductDisplay.tsx` and `ProductCard.tsx` to hide Add to Cart when price unavailable
+
+---
+
 ## [3.1.0] - 2026-02-13
 
 ### Added

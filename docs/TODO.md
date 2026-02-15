@@ -1,5 +1,35 @@
 # TODO - Future Features
 
+## Recent Updates (Feb 15, 2026)
+
+### Completed Today ✅
+- **Favicon System Overhaul** - Converted from dynamic to static implementation
+  - Removed dynamic icon.tsx (ImageResponse generation)
+  - Created static favicon.ico with Urban Bees logo (9.6KB)
+  - Updated favicon.svg with teal-to-green gradient fallback
+  - Next.js priority: favicon.ico > favicon.svg
+  - Simpler architecture, faster loading, better browser compatibility
+- **Print View Improvements** - Responsive, compact print layout
+  - 30px images in compact mode (50% reduction)
+  - Responsive layout: vertical stack (mobile), horizontal inline (desktop)
+  - Email/Print controls now text links instead of buttons
+  - Minimalist h-3 icons
+  - Removed "Offers welcome" text from descriptions via regex
+- **Wishlist Mobile Optimization** - Stacked card layout for small screens
+  - Image/details at top, action buttons at bottom
+  - Better touch target spacing
+  - Improved readability on mobile devices
+- **Header Simplification** - Removed cart icon, kept wishlist only
+  - Cleaner navigation (logo + wishlist)
+  - Cart functionality not needed currently
+- **Back Button Fix** - Navigate to homepage when no browser history
+  - Prevents broken back button on new tab opens
+  - Checks history length before using router.back()
+- **Email Cleanup** - Removed "Total: £0.00" line from email bodies
+  - Shows item count only, cleaner output
+
+---
+
 ## Recent Updates (Feb 13, 2026)
 
 ### Completed Today ✅
