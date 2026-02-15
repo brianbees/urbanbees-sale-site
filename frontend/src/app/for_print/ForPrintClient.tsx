@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 
 interface Product {
@@ -24,11 +24,16 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
   const totalPrice = products.reduce((sum, p) => sum + (p.price || 0), 0);
   const baseTitle = mode === 'wishlist' ? 'Wishlist' : 'Full Product Catalogue';
   const listTitle = preview ? `Print Preview - ${baseTitle}` : baseTitle;
-  const currentDate = new Date().toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  });
+  const [currentDate, setCurrentDate] = useState('');
+
+  // Generate date on client side only to prevent hydration mismatch
+  useEffect(() => {
+    setCurrentDate(new Date().toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }));
+  }, []);
 
   // Clean description by removing offer text for print view
   const cleanDescription = (desc: string) => {
