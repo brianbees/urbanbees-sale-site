@@ -1,11 +1,23 @@
 "use client";
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Script from 'next/script';
 
 export default function HeaderWrapper({ children }: { children: React.ReactNode }) {
-  if (typeof window !== 'undefined' && window.location.pathname === '/for_print') {
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isForPrintPage = mounted && pathname === '/for_print';
+
+  if (isForPrintPage) {
     return <>{children}</>;
   }
+
   return <>
     <Header />
     <Script
