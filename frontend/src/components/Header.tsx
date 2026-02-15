@@ -8,14 +8,22 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
 
+  if (typeof window !== 'undefined') {
+    console.log('[DEBUG] Header render - mounted:', mounted, 'wishlistCount:', wishlistCount);
+  }
+
   useEffect(() => {
+    console.log('[DEBUG] Header useEffect - mounting');
     setMounted(true);
     // Subscribe to wishlist after mount to avoid hydration mismatch
     const unsubscribe = useWishlistStore.subscribe((state) => {
+      console.log('[DEBUG] Header wishlist updated:', state.items.length);
       setWishlistCount(state.items.length);
     });
     // Set initial count
-    setWishlistCount(useWishlistStore.getState().items.length);
+    const initialCount = useWishlistStore.getState().items.length;
+    console.log('[DEBUG] Header initial wishlist count:', initialCount);
+    setWishlistCount(initialCount);
     
     return unsubscribe;
   }, []);

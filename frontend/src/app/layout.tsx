@@ -13,6 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  if (typeof window !== 'undefined') {
+    console.log('[DEBUG] Client render - layout');
+  }
+  
   return (
     <html lang="en">
       <body className={inter.className}>
