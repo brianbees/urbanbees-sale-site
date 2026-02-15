@@ -27,10 +27,15 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
+    console.log('[DEBUG] ProductCard useEffect - mounting for product:', product.id);
     setMounted(true);
-  }, []);
+  }, [product.id]);
 
   const inWishlist = mounted ? isInWishlist(product.id) : false;
+  
+  if (typeof window !== 'undefined' && index === 0) {
+    console.log('[DEBUG] ProductCard render - index:', index, 'mounted:', mounted, 'inWishlist:', inWishlist, 'viewStyle:', viewStyle);
+  }
 
   const selectedVariant = product.variants.find((v) => v.id === selectedVariantId) || product.variants[0];
   const currentPrice = selectedVariant.price;
