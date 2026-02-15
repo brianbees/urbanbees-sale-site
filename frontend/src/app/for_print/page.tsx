@@ -20,6 +20,7 @@ interface Product {
 export default function ForPrintPage() {
   const searchParams = useSearchParams();
   const mode = searchParams.get('mode') as 'all' | 'wishlist' || 'all';
+  const preview = searchParams.get('preview') === 'true';
   const { items: wishlistItems } = useWishlistStore();
   
   const [products, setProducts] = useState<Product[]>([]);
@@ -97,5 +98,5 @@ export default function ForPrintPage() {
     );
   }
 
-  return <ForPrintClient products={products} mode={mode} />;
+  return <ForPrintClient products={products} mode={mode} preview={preview} />;
 }

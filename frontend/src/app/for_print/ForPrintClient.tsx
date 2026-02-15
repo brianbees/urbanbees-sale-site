@@ -16,12 +16,14 @@ interface Product {
 interface ForPrintClientProps {
   products: Product[];
   mode?: 'all' | 'wishlist';
+  preview?: boolean;
 }
 
-export default function ForPrintClient({ products, mode = 'all' }: ForPrintClientProps) {
+export default function ForPrintClient({ products, mode = 'all', preview = false }: ForPrintClientProps) {
   const router = useRouter();
   const totalPrice = products.reduce((sum, p) => sum + (p.price || 0), 0);
-  const listTitle = mode === 'wishlist' ? 'Wishlist' : 'Full Product Catalogue';
+  const baseTitle = mode === 'wishlist' ? 'Wishlist' : 'Full Product Catalogue';
+  const listTitle = preview ? `Print Preview - ${baseTitle}` : baseTitle;
   const currentDate = new Date().toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -118,7 +120,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
           <div className="for-print-img-col"></div>
           <div className="for-print-name-col">Product</div>
           <div className="for-print-details-col">Description</div>
-          <div className="for-print-price-col">Price</div>
+          {!preview && <div className="for-print-price-col">Price</div>}
           <div className="for-print-sku-col">SKU</div>
           <div className="for-print-quantity-col">Stock</div>
         </div>
@@ -147,9 +149,11 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
                 <div className="for-print-details">
                   <p>{cleanDescription(product.description || '')}</p>
                 </div>
-                <div className="for-print-price">
-                  <p>{product.price != null ? `£${product.price.toFixed(2)}` : '-'}</p>
-                </div>
+                {!preview && (
+                  <div className="for-print-price">
+                    <p>{product.price != null ? `£${product.price.toFixed(2)}` : '-'}</p>
+                  </div>
+                )}
                 <div className="for-print-sku">
                   <p>{product.sku || '-'}</p>
                 </div>
@@ -171,7 +175,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
                   {product.description && (
                     <p className="compact-desc">{cleanDescription(product.description)}</p>
                   )}
-                  {product.price != null && (
+                  {!preview && product.price != null && (
                     <p className="compact-price">£{product.price.toFixed(2)}</p>
                   )}
                 </div>
@@ -183,7 +187,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
       </div>
 
       {/* Footer with total */}
-      {mode === 'wishlist' && (
+      {mode === 'wishlist' && !preview && (
         <div className="for-print-footer">
           <div className="for-print-total">
             <strong>Total:</strong> £{totalPrice.toFixed(2)}
@@ -263,7 +267,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         }
         .for-print-headers {
           display: grid;
-          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr 80px 80px 80px;
+          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
           align-items: center;
           gap: 8px;
           font-weight: bold;
@@ -281,7 +285,7 @@ export default function ForPrintClient({ products, mode = 'all' }: ForPrintClien
         }
         .for-print-item {
           display: grid;
-          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr 80px 80px 80px;
+          grid-template-columns: ${mode === 'wishlist' ? '30px ' : ''}50px 180px 1fr ${preview ? '' : '80px '}80px 80px;
           align-items: center;
           gap: 8px;
           page-break-inside: avoid;

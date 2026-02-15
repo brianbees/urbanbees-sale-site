@@ -91,7 +91,7 @@ export default function WishlistPage() {
                 Email List
               </button>
               <button
-                onClick={() => router.push('/for_print?mode=wishlist')}
+                onClick={() => router.push('/for_print?mode=wishlist&preview=true')}
                 className="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline transition-colors text-sm"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">

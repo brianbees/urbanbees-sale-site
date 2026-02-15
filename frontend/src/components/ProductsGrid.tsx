@@ -185,7 +185,7 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
       {/* Print Product List Link */}
       <div className="mb-3 flex items-center justify-end">
         <a
-          href="/for_print?mode=all"
+          href="/for_print?mode=all&preview=true"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-gray-600 hover:text-blue-600 underline flex items-center gap-1"
