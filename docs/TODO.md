@@ -153,3 +153,23 @@
 ---
 
 ## Planned Features
+[...existing code...]
+
+---
+## Debugging Hydration Issue (Feb 15, 2026)
+
+### Recent Prompts & Actions
+- Audit for hydration issues across codebase (client-only guards, SSR/CSR checks)
+- Force redeploys to Vercel (empty commit, push)
+- Upgraded Vercel plan to Pro, confirmed aliasing and deployment URLs
+- Persistent React hydration error (#418) on homepage, not /preview
+- Added debug logs to layout, HeaderWrapper, Header, ProductsGrid, ProductCard, Home page
+- Confirmed Header/HeaderWrapper not source of error; error appears after product components render
+- Awaiting console output for [DEBUG] logs in ProductsGrid/ProductCard/Home page
+- Next step: Analyze debug logs, isolate hydration mismatch, propose targeted fix
+
+### Next Actions
+- Review console output for [DEBUG] logs
+- Pinpoint source of hydration mismatch in ProductsGrid/ProductCard/Home page
+- Fix hydration mismatch and redeploy
+---

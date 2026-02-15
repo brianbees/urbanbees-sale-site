@@ -16,8 +16,6 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index, viewStyle = 'list' }: ProductCardProps) {
-  const { addItem, items } = useCartStore();
-  const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const { showToast } = useToast();
   const router = useRouter();
 
@@ -25,13 +23,27 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
   const [mounted, setMounted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [inWishlist, setInWishlist] = useState(false);
+
+  // Defer all Zustand store access until after mount to prevent hydration mismatch
+  const cartStore = mounted ? useCartStore() : { addItem: () => {}, items: [] };
+  const wishlistStore = mounted ? useWishlistStore() : { 
+    addItem: () => {}, 
+    removeItem: () => {}, 
+    isInWishlist: () => false 
+  };
 
   useEffect(() => {
     console.log('[DEBUG] ProductCard useEffect - mounting for product:', product.id);
     setMounted(true);
   }, [product.id]);
 
-  const inWishlist = mounted ? isInWishlist(product.id) : false;
+  // Update wishlist state after mount
+  useEffect(() => {
+    if (mounted) {
+      setInWishlist(wishlistStore.isInWishlist(product.id));
+    }
+  }, [mounted, product.id, wishlistStore]);
   
   if (typeof window !== 'undefined' && index === 0) {
     console.log('[DEBUG] ProductCard render - index:', index, 'mounted:', mounted, 'inWishlist:', inWishlist, 'viewStyle:', viewStyle);
@@ -110,7 +122,7 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
       const stockData = await response.json();
       
       // Check current quantity in cart
-      const existingItem = items.find(
+      const existingItem = cartStore.items.find(
         (item) => item.productId === product.id && item.variantName === variantName
       );
       const currentQtyInCart = existingItem ? existingItem.quantity : 0;
@@ -135,7 +147,7 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
       }
       
       // Add to cart
-      addItem({
+      cartStore.addItem({
         productId: product.id,
         productName: product.name,
         variantId: selectedVariantId,
