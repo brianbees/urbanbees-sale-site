@@ -1,3 +1,5 @@
+'use client';
+
 // Diagnostic page for testing mailto: link behavior
 // Path: /test-mailto
 
