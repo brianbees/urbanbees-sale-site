@@ -2,8 +2,8 @@
 
 A modern e-commerce platform for beekeeping equipment with full-featured admin panel and customer storefront.
 
-**Version:** 3.1.0  
-**Last Updated:** February 13, 2026
+**Version:** 3.3.0  
+**Last Updated:** February 16, 2026
 
 ## 🚀 Quick Links
 

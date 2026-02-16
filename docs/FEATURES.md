@@ -1,6 +1,6 @@
 # Urban Bees Sale Site - Feature Capabilities
 
-**Version:** 3.1.0 | Last Updated: February 13, 2026  
+**Version:** 3.3.0 | Last Updated: February 16, 2026  
 **For Implementation Details:** See [CHANGELOG.md](CHANGELOG.md)
 
 ## Current Feature Set
@@ -33,13 +33,14 @@
 - eBay-style horizontal cards (image left, details right)
 - Whole-word search + category filter + sort options
 - Default sort: "Newest First" (by created_at/updated_at)
-- Clickable URLs and mailto links in descriptions
+- Clickable URLs and mailto links in descriptions with fallback support
 
 **Product Pages**
 - Large hero image with gallery thumbnails
 - Lightbox modal for full-size viewing
 - Smart variant selector (dropdown or buttons based on product structure)
 - Full descriptions with rendered links
+- Email links with manual copy fallback (production robustness)
 
 **Shopping**
 - Add-to-cart with loading states and 5-second timeout
@@ -49,11 +50,18 @@
 - Wishlist with LocalStorage persistence
 - PayPal checkout integration
 
+**Contact Robustness** (v3.3.0)
+- Email links work via mailto: protocol when configured
+- Visible email addresses as fallback (select-all support)
+- Helpful tooltips guide users if mailto: doesn't work
+- Ensures contact possible regardless of system configuration
+
 **Performance**
 - ISR caching (5-min homepage, 60s product pages)
 - Image lazy loading with priority for above-fold content
 - Targeted cache revalidation by product ID
 - Next.js Image optimization with Supabase CDN
+- Clean hydration (no SSR/client mismatches)
 
 
 ## Technical Architecture

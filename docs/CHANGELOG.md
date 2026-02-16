@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.3.0] - 2026-02-16
+
+### Added
+- **Diagnostic Test Page:** Created `/test-mailto` for systematic mailto: link testing
+  - 5 systematic tests to isolate mailto: issues (environment vs code vs context)
+  - Testing protocol and results template
+  - Helps diagnose desktop vs mobile email link behavior differences
+- **Production Robustness:** Email contact fallbacks for users without mailto: handlers
+  - Added `select-all` CSS class to all email links (easier manual copy)
+  - Added descriptive `title` attributes with fallback instructions  
+  - Visible email addresses on wishlist and print pages
+  - Users can always copy contact email manually if clicking fails
+  - Ensures contact possible regardless of system configuration
+
+### Fixed
+- **Critical Hydration Error (#418):** Resolved React hydration mismatch on homepage
+  - **Root cause:** Nested `<a>` tags (invalid HTML) - `renderDescriptionLine()` created links inside `<Link>` components
+  - Browsers auto-correct invalid HTML but React expects original structure → mismatch
+  - **Fix:** Moved description rendering outside Link component to prevent nested anchors
+  - **Additional:** Fixed Rules of Hooks violation (conditional `useCartStore()`/`useWishlistStore()` calls)
+  - **Additional:** Fixed undefined `removeFromWishlist()`/`addToWishlist()` functions (runtime bug)
+  - Valid HTML structure, clean hydration, no console errors
+
+### Changed
+- **Email Link Consistency:** Added `stopPropagation()` to ProductDisplay email links
+  - Now consistent with ProductCard behavior
+  - Prevents parent container click interference
+
+### Technical
+- All email links now use `select-all` class and descriptive tooltips
+- Wishlist page shows "Or email directly: sale@urbanbees.co.uk"
+- Print page shows "Or email directly: sale@urbanbees.co.uk"
+- Created comprehensive diagnostic documentation in `HYDRATION_FIX_2026-02-16.md`
+
+---
+
 ## [3.2.0] - 2026-02-15
 
 ### Changed
