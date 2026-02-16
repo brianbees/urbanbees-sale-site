@@ -31,8 +31,18 @@ export default function Header() {
             <span className="text-xl font-bold text-gray-900">Urban Bees</span>
           </Link>
 
-          {/* Navigation Icons */}
-          <div className="flex items-center gap-2">
+          {/* Navigation */}
+          <div className="flex items-center gap-4">
+            {/* About Link */}
+            <Link
+              href="/about"
+              className="text-gray-700 font-medium hover:text-amber-600 transition-colors hidden sm:inline"
+            >
+              About
+            </Link>
+
+            {/* Navigation Icons */}
+            <div className="flex items-center gap-2">
             {/* Wishlist Icon */}
             <Link
               href="/wishlist"
@@ -61,6 +71,7 @@ export default function Header() {
                 </span>
               )}
             </Link>
+            </div>
           </div>
         </div>
       </div>
