@@ -25,16 +25,11 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
 
-  // Defer all Zustand store access until after mount to prevent hydration mismatch
-  const cartStore = mounted ? useCartStore() : { addItem: () => {}, items: [] };
-  const wishlistStore = mounted ? useWishlistStore() : { 
-    addItem: () => {}, 
-    removeItem: () => {}, 
-    isInWishlist: () => false 
-  };
+  // Always call hooks unconditionally (Rules of Hooks)
+  const cartStore = useCartStore();
+  const wishlistStore = useWishlistStore();
 
   useEffect(() => {
-    console.log('[DEBUG] ProductCard useEffect - mounting for product:', product.id);
     setMounted(true);
   }, [product.id]);
 
@@ -44,10 +39,6 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
       setInWishlist(wishlistStore.isInWishlist(product.id));
     }
   }, [mounted, product.id, wishlistStore]);
-  
-  if (typeof window !== 'undefined' && index === 0) {
-    console.log('[DEBUG] ProductCard render - index:', index, 'mounted:', mounted, 'inWishlist:', inWishlist, 'viewStyle:', viewStyle);
-  }
 
   const selectedVariant = product.variants.find((v) => v.id === selectedVariantId) || product.variants[0];
   const currentPrice = selectedVariant.price;
@@ -176,10 +167,10 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
 
   const handleWishlistToggle = () => {
     if (inWishlist) {
-      removeFromWishlist(product.id);
+      wishlistStore.removeItem(product.id);
     } else {
       const firstImage = product.images && product.images.length > 0 ? product.images[0] : { src: '/images/placeholder.jpg', alt: 'No image' };
-      addToWishlist({
+      wishlistStore.addItem({
         productId: product.id,
         productName: product.name,
         price: currentPrice,
@@ -371,24 +362,27 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
         <div className="flex-1 p-3 md:p-4 flex flex-col">
           <Link href={`/product/${product.id}`} className="block mb-2" aria-label={`View ${product.name} details`}>
             <h3 className="text-sm md:text-lg font-bold text-gray-900 hover:text-blue-600 mb-1">{product.name}</h3>
-            {product.description && (
-              <p className="text-gray-600 text-xs md:text-sm mb-2 line-clamp-2">
-                {product.description.split('\n').slice(0, 2).map((line, idx) => (
-                  <span key={`desc-${idx}`} className="block">
-                    {renderDescriptionLine(line)}
-                  </span>
-                ))}
-              </p>
-            )}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-gray-500">{product.category}</span>
-              {selectedVariant.stockQty !== null && (
-                <span className="text-xs text-green-600 font-medium">
-                  {selectedVariant.stockQty} in stock
-                </span>
-              )}
-            </div>
           </Link>
+          
+          {/* Description with links - OUTSIDE Link to prevent nested anchors */}
+          {product.description && (
+            <p className="text-gray-600 text-xs md:text-sm mb-2 line-clamp-2">
+              {product.description.split('\n').slice(0, 2).map((line, idx) => (
+                <span key={`desc-${idx}`} className="block">
+                  {renderDescriptionLine(line)}
+                </span>
+              ))}
+            </p>
+          )}
+          
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-gray-500">{product.category}</span>
+            {selectedVariant.stockQty !== null && (
+              <span className="text-xs text-green-600 font-medium">
+                {selectedVariant.stockQty} in stock
+              </span>
+            )}
+          </div>
 
           {/* Render variant selectors if product has multiple variants */}
           {product.variants.length > 1 && product.options && product.options.map((option) => (

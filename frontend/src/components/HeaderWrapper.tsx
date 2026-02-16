@@ -7,10 +7,6 @@ export default function HeaderWrapper({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const isForPrintPage = pathname === '/for_print';
 
-  if (typeof window !== 'undefined') {
-    console.log('[DEBUG] HeaderWrapper render - pathname:', pathname, 'isForPrintPage:', isForPrintPage);
-  }
-
   return <>
     {!isForPrintPage && <Header />}
     {!isForPrintPage && (

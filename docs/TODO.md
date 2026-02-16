@@ -156,20 +156,25 @@
 [...existing code...]
 
 ---
-## Debugging Hydration Issue (Feb 15, 2026)
+## Recent Updates (Feb 16, 2026)
 
-### Recent Prompts & Actions
-- Audit for hydration issues across codebase (client-only guards, SSR/CSR checks)
-- Force redeploys to Vercel (empty commit, push)
-- Upgraded Vercel plan to Pro, confirmed aliasing and deployment URLs
-- Persistent React hydration error (#418) on homepage, not /preview
-- Added debug logs to layout, HeaderWrapper, Header, ProductsGrid, ProductCard, Home page
-- Confirmed Header/HeaderWrapper not source of error; error appears after product components render
-- Awaiting console output for [DEBUG] logs in ProductsGrid/ProductCard/Home page
-- Next step: Analyze debug logs, isolate hydration mismatch, propose targeted fix
-
-### Next Actions
-- Review console output for [DEBUG] logs
-- Pinpoint source of hydration mismatch in ProductsGrid/ProductCard/Home page
-- Fix hydration mismatch and redeploy
+### Completed Today ✅
+- **Hydration Issue ACTUALLY Resolved** - Fixed React hydration error (#418) on homepage
+  - **Initial misdiagnosis:** Thought undefined functions were the cause
+  - **Actual root cause:** Nested `<a>` tags (invalid HTML) causing browser DOM correction
+  - **The problem:** `renderDescriptionLine()` created `<a>` tags inside `<Link>` components
+  - **Why it caused hydration:** Browsers auto-correct invalid HTML, but React expects original structure
+  - **Timing:** Error occurred immediately on page load, BEFORE any user interaction
+  - **Fix #1 (Hydration):** Moved description with links outside of Link component
+  - **Fix #2 (Rules of Hooks):** Changed conditional `useCartStore()`/`useWishlistStore()` calls to unconditional
+  - **Fix #3 (Runtime bug):** Fixed undefined `removeFromWishlist()`/`addToWishlist()` functions
+  - All TypeScript compilation errors cleared
+  - Valid HTML structure now renders correctly
+  
+### Key Learning
+- **Hydration errors ≠ Runtime errors**
+- Hydration occurs BEFORE user interaction (during initial page load)
+- Event handler bugs (like undefined functions) are runtime issues, not hydration issues
+- Always check: Does the error appear on load or after clicking?
+  
 ---

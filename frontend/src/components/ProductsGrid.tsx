@@ -15,10 +15,6 @@ export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
   const [sortBy, setSortBy] = useState('newest');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [viewStyle, setViewStyle] = useState<ViewStyle>('list');
-  
-  if (typeof window !== 'undefined') {
-    console.log('[DEBUG] ProductsGrid render - products count:', initialProducts.length, 'viewStyle:', viewStyle);
-  }
 
   // Get unique categories
   const categories = useMemo(() => {
