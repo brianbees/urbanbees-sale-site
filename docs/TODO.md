@@ -1,217 +1,267 @@
-# TODO - Future Features
+# Planned Improvements
 
-## Recent Updates (Feb 15, 2026)
+This document tracks planned features and improvements for the Urban Bees sale site. Completed items are documented in [CHANGELOG.md](CHANGELOG.md).
 
-### Completed Today ✅
-- **Favicon System Overhaul** - Converted from dynamic to static implementation
-  - Removed dynamic icon.tsx (ImageResponse generation)
-  - Created static favicon.ico with Urban Bees logo (9.6KB)
-  - Updated favicon.svg with teal-to-green gradient fallback
-  - Next.js priority: favicon.ico > favicon.svg
-  - Simpler architecture, faster loading, better browser compatibility
-- **Print View Improvements** - Responsive, compact print layout
-  - 30px images in compact mode (50% reduction)
-  - Responsive layout: vertical stack (mobile), horizontal inline (desktop)
-  - Email/Print controls now text links instead of buttons
-  - Minimalist h-3 icons
-  - Removed "Offers welcome" text from descriptions via regex
-- **Wishlist Mobile Optimization** - Stacked card layout for small screens
-  - Image/details at top, action buttons at bottom
-  - Better touch target spacing
-  - Improved readability on mobile devices
-- **Header Simplification** - Removed cart icon, kept wishlist only
-  - Cleaner navigation (logo + wishlist)
-  - Cart functionality not needed currently
-- **Back Button Fix** - Navigate to homepage when no browser history
-  - Prevents broken back button on new tab opens
-  - Checks history length before using router.back()
-- **Email Cleanup** - Removed "Total: £0.00" line from email bodies
-  - Shows item count only, cleaner output
+**Last Updated:** February 16, 2026
 
 ---
 
-## Recent Updates (Feb 13, 2026)
+## High Priority
 
-### Completed Today ✅
-- **Variant Management** - Full workflow for adding/removing variants to products
-  - "+ Add Variant" button in edit-product page
-  - Delete variant button (🗑️) with confirmation dialog
-  - New variants auto-created on save (via `/api/create-variant`)
-  - No more manual database edits required
-- **Smart Variant Selector** - Frontend displays variants for all product types
-  - Dropdown selector for products without defined options
-  - Shows "SKU - £XX.XX" format in dropdown
-  - Button selector for products with options (Size, Color, etc.)
-  - Fixes: variants now visible on all multi-variant products
-- **Image Editing Tools** - Built-in crop and rotate functionality in product editor
-  - Canvas-based image editor with modal UI
-  - 90°/180° rotation controls
-  - Interactive crop tool with drag-to-move and corner handles for resizing
-  - Dark overlay shows area to be removed (standard crop UX)
-  - Images persist immediately to database and clear frontend cache
-  - Edited images replace originals automatically
-- **Hero Image Management** - Promote any gallery image to hero with one click
-  - "Make Hero" button on all non-hero images
-  - Drag-and-drop reordering for gallery images (hero stays fixed at position 0)
-  - Visual indicators (HERO badge, drag handles)
-- **Newest First Sorting** - Default sort changed to show most recently created/updated products
-  - Smart timestamp logic (max of created_at or updated_at)
-  - Maintains alphabetical fallback for ties
-- **Add-to-Cart Performance Fixes** - Eliminated delays and inconsistent cart updates
-  - Loading states with spinner animation ("Adding to Cart...")
-  - 5-second timeout with AbortController prevents indefinite hangs
-  - Duplicate click prevention (button disabled during request)
-  - Proper error messages ("Request timed out" vs "Failed to add")
-  - Error handling stops cart update on failure (no silent failures)
-- **Automatic URL Shortening** - Long URLs in descriptions shortened on save
-  - Uses is.gd API (free, no API key required)
-  - Skips URLs under 40 characters or already shortened
-  - Parallel processing for multiple URLs
-  - Graceful fallback (keeps original on failure)
-  - Console logging for debugging
-- **Consistent Link Rendering** - URLs and mailto links clickable everywhere
-  - Fixed: Homepage product cards now render clickable links
-  - Matches product detail page behavior
-  - mailto links show clean email without protocol prefix
-  - Links don't trigger card navigation (stopPropagation)
-- **Targeted Cache Revalidation** - Frontend cache clears specific product pages
-  - Revalidate API accepts productId parameter
-  - Admin triggers cache clear after image edits and full saves
-  - Changes appear immediately on frontend (no 5-minute wait)
+### PayPal Checkout Enhancement
 
-### System Architecture Improvements
-- **Image Edit Persistence** - Edited images save immediately, don't wait for "Save Product"
-- **Frontend-Backend Sync** - Admin calls frontend revalidation API after mutations
-- **Error Visibility** - All failures surface to users (no silent errors)
-- **Performance Monitoring** - Console logs track shortening, cache clears, stock checks
+**Goal:** Automatically populate order details in PayPal metadata instead of requiring customers to type them manually.
+
+**Current State:**
+- Cart summary shows items, quantities, and prices
+- Customer must manually type order details into PayPal note field
+- Seller receives payment but may not have complete order information
+
+**Desired State:**
+- Cart summary sent automatically to PayPal as structured metadata
+- Order details appear in seller's PayPal dashboard alongside payment
+- Customer doesn't need to transcribe order information
+
+**Implementation Needs:**
+- Research PayPal SDK metadata/custom fields API
+- Pass cart items as structured data to PayPal
+- Test that data appears correctly in PayPal seller dashboard
+- Ensure backwards compatibility with email workflow
+
+**Priority:** High (improves order accuracy and customer experience)
 
 ---
 
-## Recent Updates (Feb 2, 2026)
+## Medium Priority
 
-### Completed Today ✅
-- **Cart Page System** - Converted from drawer to dedicated `/cart` page with proper navigation
-- **Header Component** - Global navigation with cart icon and item count badge
-- **Smart Stock Validation** - Cart-aware stock checking prevents overselling
-  - Validates available stock before adding items
-  - Considers current cart quantity when adding more
-  - Real-time stock warnings on cart page with red alerts
-  - Disables checkout if stock issues exist
-- **eBay-Style Product Layout** - Horizontal cards (image left, details right)
-- **Enhanced UX** - Add to cart shows notification with "Continue Shopping" / "Go to Cart" options
-- **Search & Filter System** - eBay-style dropdowns with category filter, sort options
-- **Whole-word Search** - Search matches complete words only (not partial)
-- **Responsive Design** - Mobile-optimized filter layout
-- **One-click Deploy** - Deploy button on preview page for instant cache clearing
-- **API Routes for Mutations** - Moved admin CRUD operations server-side to fix RLS issues
-- **Local Development Setup** - Working dev servers on localhost:3000 and localhost:3001
+### Bulk Product Operations
 
----
+**Goal:** Enable admin to perform operations on multiple products at once.
 
-## Recent Updates (Feb 1, 2026)
+**Use Cases:**
+- Change category for multiple products
+- Delete multiple outdated products
+- Mark multiple products as discontinued
+- Bulk price updates
 
-### Completed
-- ✅ Product page revalidation (60s cache) - new images show within 1 minute
-- ✅ Edit buttons on product detail pages
-- ✅ Image filenames use product-name-number-timestamp format
-- ✅ Edit/preview buttons open in same tab
-- ✅ Redirect to preview page after editing product
-- ✅ Standardized placeholder images across all pages
-- ✅ Supabase Row Level Security (RLS) enabled on all tables
-- ✅ Database security configured (public read-only, admin full access)
-- ✅ Code deduplication (image compression utility)
-- ✅ Homepage caching (5-minute revalidation)
+**Implementation Considerations:**
+- Checkbox selection on admin homepage
+- "Bulk Actions" dropdown with available operations
+- Confirmation dialogs for destructive actions
+- Progress indicator for long-running operations
+- Revalidate affected products after completion
 
-### Admin Panel (v2.4.0)
-- Image compression: Auto-compress to max 1920px @ 85% JPEG quality
-- Image upload: Gallery-only (no forced camera)
-- Edit workflow: Edit → Save → Preview page
-- Image naming: `product-slug-1-timestamp.jpg`, `product-slug-2-timestamp.jpg`
-
-## PayPal Checkout Enhancement
-
-**Request:** Remove the requirement for customers to manually type their order details into the PayPal note.
-
-**Goal:** Update the checkout logic so that the Cart Summary (items, quantities, and IDs) is sent directly to the payment provider's metadata. Order details should show up automatically in the seller dashboard when a payment is completed.
-
-**Status:** Pending implementation
+**Priority:** Medium (improves admin efficiency for large catalogs)
 
 ---
 
-## Completed Features (Unlisted Until Now)
+### Product Import/Export
 
-### Print List Feature ✅
-**Route:** `/for_print` (`frontend/src/app/for_print/page.tsx` & `ForPrintClient.tsx`)
-- Print-friendly product lists with multiple view modes
-- Mode toggle: Wishlist (with checkboxes) or All Products
-- Email and Print buttons with mailto generation
-- Responsive layout (stacked mobile, inline desktop)
-- Clean description rendering (offer text removed)
-- Fetches live data from Supabase
-- Not linked from main navigation (internal tool)
+**Goal:** Allow admin to import/export product data via CSV for bulk operations outside the admin panel.
+
+**Use Cases:**
+- Import products from existing inventory systems
+- Export for backup or analysis
+- Bulk editing in spreadsheet applications
+- Migration between environments
+
+**Format:**
+- CSV with columns: name, category, description, SKU, price, stock
+- Image URLs reference Supabase Storage
+- Variants as separate rows or nested structure
+
+**Implementation Considerations:**
+- Export: Generate CSV from current database state
+- Import: Validate format before inserting
+- Handle errors gracefully (skip invalid rows, show summary)
+- Document CSV format and required fields
+
+**Priority:** Medium (useful for initial setup and ongoing management)
 
 ---
 
-## Planned Features
-[...existing code...]
+## Low Priority
+
+### Customer Order History (Optional)
+
+**Goal:** Allow customers to review their past enquiries.
+
+**Current State:**
+- No order history (no user accounts)
+- Cart and wishlist are session-based only
+- Email/download provides record, but not stored in system
+
+**Considerations:**
+- Requires user accounts or session tracking
+- Adds complexity to system architecture
+- May conflict with privacy-first design (no stored customer data)
+- Email/download workflow provides sufficient record for most use cases
+
+**Decision:** Low priority unless customer feedback indicates strong need
 
 ---
-## Recent Updates (Feb 16, 2026)
 
-### Completed Today ✅
-- **Download Order Summary Feature** - Complete fallback for mailto: workflow (v3.4.0)
-  - **Problem:** Even with visible email addresses, some users need attachments for enquiries
-  - **Solution:** Added download buttons that generate structured text files
-  - **Implementation:**
-    - Created `download-utils.ts` with text file generation utility
-    - Added "Download" buttons to wishlist, cart, and for_print pages
-    - Downloads include: date, items, variants, quantities, SKU, categories
-    - Auto-generated filename: `my_wishlist_2026-02-16.txt` format
-    - No prices included (enquiry-focused format)
-  - **User workflow:** Try email link → If fails → Download → Attach to manual email
-  - **Business benefits:**
-    - Structured requests (not vague "I'm interested" emails)
-    - Clear audit trail of what customer wants
-    - Works on locked-down PCs, any device, any browser
-  - **Result:** Zero barriers to customer contact - always a way to send enquiry
-  
-- **Production Robustness: Email Contact Fallbacks** - Enhanced UX for users without mailto: handlers
-  - **Context:** Confirmed desktop mailto: issues were environment configuration (not code bug)
-  - **Problem:** Some users on locked-down PCs or without mail clients can't use mailto: links
-  - **Solution:** Added fallback mechanisms for universal contact access
-  - **Improvements:**
-    - Added `select-all` CSS class to email links (easier text selection)
-    - Added descriptive `title` attributes with fallback instructions
-    - Added `stopPropagation()` to ProductDisplay email links (consistency)
-    - Wishlist page: Shows visible email address below buttons
-    - Print page: Shows visible email address below buttons
-    - All email addresses now clearly copyable even if clicking fails
-  - **Result:** Users can always obtain contact email, regardless of system configuration
-  - **Philosophy:** Production quality means users are never blocked by their environment
-  
-- **Diagnostic Test Page** - Created /test-mailto for systematic investigation
-  - 5 systematic tests to isolate mailto: issues (environment vs code vs context)
-  - Testing protocol and results template
-  - Helped confirm root cause was environment, not application
-  
-- **Hydration Issue ACTUALLY Resolved** - Fixed React hydration error (#418) on homepage
-  - **Initial misdiagnosis:** Thought undefined functions were the cause
-  - **Actual root cause:** Nested `<a>` tags (invalid HTML) causing browser DOM correction
-  - **The problem:** `renderDescriptionLine()` created `<a>` tags inside `<Link>` components
-  - **Why it caused hydration:** Browsers auto-correct invalid HTML, but React expects original structure
-  - **Timing:** Error occurred immediately on page load, BEFORE any user interaction
-  - **Fix #1 (Hydration):** Moved description with links outside of Link component
-  - **Fix #2 (Rules of Hooks):** Changed conditional `useCartStore()`/`useWishlistStore()` calls to unconditional
-  - **Fix #3 (Runtime bug):** Fixed undefined `removeFromWishlist()`/`addToWishlist()` functions
-  - All TypeScript compilation errors cleared
-  - Valid HTML structure now renders correctly
-  
-### Key Learning
-- **Hydration errors ≠ Runtime errors**
-- Hydration occurs BEFORE user interaction (during initial page load)
-- Event handler bugs (like undefined functions) are runtime issues, not hydration issues
-- Always check: Does the error appear on load or after clicking?
-- **Environment vs Application:** Don't assume code bug - verify environment first
-- **Production robustness:** Users blocked by environment = production issue, even if technically "working"
-  
+### Enhanced Search
+
+**Goal:** Improve product search with fuzzy matching, synonyms, and advanced filters.
+
+**Current State:**
+- Whole-word matching only
+- Category filter and sort options
+- No partial word matching or typo tolerance
+
+**Potential Improvements:**
+- Fuzzy search (handles typos: "bkeeping" → "beekeeping")
+- Synonym matching ("hive" → "beehive", "colony")
+- Price range filters
+- Stock availability filter (in stock / out of stock)
+- Multi-category selection
+
+**Implementation Considerations:**
+- May require search index or third-party service (Algolia, MeiliSearch)
+- Adds complexity and potential cost
+- Current search sufficient for small-medium catalogs
+
+**Priority:** Low (evaluate when catalog grows significantly)
+
 ---
+
+### Admin Analytics Dashboard
+
+**Goal:** Provide insights into product performance, enquiry patterns, and customer behavior.
+
+**Metrics to Track:**
+- Most viewed products
+- Most added to wishlist/cart
+- Popular categories
+- Search queries (what customers are looking for)
+- Contact/download conversion rates
+
+**Implementation Considerations:**
+- Requires event tracking (Google Analytics or custom)
+- Privacy implications (GDPR compliance)
+- Database schema changes (analytics tables)
+- Dashboard UI in admin panel
+
+**Priority:** Low (useful for business insights but not core functionality)
+
+---
+
+## Technical Debt
+
+### Test Coverage
+
+**Goal:** Add automated tests for critical flows.
+
+**Areas to Cover:**
+- Product CRUD operations (admin)
+- Stock validation (frontend)
+- Image upload and compression
+- Cart/wishlist state management
+- Revalidation triggers
+
+**Testing Strategy:**
+- Unit tests: Utility functions (image compression, URL shortening)
+- Integration tests: API routes (create product, check stock)
+- E2E tests: Critical user flows (browse → add to cart → email)
+
+**Priority:** Medium (prevents regressions, improves maintainability)
+
+---
+
+### Code Organization
+
+**Goal:** Improve code structure for maintainability.
+
+**Potential Improvements:**
+- Consolidate duplicate components between admin and frontend
+- Extract common utilities to shared library
+- Standardize error handling patterns
+- Centralize API client configuration
+
+**Considerations:**
+- Balance between DRY principles and app separation
+- Avoid premature abstraction
+- Maintain clear boundaries between admin and frontend
+
+**Priority:** Low (current structure is functional but could be optimized)
+
+---
+
+## Ideas for Exploration
+
+### Progressive Web App (PWA)
+
+**Concept:** Enable offline browsing and "Add to Home Screen" functionality.
+
+**Benefits:**
+- Faster load times with service worker caching
+- Offline product browsing
+- Native app-like experience on mobile
+- Push notifications for new products (optional)
+
+**Trade-offs:**
+- Additional complexity (service worker management)
+- Cache invalidation challenges
+- Limited benefit for enquiry-based workflow (no offline checkout)
+
+**Status:** Idea stage (evaluate need and effort)
+
+---
+
+### Live Chat Integration
+
+**Concept:** Allow customers to chat with seller directly from product pages.
+
+**Benefits:**
+- Instant answers to product questions
+- Higher conversion rates (immediate engagement)
+- Alternative to email for quick enquiries
+
+**Trade-offs:**
+- Requires staffing during business hours
+- Additional cost (third-party chat service)
+- May not align with enquiry-based workflow
+
+**Status:** Idea stage (assess customer preference)
+
+---
+
+## Future Considerations
+
+When adding new features:
+1. **Maintain design decisions** - Don't compromise intentional architectural choices (see [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md))
+2. **Follow operational rules** - Ensure new code follows established patterns (see [OPERATIONAL_RULES.md](OPERATIONAL_RULES.md))
+3. **Update workflows** - Document new user/admin flows in [WORKFLOWS.md](WORKFLOWS.md)
+4. **Document decisions** - Record new architectural choices in [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md)
+5. **Update changelog** - Log all changes in [CHANGELOG.md](CHANGELOG.md)
+
+---
+
+## Rejected Ideas
+
+### Full Checkout System
+
+**Concept:** Build complete e-commerce checkout with inventory reservation, order confirmation, shipping, etc.
+
+**Reason for Rejection:**
+- Conflicts with enquiry-based business model
+- Prevents price negotiation and custom quotes
+- Massive increase in complexity
+- PayPal integration already available for straightforward purchases
+
+**Decision:** Email/download workflow better aligns with business needs
+
+---
+
+### User Accounts
+
+**Concept:** Allow customers to create accounts with saved carts, order history, addresses.
+
+**Reason for Rejection:**
+- Adds authentication complexity
+- Privacy concerns (storing customer data)
+- Current LocalStorage approach sufficient for enquiry workflow
+- No long-term state needed (browse → enquire → done)
+
+**Decision:** Session-based state matches use case better

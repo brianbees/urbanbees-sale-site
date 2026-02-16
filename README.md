@@ -1,330 +1,207 @@
 # Urban Bees Sale Site
 
-A modern e-commerce platform for beekeeping equipment with full-featured admin panel and customer storefront.
+An e-commerce platform for beekeeping equipment with enquiry-focused workflows. Customers browse products, build wishlists or carts, and contact the seller via email or download. Administrators manage products, variants, and images through a dedicated admin panel.
 
 **Version:** 3.4.0  
 **Last Updated:** February 16, 2026
 
-## 🚀 Quick Links
+---
 
-- **Admin Panel:** https://urbanbees-product-admin.vercel.app
+## Live URLs
+
 - **Customer Site:** https://frontend-six-kappa-30.vercel.app
+- **Admin Panel:** https://urbanbees-product-admin.vercel.app
 - **Repository:** https://github.com/brianbees/urbanbees-sale-site
-- **Documentation:** [docs/](docs/)
 
-## 📁 Project Structure
+---
 
+## System Purpose
+
+This system enables:
+
+1. **Customer Browsing:** Search, filter, and view products with variants
+2. **Selection Tools:** Wishlist and cart for organizing product enquiries
+3. **Contact Methods:** Email, download, or manual copy for sending enquiries
+4. **Admin Management:** Create, edit, and publish products with images
+5. **Performance:** Fast page loads with image optimization and caching
+
+### Key Design Choices
+
+- **Email-based enquiries** instead of checkout (enables price negotiation and custom quotes)
+- **Client-side state** (cart/wishlist in LocalStorage, no user accounts)
+- **Thumbnail optimization** (70-90% faster image loading)
+- **Row-level security** (public reads, admin writes via API routes)
+- **ISR caching** (5-min homepage, 60s product pages)
+
+For detailed design rationale, see [DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md).
+
+---
+
+## Architecture
+
+### Stack
+- **Frontend/Admin:** Next.js 16 (App Router, React 19, TypeScript)
+- **Database:** Supabase PostgreSQL with Row-Level Security
+- **Storage:** Supabase Storage (product images)
+- **State:** Zustand (cart/wishlist)
+- **Deployment:** Vercel (auto-deploy from GitHub)
+- **Caching:** Incremental Static Regeneration (ISR)
+
+### Data Flow
 ```
-├── admin/          # Product management admin panel (Next.js 16)
-├── frontend/       # Customer-facing storefront (Next.js 16)
-├── docs/          # Comprehensive documentation
-│   ├── FEATURES.md                    # Complete feature list
-│   ├── CHANGELOG.md                   # Version history
-│   ├── TODO.md                        # Planned features
-│   ├── PROJECT_AUDIT_2026-02-01.md    # Code quality audit
-│   └── SCHEMA_ARCHITECTURE.md         # Database schema
-└── scripts/       # Utility scripts
-
-```
-
-## 🛠 Tech Stack
-
-### Frontend
-- **Framework:** Next.js 16.1.5 (App Router + Turbopack)
-- **React:** 19.x with TypeScript (strict mode)
-- **Styling:** Tailwind CSS 4
-- **State:** Zustand (cart, wishlist)
-- **Payments:** PayPal SDK
-- **Images:** Next/Image + Supabase Storage CDN
-
-### Backend
-- **Database:** Supabase PostgreSQL with RLS
-- **Storage:** Supabase Storage (product-images bucket)
-- **APIs:** Next.js API routes (server-side)
-- **Image Processing:** HTML5 Canvas API + is.gd URL shortener
-
-### Deployment
-- **Hosting:** Vercel (auto-deploy from main branch)
-- **CDN:** Vercel Edge Network + Supabase CDN
-- **Caching:** ISR (5-min homepage, 60s product pages)
-
-## ✨ Key Features (v3.1.0)
-
-### Admin Panel
-- ✅ **Variant Management** (add/remove variants to products)
-- ✅ **Image Editing Tools** (crop + rotate) built-in
-- ✅ **Hero Image Management** (promote any image to hero)
-- ✅ **Drag-and-Drop Reordering** for gallery images
-- ✅ **Automatic URL Shortening** in descriptions (is.gd)
-- ✅ **Image Compression** (max 1920px, 85% JPEG quality)
-- ✅ **Inline Variant Management** (SKU, price, stock)
-- ✅ **Live Preview** with clickable links
-- ✅ **Immediate Persistence** (edited images save instantly)
-
-### Customer Frontend
-- ✅ **Smart Variant Selector** (dropdown or buttons based on product)
-- ✅ **Newest First Sorting** (default)
-- ✅ **Smart Add-to-Cart** (loading states, timeouts, error handling)
-- ✅ **Clickable Links Everywhere** (URLs, mailto in descriptions)
-- ✅ **Download Order Summary** (text file fallback for email)
-- ✅ **Real-Time Stock Validation** (cart-aware)
-- ✅ **Wishlist with Persistence** (LocalStorage)
-- ✅ **PayPal Checkout** integration
-- ✅ **Responsive Design** (mobile/tablet/desktop)
-- ✅ **Search & Filter** (whole-word matching, category filter)
-- ✅ **eBay-Style Layout** (image left, details right)
-
-## 📚 Documentation
-
-Comprehensive documentation in [docs/](docs/):
-- **[FEATURES.md](docs/FEATURES.md)** - Complete feature documentation with workflows
-- **[CHANGELOG.md](docs/CHANGELOG.md)** - Version history (semantic versioning)
-- **[TODO.md](docs/TODO.md)** - Recent updates and planned features
-- **[PROJECT_AUDIT.md](docs/PROJECT_AUDIT_2026-02-01.md)** - Code quality audit and resolutions
-- **[SCHEMA_ARCHITECTURE.md](docs/SCHEMA_ARCHITECTURE.md)** - Database schema details
-
-## 🗄 Database
-
-**Provider:** Supabase PostgreSQL with Storage  
-**Dashboard:** Access via your Supabase project dashboard
-
-### Tables
-
-**`products`**
-```sql
-id UUID PRIMARY KEY
-name TEXT NOT NULL
-slug TEXT
-category TEXT
-description TEXT
-images TEXT[]  -- Supabase Storage URLs
-created_at TIMESTAMPTZ
-updated_at TIMESTAMPTZ
+Customer → Frontend (ISR) → Supabase (read-only)
+Admin → API Routes → Supabase (full access) → Revalidate Frontend
 ```
 
-**`variants`**
-```sql
-id UUID PRIMARY KEY
-product_id UUID REFERENCES products(id)
-sku TEXT
-price NUMERIC NOT NULL
-stock_qty INTEGER NOT NULL
-product_name TEXT  -- Denormalized for CSV exports
-option_values JSONB
-created_at TIMESTAMPTZ
-updated_at TIMESTAMPTZ
+### Project Structure
+```
+admin/          # Product management panel
+frontend/       # Customer-facing site
+docs/           # System documentation
+scripts/        # Utility scripts
 ```
 
-### Storage
+---
 
-**Bucket:** `product-images` (public access)  
-**Format:** JPEG, max 1920px width, 85% quality  
-**CDN:** Global delivery via Supabase edge network
+## Documentation
 
-### Security (Row-Level Security)
+### Core Documentation
+- **[WORKFLOWS.md](docs/WORKFLOWS.md)** - How customers and admins use the system
+- **[DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md)** - Architectural choices and rationale
+- **[OPERATIONAL_RULES.md](docs/OPERATIONAL_RULES.md)** - Rules for future development
+- **[OPERATIONS.md](docs/OPERATIONS.md)** - Deployment, environment, troubleshooting
 
-**Public Access:** Read-only (SELECT via anon key)  
-**Admin Access:** Full CRUD (via service role key in API routes)
+### Reference Documentation
+- **[CHANGELOG.md](docs/CHANGELOG.md)** - Version history
+- **[SCHEMA_ARCHITECTURE.md](docs/SCHEMA_ARCHITECTURE.md)** - Database schema
+- **[TODO.md](docs/TODO.md)** - Planned improvements
 
-**Verify RLS status:**
-```sql
-SELECT tablename, rowsecurity 
-FROM pg_tables 
-WHERE tablename IN ('products', 'variants');
--- rowsecurity should be TRUE
-```
+---
 
-**Setup documentation:** See [SUPABASE_RLS_SETUP.md](docs/SUPABASE_RLS_SETUP.md)
+## Quick Start
 
-## ⚙️ Environment Variables
+### Prerequisites
+- Node.js 18+
+- Supabase account and project
+- Vercel account (for deployment)
+- Git for version control
 
-### Admin Panel (`admin/.env.local`)
-```bash
-# Supabase Connection (required)
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_key_here
+### Local Development
 
-# Service Role Key (server-side API routes only - never expose to client)
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
-```
-
-### Frontend (`frontend/.env.local`)
-```bash
-# Supabase Connection (required)
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_key_here
-
-# PayPal Integration (required for checkout)
-NEXT_PUBLIC_PAYPAL_CLIENT_ID=your_paypal_client_id_here
-```
-
-### Vercel Environment Variables (Production)
-
-**Admin Panel:**
-- ✅ `NEXT_PUBLIC_SUPABASE_URL`
-- ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- ✅ `SUPABASE_SERVICE_ROLE_KEY` (NOT prefixed with NEXT_PUBLIC)
-
-**Frontend:**
-- ✅ `NEXT_PUBLIC_SUPABASE_URL`
-- ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- ✅ `NEXT_PUBLIC_PAYPAL_CLIENT_ID`
-
-**Security Note:** Service role key bypasses RLS. Only use server-side (API routes). Never add `NEXT_PUBLIC_` prefix to service role key.
-
-## 🚀 Development
-
-### Initial Setup
-
-1. **Clone repository**
+1. **Clone and install:**
    ```bash
    git clone https://github.com/brianbees/urbanbees-sale-site.git
    cd urbanbees-sale-site
-   ```
-
-2. **Install dependencies**
-   ```bash
-   # Admin panel
+   
+   # Install admin dependencies
    cd admin
    npm install
    
-   # Frontend
+   # Install frontend dependencies
    cd ../frontend
    npm install
    ```
 
-3. **Configure environment variables**
-   - Create `admin/.env.local` (see Environment Variables section)
-   - Create `frontend/.env.local` (see Environment Variables section)
+2. **Configure environment:**
+   - Create `admin/.env.local` with Supabase URL, anon key, and service role key
+   - Create `frontend/.env.local` with Supabase URL, anon key, and PayPal client ID
+   - See [OPERATIONS.md](docs/OPERATIONS.md) for complete environment setup
 
-4. **Verify Supabase connection**
-   - Test admin: http://localhost:3000
-   - Test frontend: http://localhost:3001
-
-### Run Development Servers
-
-**Admin Panel (port 3000)**
-```bash
-cd admin
-npm run dev
-```
-
-**Frontend (port 3001 - avoid conflict)**
-```bash
-cd frontend
-npm run dev -- -p 3001
-```
-
-**Access locally:**
-- Admin: http://localhost:3000
-- Frontend: http://localhost:3001
-
-### Build Commands
-```bash
-# Production build (in each app folder)
-npm run build
-
-# Type checking
-npm run type-check
-
-# Linting
-npm run lint
-```
-
-## 📦 Deployment
-
-### Automatic Deployment (Recommended)
-
-**Setup:** GitHub → Vercel integration configured
-
-1. Push changes to `main` branch
+3. **Run development servers:**
    ```bash
-   git push origin main
+   # Admin (port 3000)
+   cd admin
+   npm run dev
+   
+   # Frontend (port 3001)
+   cd frontend
+   npm run dev -- -p 3001
    ```
 
-2. Vercel auto-builds and deploys both apps
-   - Admin: https://urbanbees-product-admin.vercel.app
-   - Frontend: https://frontend-six-kappa-30.vercel.app
+4. **Verify:**
+   - Admin: http://localhost:3000
+   - Frontend: http://localhost:3001
 
-3. Monitor builds at https://vercel.com/brianbees-projects
+### Deployment
 
-### Manual Deployment
-
-**From workspace root:**
+**Automatic (recommended):**
 ```bash
-# Deploy admin panel
+git push origin main
+```
+Vercel auto-deploys both apps.
+
+**Manual:**
+```bash
 cd admin
 npx vercel --prod --yes
 
-# Deploy frontend
 cd ../frontend
 npx vercel --prod --yes
 ```
 
-**Via VS Code tasks:**
-- Command Palette → "Tasks: Run Task"
-- Select "Deploy Admin to Vercel" or "Deploy Frontend to Vercel"
-
-### Post-Deployment Verification
-
-1. **Admin Panel** - Create/edit test product
-2. **Frontend** - Verify product appears (may take 5 min for cache)
-3. **Clear cache** - Use preview page "Clear Cache" button if needed
-
-## 🔧 Key Technologies
-
-- **Next.js 16.1.5** - React framework with App Router + Turbopack
-- **TypeScript** - Strict mode enabled
-- **Tailwind CSS 4** - Utility-first styling
-- **Supabase** - PostgreSQL + Storage + RLS
-- **Zustand** - Client-side state management
-- **PayPal SDK** - Payment processing
-- **HTML5 Canvas** - Client-side image editing (crop/rotate)
-- **is.gd API** - Automatic URL shortening
-
-## 📝 Recent Updates
-
-**Version 3.1.0** (Feb 13, 2026) - See [CHANGELOG.md](docs/CHANGELOG.md) for details
-
-- Variant management (add/delete variants in admin)
-- Image editing tools (crop + rotate)
-- Hero image promotion
-- Automatic URL shortening (is.gd)
-- Add-to-cart improvements (loading states, timeouts)
-- Smart variant selector (dropdown or buttons)
-- Default "Newest First" sorting
-
-## 🔧 Troubleshooting
-
-**Products not appearing on frontend after creation:**
-- Wait 5 minutes for cache to expire, or
-- Use preview page "Clear Cache" button
-
-**Admin can't create/edit products (401 error):**
-- Verify `SUPABASE_SERVICE_ROLE_KEY` in Vercel environment variables
-- Key should NOT have `NEXT_PUBLIC_` prefix
-- Redeploy admin after changing env vars
-
-**Images not loading:**
-- Check `next.config.ts` has Supabase `remotePatterns`
-- Verify image URLs start with your Supabase project URL
-
-**Local dev: Port already in use:**
-```bash
-# Use different port
-npm run dev -- -p 3002
-```
-
-## 🐛 Known Issues
-
-See [TODO.md](docs/TODO.md) for planned improvements and [PROJECT_AUDIT.md](docs/PROJECT_AUDIT_2026-02-01.md) for technical debt.
-
-## 📞 Support
-
-**Documentation:** [docs/](docs/)  
-**Issues:** https://github.com/brianbees/urbanbees-sale-site/issues  
-**Supabase Dashboard:** Access via your Supabase project settings
+See [OPERATIONS.md](docs/OPERATIONS.md) for troubleshooting and post-deployment verification.
 
 ---
 
-**Version 3.1.0** | Built for Urban Bees | February 2026
+## Database
+
+**Provider:** Supabase PostgreSQL
+
+**Tables:**
+- `products` - Product master data (name, category, description, images)
+- `variants` - Product variants (SKU, price, stock)
+- `website_products` - Reference data for admin dropdowns
+
+**Security:**
+- Public: Read-only access via RLS policies
+- Admin: Full access via service role key in API routes
+
+**Setup:** See [SCHEMA_ARCHITECTURE.md](docs/SCHEMA_ARCHITECTURE.md)
+
+---
+
+## Key Workflows
+
+### Customer Flow
+1. Browse products on homepage (search, filter, sort)
+2. View product details with variant selection
+3. Add items to wishlist or cart
+4. Download selection or email enquiry to seller
+
+### Admin Flow
+1. Create new products with images and variants
+2. Edit existing products (crop/rotate images, reorder gallery)
+3. Manage variants (add/edit/delete SKU, price, stock)
+4. Publish changes (automatic frontend cache revalidation)
+
+### System Flow
+1. Admin saves changes → Writes to Supabase
+2. API route triggers frontend revalidation
+3. Next.js regenerates ISR pages on next request
+4. Customers see updates within cache window (≤5 minutes)
+
+For detailed workflows, see [WORKFLOWS.md](docs/WORKFLOWS.md).
+
+---
+
+## Contributing
+
+When modifying the system:
+
+1. **Follow operational rules:** See [OPERATIONAL_RULES.md](docs/OPERATIONAL_RULES.md)
+2. **Update documentation:** Modify relevant docs (workflows, decisions, operations)
+3. **Maintain design decisions:** Don't "optimize away" intentional choices
+4. **Test thoroughly:** Happy path and edge cases
+5. **Document new decisions:** Add to [DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md) if architectural
+
+---
+
+## Support
+
+- **Documentation:** [docs/](docs/)
+- **Issues:** https://github.com/brianbees/urbanbees-sale-site/issues
+- **Troubleshooting:** [OPERATIONS.md](docs/OPERATIONS.md)
+
+---
+
+**Version 3.4.0** | Urban Bees | February 2026
