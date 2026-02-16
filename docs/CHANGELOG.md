@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.5.0] - 2026-02-16
+
+### Added
+- **About Page:** New `/about` route with placeholder content
+  - Simple centered layout ready for content
+  - Back button with smart navigation (history-aware with homepage fallback)
+  - Consistent with site styling and responsive design
+  - Prevents broken navigation on direct links or new tabs
+
+### Changed
+- **Header Navigation:** Added "About" link in main navigation
+  - Position: Logo → About → Wishlist
+  - Hidden on mobile to prevent wrapping
+  - Visible on tablets and desktop (sm:inline)
+  - Hover effect matches site theme (amber-600)
+
+---
+
 ## [3.4.0] - 2026-02-16
 
 ### Added
