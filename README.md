@@ -2,7 +2,7 @@
 
 A modern e-commerce platform for beekeeping equipment with full-featured admin panel and customer storefront.
 
-**Version:** 3.3.0  
+**Version:** 3.4.0  
 **Last Updated:** February 16, 2026
 
 ## 🚀 Quick Links
@@ -66,6 +66,7 @@ A modern e-commerce platform for beekeeping equipment with full-featured admin p
 - ✅ **Newest First Sorting** (default)
 - ✅ **Smart Add-to-Cart** (loading states, timeouts, error handling)
 - ✅ **Clickable Links Everywhere** (URLs, mailto in descriptions)
+- ✅ **Download Order Summary** (text file fallback for email)
 - ✅ **Real-Time Stock Validation** (cart-aware)
 - ✅ **Wishlist with Persistence** (LocalStorage)
 - ✅ **PayPal Checkout** integration

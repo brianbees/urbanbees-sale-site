@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.4.0] - 2026-02-16
+
+### Added
+- **Download Order Summary Feature:** Reliable fallback for users who can't use mailto: links
+  - Created `download-utils.ts` with structured text file generation
+  - Added "Download" button to wishlist, cart, and for_print pages
+  - Downloads include: date, item list, variants, quantities, SKU, categories
+  - Auto-generated filename with date (e.g., `my_wishlist_2026-02-16.txt`)
+  - Helpful tooltips: "Download if email links don't work on your device"
+  - **Business benefit:** Structured enquiries, clear audit trail, works on locked-down PCs
+  - **User workflow:** Try email link → If fails → Download → Attach to manual email
+  - Ensures no user is blocked from sending a complete enquiry
+
+### Changed
+- Price information removed from downloaded summaries (enquiry-focused format)
+- Shows item count only, not total prices
+- Cleaner format for customers to request quotes
+
+---
+
 ## [3.3.0] - 2026-02-16
 
 ### Added

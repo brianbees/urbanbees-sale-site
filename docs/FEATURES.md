@@ -50,11 +50,15 @@
 - Wishlist with LocalStorage persistence
 - PayPal checkout integration
 
-**Contact Robustness** (v3.3.0)
+**Contact Robustness** (v3.3.0 - v3.4.0)
 - Email links work via mailto: protocol when configured
+- **Download fallback:** Text file with complete selection for manual email attachment
 - Visible email addresses as fallback (select-all support)
 - Helpful tooltips guide users if mailto: doesn't work
+- Download buttons on wishlist, cart, and print preview pages
+- Generated files include date, items, variants, quantities (no prices)
 - Ensures contact possible regardless of system configuration
+- **Business benefit:** Structured requests, fewer vague emails, clear audit trail
 
 **Performance**
 - ISR caching (5-min homepage, 60s product pages)

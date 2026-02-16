@@ -159,6 +159,22 @@
 ## Recent Updates (Feb 16, 2026)
 
 ### Completed Today ✅
+- **Download Order Summary Feature** - Complete fallback for mailto: workflow (v3.4.0)
+  - **Problem:** Even with visible email addresses, some users need attachments for enquiries
+  - **Solution:** Added download buttons that generate structured text files
+  - **Implementation:**
+    - Created `download-utils.ts` with text file generation utility
+    - Added "Download" buttons to wishlist, cart, and for_print pages
+    - Downloads include: date, items, variants, quantities, SKU, categories
+    - Auto-generated filename: `my_wishlist_2026-02-16.txt` format
+    - No prices included (enquiry-focused format)
+  - **User workflow:** Try email link → If fails → Download → Attach to manual email
+  - **Business benefits:**
+    - Structured requests (not vague "I'm interested" emails)
+    - Clear audit trail of what customer wants
+    - Works on locked-down PCs, any device, any browser
+  - **Result:** Zero barriers to customer contact - always a way to send enquiry
+  
 - **Production Robustness: Email Contact Fallbacks** - Enhanced UX for users without mailto: handlers
   - **Context:** Confirmed desktop mailto: issues were environment configuration (not code bug)
   - **Problem:** Some users on locked-down PCs or without mail clients can't use mailto: links
