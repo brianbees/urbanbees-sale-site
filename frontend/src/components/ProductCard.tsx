@@ -8,6 +8,7 @@ import type { Product } from '@/data/products';
 import { useCartStore } from '@/store/cart';
 import { useWishlistStore } from '@/store/wishlist';
 import { useToast } from '@/components/ToastProvider';
+import { thumbnailSizes } from '@/lib/image-utils';
 
 interface ProductCardProps {
   product: Product;
@@ -183,7 +184,12 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
 
   // Use image path as-is (for production with basePath, update next.config.js)
   const firstImage = product.images && product.images.length > 0 ? product.images[0] : { src: '/images/placeholder.jpg', alt: 'No image' };
-  const imageSrc = firstImage.src;
+  // Use appropriate thumbnail size based on view mode
+  const imageSrc = viewStyle === 'compact' 
+    ? thumbnailSizes.tiny(firstImage.src)
+    : viewStyle === 'grid'
+    ? thumbnailSizes.medium(firstImage.src)
+    : thumbnailSizes.small(firstImage.src); // list view
 
   // Grid View - Vertical card layout
   if (viewStyle === 'grid') {

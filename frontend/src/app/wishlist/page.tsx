@@ -6,6 +6,7 @@ import { useCartStore } from '@/store/cart';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { downloadTextSummary } from '@/lib/download-utils';
+import { thumbnailSizes } from '@/lib/image-utils';
 
 export default function WishlistPage() {
   const router = useRouter();
@@ -198,7 +199,7 @@ export default function WishlistPage() {
                   {/* Image */}
                   <div className="relative w-16 h-16 md:w-24 md:h-24 flex-shrink-0">
                     <Image
-                      src={item.image || '/images/placeholder.jpg'}
+                      src={thumbnailSizes.tiny(item.image || '/images/placeholder.jpg')}
                       alt={item.productName}
                       fill
                       className="object-cover rounded"

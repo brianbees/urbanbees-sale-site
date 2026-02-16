@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PayPalButton from '@/components/PayPalButton';
 import { downloadTextSummary } from '@/lib/download-utils';
+import { thumbnailSizes } from '@/lib/image-utils';
 
 interface StockWarning {
   variantId: string;
@@ -144,7 +145,7 @@ export default function CartPage() {
                       {item.image ? (
                         <div className="relative w-32 h-32 flex-shrink-0 bg-gray-100 rounded-lg border border-gray-200">
                           <Image
-                            src={item.image}
+                            src={thumbnailSizes.small(item.image)}
                             alt={item.productName}
                             fill
                             className="object-cover rounded-lg"

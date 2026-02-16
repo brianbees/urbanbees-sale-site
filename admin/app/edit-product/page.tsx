@@ -591,7 +591,7 @@ function EditProductForm() {
                         </div>
                       )}
                       <img
-                        src={img}
+                        src={`${img}?width=150&quality=75`}
                         alt={`Image ${idx + 1}`}
                         className="w-full h-24 object-cover rounded border"
                         loading="eager"

@@ -7,6 +7,7 @@ import type { Product } from '@/data/products';
 import { useCartStore } from '@/store/cart';
 import { useWishlistStore } from '@/store/wishlist';
 import { useToast } from '@/components/ToastProvider';
+import { thumbnailSizes } from '@/lib/image-utils';
 
 interface ProductDisplayProps {
   product: Product;
@@ -238,7 +239,6 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
               className="object-contain rounded-lg"
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
-              unoptimized
             />
           </div>
 
@@ -256,7 +256,7 @@ export default function ProductDisplay({ product }: ProductDisplayProps) {
                   }`}
                 >
                   <Image
-                    src={image.src}
+                    src={thumbnailSizes.small(image.src)}
                     alt={image.alt || `${product.name} - Image ${index + 1}`}
                     fill
                     className="object-cover"
