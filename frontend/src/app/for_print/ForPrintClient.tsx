@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { downloadTextSummary } from '@/lib/download-utils';
+import { thumbnailSizes } from '@/lib/image-utils';
 
 interface Product {
   id: string;
@@ -177,7 +178,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
                 )}
                 <div className="for-print-img-holder">
                   <img
-                    src={product.images?.[0] || '/images/placeholder.jpg'}
+                    src={thumbnailSizes.small(product.images?.[0] || '/images/placeholder.jpg')}
                     alt={product.name}
                     className="for-print-img"
                     style={{ objectFit: 'cover', borderRadius: 8, height: '50px', width: '50px' }}
@@ -210,7 +211,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
               <div className="compact-item">
                 <div className="compact-img">
                   <img
-                    src={product.images?.[0] || '/images/placeholder.jpg'}
+                    src={thumbnailSizes.tiny(product.images?.[0] || '/images/placeholder.jpg')}
                     alt={product.name}
                   />
                 </div>
