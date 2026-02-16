@@ -291,24 +291,25 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
           color: #1d4ed8;
         }
         .for-print-container {
-          padding: 20px;
+          padding: 12px;
           font-family: Arial, sans-serif;
           max-width: 1200px;
           margin: 0 auto;
         }
         .for-print-header {
-          margin-bottom: 20px;
+          margin-bottom: 10px;
           border-bottom: 2px solid #333;
-          padding-bottom: 10px;
+          padding-bottom: 6px;
         }
         .for-print-header h1 {
           margin: 0;
-          font-size: 24px;
+          font-size: 22px;
+          line-height: 1.2;
         }
         .for-print-date {
-          margin: 5px 0 0 0;
+          margin: 3px 0 0 0;
           color: #666;
-          font-size: 14px;
+          font-size: 13px;
         }
         .for-print-headers {
           display: grid;
@@ -316,9 +317,10 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
           align-items: center;
           gap: 8px;
           font-weight: bold;
-          padding: 10px 0;
+          padding: 6px 0;
           border-bottom: 1px solid #333;
-          margin-bottom: 10px;
+          margin-bottom: 6px;
+          font-size: 13px;
         }
         .for-print-price-col, .for-print-sku-col, .for-print-quantity-col {
           text-align: center;
@@ -326,7 +328,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         .for-print-list {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 2px;
         }
         .for-print-item {
           display: grid;
@@ -334,6 +336,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
           align-items: center;
           gap: 8px;
           page-break-inside: avoid;
+          padding: 3px 0;
         }
         .for-print-checkbox {
           text-align: center;
@@ -345,6 +348,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         }
         .for-print-price, .for-print-sku, .for-print-quantity {
           text-align: center;
+          font-size: 13px;
         }
         .for-print-img-holder {
           display: flex;
@@ -364,53 +368,59 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         }
         .for-print-name h2 {
           margin: 0;
-          font-size: 16px;
+          font-size: 15px;
+          line-height: 1.3;
         }
         .for-print-category {
           margin: 2px 0 0 0;
-          font-size: 12px;
+          font-size: 11px;
           color: #666;
+          line-height: 1.2;
         }
         .for-print-details {
           max-width: 600px;
-          font-size: 14px;
+          font-size: 13px;
+          line-height: 1.4;
+        }
+        .for-print-details p {
+          margin: 0;
         }
         .for-print-divider {
           border: none;
           border-top: 1px solid #ddd;
-          margin: 4px 0;
+          margin: 1px 0;
         }
         .compact-item {
           display: flex;
-          gap: 12px;
+          gap: 10px;
           align-items: flex-start;
           page-break-inside: avoid;
-          padding: 8px 0;
+          padding: 3px 0;
         }
         .compact-img {
           flex-shrink: 0;
-          width: 30px;
-          height: 30px;
+          width: 24px;
+          height: 24px;
         }
         .compact-img img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          border-radius: 4px;
+          border-radius: 3px;
           border: 1px solid #ccc;
         }
         .compact-info {
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 2px;
         }
         @media (min-width: 768px) {
           .compact-info {
             flex-direction: row;
             flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
           }
           .compact-info h3 {
             flex: 0 0 auto;
@@ -429,36 +439,38 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         }
         .compact-info h3 {
           margin: 0;
-          font-size: 14px;
+          font-size: 13px;
           font-weight: bold;
           color: #333;
+          line-height: 1.3;
         }
         .compact-category {
           font-size: 11px;
           color: #666;
           font-style: italic;
+          line-height: 1.2;
         }
         .compact-desc {
           margin: 0;
           font-size: 12px;
           color: #555;
-          line-height: 1.4;
+          line-height: 1.35;
         }
         .compact-price {
-          margin: 4px 0 0 0;
-          font-size: 13px;
+          margin: 0;
+          font-size: 12px;
           font-weight: bold;
           color: #2563eb;
         }
         .for-print-footer {
-          margin-top: 20px;
-          padding-top: 10px;
+          margin-top: 12px;
+          padding-top: 8px;
           border-top: 2px solid #333;
           text-align: right;
         }
         .for-print-total {
-          font-size: 18px;
-          padding: 10px;
+          font-size: 16px;
+          padding: 6px;
         }
         @media screen {
           .for-print-container {
@@ -487,7 +499,22 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
             top: 0;
             width: 100%;
             box-shadow: none;
-            padding: 10px;
+            padding: 8px;
+          }
+          .for-print-header h1 {
+            font-size: 20px;
+          }
+          .for-print-date {
+            font-size: 11px;
+          }
+          .for-print-list {
+            gap: 1px;
+          }
+          .for-print-item {
+            padding: 2px 0;
+          }
+          .compact-item {
+            padding: 2px 0;
           }
         }
       `}</style>
