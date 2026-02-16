@@ -94,6 +94,7 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
           <button
             onClick={handleEmail}
             className="action-link"
+            title="Click to email list (requires email client)"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
               <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -110,6 +111,9 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
             </svg>
             Print List
           </button>
+        </div>
+        <div style={{fontSize: '10px', color: '#666', marginTop: '4px', textAlign: 'right'}}>
+          Or email directly: <span style={{fontFamily: 'monospace', color: '#2563eb', userSelect: 'all'}}>sale@urbanbees.co.uk</span>
         </div>
       </div>
 

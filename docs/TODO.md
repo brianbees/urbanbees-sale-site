@@ -159,6 +159,25 @@
 ## Recent Updates (Feb 16, 2026)
 
 ### Completed Today ✅
+- **Production Robustness: Email Contact Fallbacks** - Enhanced UX for users without mailto: handlers
+  - **Context:** Confirmed desktop mailto: issues were environment configuration (not code bug)
+  - **Problem:** Some users on locked-down PCs or without mail clients can't use mailto: links
+  - **Solution:** Added fallback mechanisms for universal contact access
+  - **Improvements:**
+    - Added `select-all` CSS class to email links (easier text selection)
+    - Added descriptive `title` attributes with fallback instructions
+    - Added `stopPropagation()` to ProductDisplay email links (consistency)
+    - Wishlist page: Shows visible email address below buttons
+    - Print page: Shows visible email address below buttons
+    - All email addresses now clearly copyable even if clicking fails
+  - **Result:** Users can always obtain contact email, regardless of system configuration
+  - **Philosophy:** Production quality means users are never blocked by their environment
+  
+- **Diagnostic Test Page** - Created /test-mailto for systematic investigation
+  - 5 systematic tests to isolate mailto: issues (environment vs code vs context)
+  - Testing protocol and results template
+  - Helped confirm root cause was environment, not application
+  
 - **Hydration Issue ACTUALLY Resolved** - Fixed React hydration error (#418) on homepage
   - **Initial misdiagnosis:** Thought undefined functions were the cause
   - **Actual root cause:** Nested `<a>` tags (invalid HTML) causing browser DOM correction
@@ -176,5 +195,7 @@
 - Hydration occurs BEFORE user interaction (during initial page load)
 - Event handler bugs (like undefined functions) are runtime issues, not hydration issues
 - Always check: Does the error appear on load or after clicking?
+- **Environment vs Application:** Don't assume code bug - verify environment first
+- **Production robustness:** Users blocked by environment = production issue, even if technically "working"
   
 ---

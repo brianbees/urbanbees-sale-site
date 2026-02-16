@@ -53,7 +53,7 @@ export default function WishlistPage() {
     
     const mailtoLink = `mailto:sale@urbanbees.co.uk?subject=${encodeURIComponent('I am interested in these products')}&body=${encodeURIComponent(fullBody)}`;
     
-    // Use anchor element click for better PC browser compatibility
+    // Use anchor element for better browser compatibility
     const link = document.createElement('a');
     link.href = mailtoLink;
     link.click();
@@ -100,30 +100,39 @@ export default function WishlistPage() {
           </button>
         </div>
 
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">My Wishlist ({items.length})</h1>
+        <div className="flex flex-col gap-2 mb-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold">My Wishlist ({items.length})</h1>
+            
+            {items.length > 0 && (
+              <div className="flex gap-4">
+                <button
+                  onClick={handleEmail}
+                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline transition-colors text-sm"
+                  title="Click to email wishlist (requires email client)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                  Email List
+                </button>
+                <button
+                  onClick={() => router.push('/for_print?mode=wishlist&preview=true')}
+                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline transition-colors text-sm"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+                  </svg>
+                  Print List
+                </button>
+              </div>
+            )}
+          </div>
           
           {items.length > 0 && (
-            <div className="flex gap-4">
-              <button
-                onClick={handleEmail}
-                className="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline transition-colors text-sm"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                </svg>
-                Email List
-              </button>
-              <button
-                onClick={() => router.push('/for_print?mode=wishlist&preview=true')}
-                className="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline transition-colors text-sm"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
-                </svg>
-                Print List
-              </button>
+            <div className="text-right text-xs text-gray-600">
+              Or email directly: <span className="font-mono select-all text-blue-600">sale@urbanbees.co.uk</span>
             </div>
           )}
         </div>

@@ -70,7 +70,8 @@ export default function ProductCard({ product, index, viewStyle = 'list' }: Prod
             href={part}
             target={isMailto ? '_self' : '_blank'}
             rel={isMailto ? undefined : 'noopener noreferrer'}
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 hover:text-blue-800 underline select-all"
+            title={isMailto ? `Email ${displayText} (click to open email client, or copy address)` : `Open ${displayText}`}
             onClick={(e) => e.stopPropagation()} // Prevent card link click
           >
             {displayText}
