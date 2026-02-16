@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
+import { downloadTextSummary } from '@/lib/download-utils';
 
 interface Product {
   id: string;
@@ -77,6 +78,21 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
     link.click();
   };
 
+  const handleDownload = () => {
+    downloadTextSummary({
+      title: baseTitle,
+      items: products.map(product => ({
+        name: product.name,
+        price: product.price,
+        sku: product.sku,
+        quantity: product.quantity,
+        category: product.category,
+        description: product.description,
+      })),
+      includeTotals: mode === 'wishlist',
+    });
+  };
+
   return (
     <div className="for-print-wrapper">
       {/* Print Controls - Hidden when printing */}
@@ -103,6 +119,16 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
             Email List
           </button>
           <button
+            onClick={handleDownload}
+            className="action-link"
+            title="Download list as text file to attach to your own email"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+            Download
+          </button>
+          <button
             onClick={handlePrint}
             className="action-link"
           >
@@ -114,6 +140,8 @@ export default function ForPrintClient({ products, mode = 'all', preview = false
         </div>
         <div style={{fontSize: '10px', color: '#666', marginTop: '4px', textAlign: 'right'}}>
           Or email directly: <span style={{fontFamily: 'monospace', color: '#2563eb', userSelect: 'all'}}>sale@urbanbees.co.uk</span>
+          <br />
+          <span style={{color: '#999'}}>Tip: Download the list if email links don&apos;t work on your device</span>
         </div>
       </div>
 

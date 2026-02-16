@@ -5,6 +5,7 @@ import { useWishlistStore } from '@/store/wishlist';
 import { useCartStore } from '@/store/cart';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { downloadTextSummary } from '@/lib/download-utils';
 
 export default function WishlistPage() {
   const router = useRouter();
@@ -57,6 +58,18 @@ export default function WishlistPage() {
     const link = document.createElement('a');
     link.href = mailtoLink;
     link.click();
+  };
+
+  const handleDownload = () => {
+    downloadTextSummary({
+      title: 'My Wishlist',
+      items: items.map(item => ({
+        name: item.productName,
+        price: item.price,
+        category: item.category,
+      })),
+      includeTotals: true,
+    });
   };
 
   const handleBack = () => {
@@ -118,6 +131,16 @@ export default function WishlistPage() {
                   Email List
                 </button>
                 <button
+                  onClick={handleDownload}
+                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline transition-colors text-sm"
+                  title="Download wishlist as text file to attach to your own email"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  Download
+                </button>
+                <button
                   onClick={() => router.push('/for_print?mode=wishlist&preview=true')}
                   className="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline transition-colors text-sm"
                 >
@@ -133,6 +156,8 @@ export default function WishlistPage() {
           {items.length > 0 && (
             <div className="text-right text-xs text-gray-600">
               Or email directly: <span className="font-mono select-all text-blue-600">sale@urbanbees.co.uk</span>
+              <br />
+              <span className="text-gray-500">Tip: Download the list if email links don&apos;t work on your device</span>
             </div>
           )}
         </div>
