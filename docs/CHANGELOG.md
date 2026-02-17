@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.5.1] - 2026-02-17
+
+### Security
+- **API Key Security Audit:** Fixed all API key handling and removed insecure patterns
+  - Fixed scripts to use `SUPABASE_SERVICE_ROLE_KEY` (without NEXT_PUBLIC prefix)
+  - Verified all API routes use correct server-side authentication
+  - Confirmed no client components access service role keys
+  - Archived `DEPLOYMENT_REMINDER.md` containing dangerous outdated instructions
+
+### Added
+- **Configuration Checker:** `admin/check-config.mjs` utility to verify environment setup
+- **Security Audit Report:** Comprehensive documentation of security review in `SECURITY_AUDIT_2026-02-17.md`
+
+### Fixed
+- Updated `scripts/add-offers-line.mjs` to use correct service role key variable
+- Updated `scripts/add-product-name-to-variants.mjs` to use correct service role key variable
+- Removed references to insecure `NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY` pattern
+
+---
+
 ## [3.5.0] - 2026-02-16
 
 ### Added

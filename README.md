@@ -2,8 +2,8 @@
 
 An e-commerce platform for beekeeping equipment with enquiry-focused workflows. Customers browse products, build wishlists or carts, and contact the seller via email or download. Administrators manage products, variants, and images through a dedicated admin panel.
 
-**Version:** 3.5.0  
-**Last Updated:** February 16, 2026
+**Version:** 3.5.1  
+**Last Updated:** February 17, 2026
 
 ---
 
