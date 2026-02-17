@@ -2,7 +2,7 @@
 
 This document tracks planned features and improvements for the Urban Bees sale site. Completed items are documented in [CHANGELOG.md](CHANGELOG.md).
 
-**Last Updated:** February 16, 2026
+**Last Updated:** February 17, 2026
 
 ---
 
